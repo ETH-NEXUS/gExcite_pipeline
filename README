@@ -1,14 +1,68 @@
 # scGate 
 
-#### General overview
+## General overview
 
 
-#### Installation instructions
+## Installation instructions
 
 
-#### Example data
+## Example data
 
 
 
-#### Before running the pipeline
+## Before running the pipeline
+
+## Preprocessing
+### Dealing with different input data
+
+The single cell pipeline can currently handle a diverse set of input data and preprocess them to run with the GEX master pipeline.
+In general, if NovaSeq Data is analysed use the --use-conda variable to allow snakemake to activate the appropriate environment for index-hopping removal.
+#### ADT only
+In case of ADT only data the following snake file should be used [snake_prep_adt_master.snake](snake_master/snake_prep_adt_master.snake). (Exception NovaSeq Data: see below). If your data has been hashed, adapt the [samplemap](#samplemap)  to contain a link to the [Hashing Info File](#hashing-info-file). 
+
+**NovaSeq**  
+In case of ADT only NovaSeq data the following snake file should be used [snake_prep_adt_novaSeq_master.snake](snake_master/snake_prep_adt_novaSeq_master.snake).If your data has been hashed, adapt the [samplemap](#samplemap) to contain a link to the [Hashing Info File](#hashing-info-file).
+
+***
+
+#### GEX only
+Most likely in this case no preparation pipeline needs to be run. The [snake_gex_master.snake](snake_master/snake_gex_master.snake) can directly be used. 
+
+**NovaSeq**  
+In case of GEX only NovaSeq data the following snake file should be used [snake_prep_gex_novaSeq_master.snake](snake_master/snake_prep_gex_novaSeq_master.snake).
+
+***
+
+#### ADT and GEX combined
+In case of combined GEX and ADT data the following snake file should be used [snake_prep_gex_adt_master.snake](snake_master/snake_prep_gex_adt_master.snake). (Exception NovaSeq Data: see below) If your data has been hashed, adapt the [samplemap](#samplemap)  to contain a link to the [Hashing Info File](#hashing-info-file).
+
+**NovaSeq**  
+In case of combined GEX and ADT NovaSeq data the following snake file should be used [snake_prep_gex_adt_novaSeq_master.snake](snake_master/snake_prep_gex_adt_novaSeq_master.snake). If your data has been hashed, adapt the [samplemap](#samplemap)  to contain a link to the [Hashing Info File](#hashing-info-file).
+
+
+### SampleMap Preprocessing
+
+In this pipeline, the sample map is used to specify sample-specific parameters. The sample map should have the following structure:
+```
+1       SampleSetName_1	HashingStatus_1	SeqName_ADT_1	nTargetCells_1	featFile_ADT_1
+1	SampleSetName_2	HashingStatus_2	SeqName_ADT_2	nTargetCells_2	featFile_ADT_2
+```
+- HashingStatus_x corresponds to the hashing status of sample set 'x'. Allowed values are: "NH" or "." for non-hashed). In case of hashed samplesets the entry needs to point to a File containing the necessary information (see [Hashing Info File](#hashing-info-file)).
+- SeqName_ADT_x corresponds to the sequencing sample name of the ADT sample for set 'x', as this parameter is only required for the CellRanger run of ADT data. It can be retrieved from the fastqs file names as follows:
+```
+[SequencingName_ADT_x]_S[Number]_L00[Lane Number]_[Read Type]_001.fastq.gz
+```
+Where Read Type is one of: I1, R1, R2.
+- nTargetCells_x corresponds to the original number of targeted cells for the sample in the given experiment. This parameter usually has to be specified for hashing experiments.
+- featFile_ADT_x corresponds to the ADT feature reference file for sample set 'x'. Beware: in order to be able to perform index hopping removal on ADT samples that have different reference files, these should be combined into a single joined reference file that is used for all available sample sets.
+
+When parameters in the third and fourth column do not need to be provided, "." can be used instead.
+
+### Hashing Info File
+In case of Hashed Samples we need to associate the hashtag barcodes, the tag names and the corresponting samplenames with the sampleset. To do so we need a file having the following structure:
+
+```
+Barcode1,TagName1,SampleA
+Barcode2,TagName2,SampleB
+```
 
