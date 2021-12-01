@@ -5,6 +5,7 @@ import copy
 
 fail_instantly = False
 
+
 class Error(object):
     def __init__(self, key, name):
         self.__key = key
@@ -19,13 +20,17 @@ class Error(object):
             ===============================================
             You have not specified '{}' for '{}'
             ===============================================
-            """.format(self.__key, self.__name))
+            """.format(
+                self.__key, self.__name
+            )
+        )
 
     def __getitem__(self, value):
         return Error(key=self.__key, name=self.__name)
 
+
 class Config(object):
-    def __init__(self, kwargs, name='Config'):
+    def __init__(self, kwargs, name="Config"):
         self.__name = name
         self.__members = {}
         for (key, value) in kwargs.items():
@@ -33,7 +38,7 @@ class Config(object):
                 self.__members[key] = Config(kwargs=value, name=key)
             else:
                 self.__members[key] = value
-    
+
     def __getitem__(self, key):
         if key in self.__members:
             return self.__members[key]
@@ -44,21 +49,28 @@ class Config(object):
                     ===============================================
                     You have not specified '{}' for '{}'
                     ===============================================
-                    """.format(key, self.__name))
+                    """.format(
+                        key, self.__name
+                    )
+                )
             else:
                 return Error(key=key, name=self.__name)
 
+
 config = Config(config)
 
+
 def getSampleNames():
-    output = [] #[samplename.replace(FASTQDIR,'').replace('/','')for samplename in glob.glob(FASTQDIR + '*/')]
+    output = (
+        []
+    )  # [samplename.replace(FASTQDIR,'').replace('/','')for samplename in glob.glob(FASTQDIR + '*/')]
     if output == []:
-        if not 'SAMPLEMAPPING' in globals():
-            return ['NOMAPPINGFILE']
+        if not "SAMPLEMAPPING" in globals():
+            return ["NOMAPPINGFILE"]
         try:
             open(SAMPLEMAPPING, "r")
         except IOError:
-            return ['NOMAPPINGFILE']
+            return ["NOMAPPINGFILE"]
         sampleMap = dict()
         with open(SAMPLEMAPPING, "r") as f:
             for line in f:
@@ -69,16 +81,19 @@ def getSampleNames():
                         output.append(sample)
     return output
 
+
 # Retrieve hashed samples from the sample map of a given experiment
 def getHashedSampleNames():
-    output = [] #[samplename.replace(FASTQDIR,'').replace('/','')for samplename in glob.glob(FASTQDIR + '*/')]
+    output = (
+        []
+    )  # [samplename.replace(FASTQDIR,'').replace('/','')for samplename in glob.glob(FASTQDIR + '*/')]
     if output == []:
-        if not 'SAMPLEMAPPING' in globals():
-            return ['NOMAPPINGFILE']
+        if not "SAMPLEMAPPING" in globals():
+            return ["NOMAPPINGFILE"]
         try:
             open(SAMPLEMAPPING, "r")
         except IOError:
-            return ['NOMAPPINGFILE']
+            return ["NOMAPPINGFILE"]
         sampleMap = dict()
         with open(SAMPLEMAPPING, "r") as f:
             for line in f:
@@ -86,23 +101,27 @@ def getHashedSampleNames():
                     lineSplit = line.strip().split()
                     sample = lineSplit[1].strip()
                     status = lineSplit[2].strip()
-                    if status not in ["NH","."]:
+                    if status not in ["NH", "."]:
                         if not os.path.isfile(status):
-                            raise ValueError("Sample '%s' does not contain a valid hashing status/file in the sample map!" %(sample))
+                            raise ValueError(
+                                "Sample '%s' does not contain a valid hashing status/file in the sample map!"
+                                % (sample)
+                            )
                     # Only include sample in output string if it is hashed ie. "H"
                     if os.path.isfile(status):
                         if not (sample in output):
                             output.append(sample)
     return output
 
+
 # Retrieve filename listing tags for non-hashed samples.
 def getTagFileHashedSamples(wildcards):
-    if not 'SAMPLEMAPPING' in globals():
-        return ['NOMAPPINGFILE']
+    if not "SAMPLEMAPPING" in globals():
+        return ["NOMAPPINGFILE"]
     try:
         open(SAMPLEMAPPING, "r")
     except IOError:
-        return ['NOMAPPINGFILE']
+        return ["NOMAPPINGFILE"]
     sampleMap = dict()
     with open(SAMPLEMAPPING, "r") as f:
         for line in f:
@@ -110,27 +129,37 @@ def getTagFileHashedSamples(wildcards):
                 lineSplit = line.strip().split()
                 sample = lineSplit[1].strip()
                 status = lineSplit[2].strip()
-                if status not in ["NH","."]:
+                if status not in ["NH", "."]:
                     if not os.path.isfile(status):
-                        raise ValueError("Sample '%s' does not contain a valid hashing status/file in the sample map!" %(sample))
+                        raise ValueError(
+                            "Sample '%s' does not contain a valid hashing status/file in the sample map!"
+                            % (sample)
+                        )
                 if sample in sampleMap.keys():
-                    raise ValueError("Sample '%s' is not unique in the sample map!" %(wildcards.sample))
+                    raise ValueError(
+                        "Sample '%s' is not unique in the sample map!"
+                        % (wildcards.sample)
+                    )
                 sampleMap[sample] = status
     if wildcards.sample not in sampleMap.keys():
-        raise ValueError("Sample '%s' not found in the sample map!" %(wildcards.sample))
+        raise ValueError(
+            "Sample '%s' not found in the sample map!" % (wildcards.sample)
+        )
     return sampleMap[wildcards.sample]
 
 
 # Retrieve non-hashed samples from the sample map of a given experiment
 def getNonHashedSampleNames():
-    output = [] #[samplename.replace(FASTQDIR,'').replace('/','')for samplename in glob.glob(FASTQDIR + '*/')]
+    output = (
+        []
+    )  # [samplename.replace(FASTQDIR,'').replace('/','')for samplename in glob.glob(FASTQDIR + '*/')]
     if output == []:
-        if not 'SAMPLEMAPPING' in globals():
-            return ['NOMAPPINGFILE']
+        if not "SAMPLEMAPPING" in globals():
+            return ["NOMAPPINGFILE"]
         try:
             open(SAMPLEMAPPING, "r")
         except IOError:
-            return ['NOMAPPINGFILE']
+            return ["NOMAPPINGFILE"]
         sampleMap = dict()
         with open(SAMPLEMAPPING, "r") as f:
             for line in f:
@@ -138,25 +167,30 @@ def getNonHashedSampleNames():
                     lineSplit = line.strip().split()
                     sample = lineSplit[1].strip()
                     status = lineSplit[2].strip()
-                    if status not in ["NH","H","."]:
+                    if status not in ["NH", "H", "."]:
                         if not os.path.isfile(status):
-                           raise ValueError("Sample '%s' does not contain a valid hashing status in the sample map!" %(sample))
+                            raise ValueError(
+                                "Sample '%s' does not contain a valid hashing status in the sample map!"
+                                % (sample)
+                            )
                     # Only include sample in output string if it is non-hashed ie. "NH"
-                    if status in ["NH","."]:
+                    if status in ["NH", "."]:
                         if not (sample in output):
                             output.append(sample)
     return output
 
 
 def getExperimentNames():
-    output = [] #[samplename.replace(FASTQDIR,'').replace('/','')for samplename in glob.glob(FASTQDIR + '*/')]
+    output = (
+        []
+    )  # [samplename.replace(FASTQDIR,'').replace('/','')for samplename in glob.glob(FASTQDIR + '*/')]
     if output == []:
-        if not 'SAMPLEMAPPING' in globals():
-            return ['NOMAPPINGFILE']
+        if not "SAMPLEMAPPING" in globals():
+            return ["NOMAPPINGFILE"]
         try:
             open(SAMPLEMAPPING, "r")
         except IOError:
-            return ['NOMAPPINGFILE']
+            return ["NOMAPPINGFILE"]
         sampleMap = dict()
         with open(SAMPLEMAPPING, "r") as f:
             for line in f:
@@ -167,13 +201,14 @@ def getExperimentNames():
                         output.append(exp)
     return output
 
+
 def getSampleNamesFromExperimentNames(wildcards):
-    if not 'SAMPLEMAPPING' in globals():
-        return ['NOMAPPINGFILE']
+    if not "SAMPLEMAPPING" in globals():
+        return ["NOMAPPINGFILE"]
     try:
         open(SAMPLEMAPPING, "r")
     except IOError:
-        return ['NOMAPPINGFILE']
+        return ["NOMAPPINGFILE"]
     expMap = dict()
     with open(SAMPLEMAPPING, "r") as f:
         for line in f:
@@ -188,44 +223,69 @@ def getSampleNamesFromExperimentNames(wildcards):
                 expMap[exp].append(sample)
     return expMap[wildcards.experiment]
 
+
 def checkFilesAgainstSampleNames(files, sampleNames):
     finalFiles = []
     for f in files:
         for name in sampleNames:
-            if name + "/" == f[0:len(name+"/")]:
+            if name + "/" == f[0 : len(name + "/")]:
                 finalFiles.append(f)
 
     return finalFiles
 
+
 def getSingleFastqFiles(SAMPLENAMES):
-    files = [file.replace(FASTQDIR, '').replace('.fastq.gz','')for file in glob.glob(FASTQDIR + '*/SINGLEEND/*.fastq.gz')]
+    files = [
+        file.replace(FASTQDIR, "").replace(".fastq.gz", "")
+        for file in glob.glob(FASTQDIR + "*/SINGLEEND/*.fastq.gz")
+    ]
     if files == []:
-        files = [file.replace(FASTQDIR, '').replace('.fastq','')for file in glob.glob(FASTQDIR + '*/SINGLEEND/*.fastq')]
+        files = [
+            file.replace(FASTQDIR, "").replace(".fastq", "")
+            for file in glob.glob(FASTQDIR + "*/SINGLEEND/*.fastq")
+        ]
 
     return checkFilesAgainstSampleNames(files, SAMPLENAMES)
 
-    #return [file.replace(FASTQDIR, '').replace('.fastq.gz','')for file in glob.glob(FASTQDIR + '*/SINGLEEND/*.fastq.gz')]
-    #return [file.replace(FASTQDIR, '').replace('.fastq','')for file in glob.glob(FASTQDIR + '*/SINGLEEND/*.fastq')]
+
+# return [file.replace(FASTQDIR, '').replace('.fastq.gz','')for file in glob.glob(FASTQDIR + '*/SINGLEEND/*.fastq.gz')]
+# return [file.replace(FASTQDIR, '').replace('.fastq','')for file in glob.glob(FASTQDIR + '*/SINGLEEND/*.fastq')]
+
 
 def getPairedFastqFiles(SAMPLENAMES):
-    files = [file.replace(FASTQDIR, '').replace('.fastq.gz','')for file in glob.glob(FASTQDIR + '*/PAIREDEND/*R[12].fastq.gz')]
+    files = [
+        file.replace(FASTQDIR, "").replace(".fastq.gz", "")
+        for file in glob.glob(FASTQDIR + "*/PAIREDEND/*R[12].fastq.gz")
+    ]
     if files == []:
-        files = [file.replace(FASTQDIR, '').replace('.fastq','')for file in glob.glob(FASTQDIR + '*/PAIREDEND/*R[12].fastq')]
-   
+        files = [
+            file.replace(FASTQDIR, "").replace(".fastq", "")
+            for file in glob.glob(FASTQDIR + "*/PAIREDEND/*R[12].fastq")
+        ]
+
     return checkFilesAgainstSampleNames(files, SAMPLENAMES)
 
-    #return [file.replace(FASTQDIR, '').replace('.fastq.gz','')for file in glob.glob(FASTQDIR + '*/PAIREDEND/*R[12].fastq.gz')]
-    #return [file.replace(FASTQDIR, '').replace('.fastq','')for file in glob.glob(FASTQDIR + '*/PAIREDEND/*R[12].fastq')]
+
+# return [file.replace(FASTQDIR, '').replace('.fastq.gz','')for file in glob.glob(FASTQDIR + '*/PAIREDEND/*R[12].fastq.gz')]
+# return [file.replace(FASTQDIR, '').replace('.fastq','')for file in glob.glob(FASTQDIR + '*/PAIREDEND/*R[12].fastq')]
+
 
 def getPairedFastqFilesWithoutR(SAMPLENAMES):
-    files = [file.replace(FASTQDIR, '').replace('_R1.fastq.gz','')for file in glob.glob(FASTQDIR + '*/PAIREDEND/*_R1.fastq.gz')]
+    files = [
+        file.replace(FASTQDIR, "").replace("_R1.fastq.gz", "")
+        for file in glob.glob(FASTQDIR + "*/PAIREDEND/*_R1.fastq.gz")
+    ]
     if files == []:
-        files = [file.replace(FASTQDIR, '').replace('_R1.fastq','')for file in glob.glob(FASTQDIR + '*/PAIREDEND/*_R1.fastq')]
+        files = [
+            file.replace(FASTQDIR, "").replace("_R1.fastq", "")
+            for file in glob.glob(FASTQDIR + "*/PAIREDEND/*_R1.fastq")
+        ]
 
     return checkFilesAgainstSampleNames(files, SAMPLENAMES)
 
-    #return [file.replace(FASTQDIR, '').replace('_R1.fastq.gz','')for file in glob.glob(FASTQDIR + '*/PAIREDEND/*_R1.fastq.gz')]
-    #return [file.replace(FASTQDIR, '').replace('_R1.fastq','')for file in glob.glob(FASTQDIR + '*/PAIREDEND/*_R1.fastq')]
+
+# return [file.replace(FASTQDIR, '').replace('_R1.fastq.gz','')for file in glob.glob(FASTQDIR + '*/PAIREDEND/*_R1.fastq.gz')]
+# return [file.replace(FASTQDIR, '').replace('_R1.fastq','')for file in glob.glob(FASTQDIR + '*/PAIREDEND/*_R1.fastq')]
 
 ## Deprecated
 # def getNormalTumorFiles():
@@ -262,12 +322,12 @@ def getPairedFastqFilesWithoutR(SAMPLENAMES):
 
 # Retrieve the number of target cells corresponding to a given sample set (both GEX and ADT)
 def getTargetCells(wildcards):
-    if not 'SAMPLEMAPPING' in globals():
-        return ['NOMAPPINGFILE']
+    if not "SAMPLEMAPPING" in globals():
+        return ["NOMAPPINGFILE"]
     try:
         open(SAMPLEMAPPING, "r")
     except IOError:
-        return ['NOMAPPINGFILE']
+        return ["NOMAPPINGFILE"]
     sampleMap = dict()
     with open(SAMPLEMAPPING, "r") as f:
         for line in f:
@@ -276,16 +336,23 @@ def getTargetCells(wildcards):
                 sample = lineSplit[1].strip()
                 nCells = lineSplit[4].strip()
                 if sample in sampleMap.keys():
-                    raise ValueError("Sample '%s' is not unique in the sample map!" %(wildcards.sample))
+                    raise ValueError(
+                        "Sample '%s' is not unique in the sample map!"
+                        % (wildcards.sample)
+                    )
                 sampleMap[sample] = "."
                 if nCells != ".":
                     sampleMap[sample] = int(nCells)
 
     if wildcards.sample not in sampleMap.keys():
-        raise ValueError("Sample '%s' not found in the sample map!" %(wildcards.sample))
+        raise ValueError(
+            "Sample '%s' not found in the sample map!" % (wildcards.sample)
+        )
     return sampleMap[wildcards.sample]
 
+
 # Preprend the retrieved target cell with the prefix required for citeseq count.
+
 
 def getTargetCellsCiteseqCount(wildcards):
     value = getTargetCells(wildcards)
@@ -296,7 +363,9 @@ def getTargetCellsCiteseqCount(wildcards):
         out.append("-cells " + str(value))
     return out
 
+
 # Preprend the retrieved target cell with the prefix required for cellranger count.
+
 
 def getTargetCellsCellranger(wildcards):
     value = getTargetCells(wildcards)
@@ -307,14 +376,15 @@ def getTargetCellsCellranger(wildcards):
         out.append("--force-cells " + str(value))
     return out
 
+
 # Retrieve the ADT sequencing run name corresponding to a given sample set
 def getSeqRunName(wildcards):
-    if not 'SAMPLEMAPPING' in globals():
-        return ['NOMAPPINGFILE']
+    if not "SAMPLEMAPPING" in globals():
+        return ["NOMAPPINGFILE"]
     try:
         open(SAMPLEMAPPING, "r")
     except IOError:
-        return ['NOMAPPINGFILE']
+        return ["NOMAPPINGFILE"]
     sampleMap = dict()
     with open(SAMPLEMAPPING, "r") as f:
         for line in f:
@@ -323,23 +393,32 @@ def getSeqRunName(wildcards):
                 sample = lineSplit[1].strip()
                 seqRun = lineSplit[3].strip()
                 if sample in sampleMap.keys():
-                    raise ValueError("Sample '%s' is not unique in the sample map!" %(wildcards.sample))
+                    raise ValueError(
+                        "Sample '%s' is not unique in the sample map!"
+                        % (wildcards.sample)
+                    )
                 if seqRun == ".":
-                    raise ValueError("Sample '%s' does not contain a sequencing run name in the sample map!" %(wildcards.sample))
+                    raise ValueError(
+                        "Sample '%s' does not contain a sequencing run name in the sample map!"
+                        % (wildcards.sample)
+                    )
                 sampleMap[sample] = seqRun
 
     if wildcards.sample not in sampleMap.keys():
-        raise ValueError("Sample '%s' not found in the sample map!" %(wildcards.sample))
+        raise ValueError(
+            "Sample '%s' not found in the sample map!" % (wildcards.sample)
+        )
     return sampleMap[wildcards.sample]
+
 
 # Retrieve the ADT feature reference file corresponding to a given sample set
 def getFeatRefFile(wildcards):
-    if not 'SAMPLEMAPPING' in globals():
-        return ['NOMAPPINGFILE']
+    if not "SAMPLEMAPPING" in globals():
+        return ["NOMAPPINGFILE"]
     try:
         open(SAMPLEMAPPING, "r")
     except IOError:
-        return ['NOMAPPINGFILE']
+        return ["NOMAPPINGFILE"]
     sampleMap = dict()
     with open(SAMPLEMAPPING, "r") as f:
         for line in f:
@@ -348,11 +427,19 @@ def getFeatRefFile(wildcards):
                 sample = lineSplit[1].strip()
                 featFile = lineSplit[5].strip()
                 if sample in sampleMap.keys():
-                    raise ValueError("Sample '%s' is not unique in the sample map!" %(wildcards.sample))
+                    raise ValueError(
+                        "Sample '%s' is not unique in the sample map!"
+                        % (wildcards.sample)
+                    )
                 if featFile == ".":
-                    raise ValueError("Sample '%s' does not contain a feature reference file in the sample map!" %(wildcards.sample))
+                    raise ValueError(
+                        "Sample '%s' does not contain a feature reference file in the sample map!"
+                        % (wildcards.sample)
+                    )
                 sampleMap[sample] = featFile
 
     if wildcards.sample not in sampleMap.keys():
-        raise ValueError("Sample '%s' not found in the sample map!" %(wildcards.sample))
+        raise ValueError(
+            "Sample '%s' not found in the sample map!" % (wildcards.sample)
+        )
     return sampleMap[wildcards.sample]

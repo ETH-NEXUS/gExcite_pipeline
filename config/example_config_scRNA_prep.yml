@@ -1,13 +1,17 @@
-
 inputOutput:
   input_fastqs_gex: /path/to/fastqs_gex/
   input_fastqs_adt: /path/to/fastqs_adt/
+  # Root directory where preprocessing analysis output will be placed.
   analysis_root_dir: /path/to/rootdir
   analysis_temp_dir: /path/to/tmp
+  # sample map with information on the samples of this analysis
+  # see the general README for the required format
   sample_map: /path/to/samplemap
-  malignant_cell_type: melanoma
+
+
 resources:
   reference_transcriptome: /cluster/project/nexus/utilities/databases/singlecell/10xGenomics/gene_expression_3_0_2/refdata-cellranger-GRCh38-3.0.0
+
 tools:
   generate_library_adt:
     scratch: '2000'
