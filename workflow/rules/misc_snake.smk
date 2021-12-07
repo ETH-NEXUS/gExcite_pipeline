@@ -5,6 +5,8 @@ import copy
 
 fail_instantly = False
 
+###### Config file and sample sheets #####
+configfile: "config/config.yaml"
 
 class Error(object):
     def __init__(self, key, name):

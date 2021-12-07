@@ -6,7 +6,7 @@ report: "../report/workflow.rst"
 
 
 # This function adapts the config object to include full path information
-include: "misc_snake.py"
+include: "misc_snake.smk"
 
 
 # input files and folders
