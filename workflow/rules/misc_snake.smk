@@ -61,29 +61,6 @@ class Config(object):
 
 config = Config(config)
 
-
-def getSampleNames():
-    output = (
-        []
-    )  # [samplename.replace(FASTQDIR,'').replace('/','')for samplename in glob.glob(FASTQDIR + '*/')]
-    if output == []:
-        if not "SAMPLEMAPPING" in globals():
-            return ["NOMAPPINGFILE"]
-        try:
-            open(SAMPLEMAPPING, "r")
-        except IOError:
-            return ["NOMAPPINGFILE"]
-        sampleMap = dict()
-        with open(SAMPLEMAPPING, "r") as f:
-            for line in f:
-                if line.strip() != "":
-                    lineSplit = line.strip().split()
-                    sample = lineSplit[1]
-                    if not (sample in output):
-                        output.append(sample)
-    return output
-
-
 # Retrieve hashed samples from the sample map of a given experiment
 def getHashedSampleNames():
     output = (
@@ -113,6 +90,110 @@ def getHashedSampleNames():
                     if os.path.isfile(status):
                         if not (sample in output):
                             output.append(sample)
+    print(output)
+    return output
+
+
+# Require all final files, from both hashed and non-hashed samples (if any)
+def getInputFiles(wildcards):
+    allFiles = []
+
+    # Cellranger output for hashed samples (in preprocessing folder)
+    cr_hashed_gex = expand(
+        "results/pooled_sample/cellranger_gex/{sample}.features.tsv", sample=getHashedSampleNames()
+    )
+    cr_hashed_adt = expand(
+        "results/pooled_sample/cellranger_adt/{sample}.features.tsv", sample=getHashedSampleNames()
+    )
+
+#    # Cellranger output for non-hashed samples (also in preprocessing folder)
+#    cr_nonhashed_gex = expand(
+#        "results/cellranger_gex/{sample}.features.tsv", sample=getNonHashedSampleNames()
+#    )
+#    cr_nonhashed_adt = expand(
+#        "results/cellranger_adt/{sample}.features.tsv", sample=getNonHashedSampleNames()
+#    )
+
+    # Hashing framework: symlinks to cellranger output (in pooled sample folders)
+    root_hashed_gex = expand(
+        "results/pooled_sample/cellranger_gex/{sample}.features.tsv",
+        sample=getHashedSampleNames(),
+    )
+    root_hashed_adt = expand(
+        "results/pooled_sample/cellranger_adt/{sample}.features.tsv",
+        sample=getHashedSampleNames(),
+    )
+    # Citeseq output ( in pooled analysis folder)
+    citeseq = expand(
+        "results/pooled_sample/citeseq_count/{sample}.run_report.yaml",
+        sample=getHashedSampleNames(),
+    )
+    # Hashing output ( in pooled analysis folder)
+    hashing = expand(
+        "results/pooled_sample/hashing_analysis/{sample}.complete_hashing.txt",
+        sample=getHashedSampleNames(),
+    )
+
+    # Non-hashing framework: symlinks to analysis output (in single-sample folder, no pooled)
+#    root_nonhashed_gex = expand(
+#        ROOTDIR
+#        + "{sample}/analysis_{sample}/analysis/cellranger_run_gex/{sample}.features.tsv",
+#        sample=getNonHashedSampleNames(),
+#    )
+#    root_nonhashed_adt = expand(
+#        ROOTDIR
+#        + "{sample}/analysis_{sample}/analysis/cellranger_run_adt/{sample}.features.tsv",
+#        sample=getNonHashedSampleNames(),
+#    )
+
+    # Add all strings to list of required files. Empty will be skipped
+    # Cellranger results
+    for f in cr_hashed_gex:
+        allFiles.append(f)
+    for f in cr_hashed_adt:
+        allFiles.append(f)
+#    for f in cr_nonhashed_gex:
+#        allFiles.append(f)
+#    for f in cr_nonhashed_adt:
+#        allFiles.append(f)
+    # Symlinks to analysis folder
+    for f in root_hashed_gex:
+        allFiles.append(f)
+    for f in root_hashed_adt:
+        allFiles.append(f)
+#    for f in root_nonhashed_gex:
+#        allFiles.append(f)
+#    for f in root_nonhashed_adt:
+#        allFiles.append(f)
+    # Citeseq
+    for f in citeseq:
+        allFiles.append(f)
+    # Hashing
+    for f in hashing:
+        allFiles.append(f)
+    print(allFiles)
+    return allFiles
+
+
+def getSampleNames():
+    output = (
+        []
+    )  # [samplename.replace(FASTQDIR,'').replace('/','')for samplename in glob.glob(FASTQDIR + '*/')]
+    if output == []:
+        if not "SAMPLEMAPPING" in globals():
+            return ["NOMAPPINGFILE"]
+        try:
+            open(SAMPLEMAPPING, "r")
+        except IOError:
+            return ["NOMAPPINGFILE"]
+        sampleMap = dict()
+        with open(SAMPLEMAPPING, "r") as f:
+            for line in f:
+                if line.strip() != "":
+                    lineSplit = line.strip().split()
+                    sample = lineSplit[1]
+                    if not (sample in output):
+                        output.append(sample)
     return output
 
 
@@ -288,39 +369,6 @@ def getPairedFastqFilesWithoutR(SAMPLENAMES):
 
 # return [file.replace(FASTQDIR, '').replace('_R1.fastq.gz','')for file in glob.glob(FASTQDIR + '*/PAIREDEND/*_R1.fastq.gz')]
 # return [file.replace(FASTQDIR, '').replace('_R1.fastq','')for file in glob.glob(FASTQDIR + '*/PAIREDEND/*_R1.fastq')]
-
-## Deprecated
-# def getNormalTumorFiles():
-#     if not 'SAMPLEMAPPING' in globals():
-#         return ['NOMAPPINGFILE']
-#     try:
-#         open(SAMPLEMAPPING, "r")
-#     except IOError:
-#         return ['NOMAPPINGFILE']
-#     output = []
-#     sampleMap = dict()
-#     with open(SAMPLEMAPPING, "r") as f:
-#         for line in f:
-#             if line.strip() != "":
-#                 lineSplit = line.strip().split()
-#                 exp = lineSplit[0]
-#                 sample = lineSplit[1]
-#                 sampleType = lineSplit[2]
-#                 tpoint = lineSplit[3]
-#                 if exp not in sampleMap.keys():
-#                     sampleMap[exp] = dict()
-#                 if tpoint not in sampleMap[exp].keys():
-#                     sampleMap[exp][tpoint] = dict()
-#                 if sampleType not in sampleMap[exp][tpoint].keys():
-#                     sampleMap[exp][tpoint][sampleType] = []
-#                 sampleMap[exp][tpoint][sampleType].append(sample)
-#     for expKey, expValue in sampleMap.items():
-#         for tpointKey, tpointValue in expValue.items():
-#             if 'T' in tpointValue and 'N' in tpointValue:
-#                 for sampleTumor in tpointValue['T']:
-#                     for sampleNormal in tpointValue['N']:
-#                         output.append(sampleTumor + '_vs_' + sampleNormal)
-#     return output
 
 # Retrieve the number of target cells corresponding to a given sample set (both GEX and ADT)
 def getTargetCells(wildcards):
