@@ -1,122 +1,59 @@
 inputOutput:
-  input_fastqs_gex: /path/to/fastqs_gex/
-  input_fastqs_adt: /path/to/fastqs_adt/
-  # Root directory where preprocessing analysis output will be placed.
-  analysis_root_dir: /path/to/rootdir
-  analysis_temp_dir: /path/to/tmp
-  # sample map with information on the samples of this analysis
-  # see the general README for the required format
-  sample_map: /path/to/samplemap
-
-
+  input_fastqs_gex: >-
+    /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/fastqs_GEX/
+  input_fastqs_adt: >-
+    /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/fastqs_ADT/
+  analysis_root_dir: >-
+    /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/scGATE_workflow/results/
+  analysis_temp_dir: >-
+    /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/scGATE_workflow/tmp/
+  sample_map: >-
+    /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/scGATE_workflow/config/samplemap
 resources:
-  reference_transcriptome: /cluster/project/nexus/utilities/databases/singlecell/10xGenomics/gene_expression_3_0_2/refdata-cellranger-GRCh38-3.0.0
-
+  reference_transcriptome: >-
+    /cluster/work/nexus/utilities/databases/singlecell/10xGenomics/gene_expression_3_0_2/refdata-cellranger-GRCh38-3.0.0
 tools:
   generate_library_adt:
-    scratch: '2000'
-    mem: '200'
-    time: '200'
+    mem: 200
+    time: 200
     threads: 1
   cellranger_count_gex:
-    call: cellranger
+    call: /cluster/work/nexus/utilities/sharedPrograms/cellranger/cellranger-6.1.1/bin/cellranger
     local_cores: 24
-    scratch: '20000'
-    mem: '6000'
-    time: '1440'
+    mem: 6000
+    time: 1440
     threads: 24
-    variousParams: ''
+    variousParams: '--chemistry SC5P-R2'
   cellranger_count_adt:
-    call: cellranger
+    call: >-
+      /cluster/work/nexus/utilities/sharedPrograms/cellranger/cellranger-6.1.1/bin/cellranger
     local_cores: 24
-    scratch: '20000'
-    mem: '6000'
-    time: '1440'
+    mem: 6000
+    time: 1440
     threads: 24
-    variousParams: ''
-  cellranger_count_novaSeq_gex:
-    call: cellranger
-    local_cores: 24
-    scratch: '20000'
-    mem: '6000'
-    time: '1440'
-    threads: 24
-    variousParams: ''
-  cellranger_count_novaSeq_adt:
-    call: cellranger
-    local_cores: 24
-    scratch: '20000'
-    mem: '6000'
-    time: '1440'
-    threads: 24
-    variousParams: ''
-  remove_index_hopping_gex:
-    call: Rscript /cluster/project/nexus/franzi/nexusGit/singlecell_analysis/scripts/clean_and_filter_swapped.R
-    scratch: '20000'
-    mem: '20000'
-    time: '1440'
-    fdr_thres: 0.01
-    libsize_thres: 500
-    threads: 24
-  remove_index_hopping_adt:
-    call: Rscript /cluster/project/nexus/franzi/nexusGit/singlecell_analysis/scripts/clean_and_filter_swapped.R
-    scratch: '20000'
-    mem: '20000'
-    time: '1440'
-    fdr_thres: 0.01
-    libsize_thres: 500
-    threads: 24
-  prepare_indexHopping_files:
-    scratch: '2000'
-    mem: '200'
-    time: '200'
-    threads: 1
-  add_gene_names_gex:
-    call: Rscript /cluster/project/nexus/franzi/nexusGit/singlecell_analysis/scripts/map_geneSymbols_indexHopping.R
-    scratch: '2000'
-    mem: '8000'
-    time: '400'
-    threads: 4
-  clean_features_adt:
-    call: Rscript /cluster/project/nexus/franzi/nexusGit/singlecell_analysis/scripts/clean_adt_features_indexHopping.R
-    scratch: '2000'
-    mem: '8000'
-    time: '400'
-    threads: 4
-  clean_barcodes_adt:
-    call: Rscript /cluster/project/nexus/franzi/nexusGit/singlecell_analysis/scripts/clean_adt_barcodes_indexHopping.R
-    scratch: '2000'
-    mem: '8000'
-    time: '400'
-    barcodes_length: 16
-    threads: 4
-  create_symlink:
-    scratch: '2000'
-    mem: '200'
-    time: '200'
-    threads: 1
+    variousParams: '--chemistry SC5P-R2'
   create_tag_file:
-    scratch: '2000'
-    mem: '400'
-    time: '200'
+    mem: 400
+    time: 200
     threads: 1
   run_citeseq_count:
-    call: CITE-seq-Count
+    call: '/cluster/customapps/nexus/single-cell/CITE-seq-Count_1.4.5/bin/CITE-seq-Count'
     variousParams: '-cbf 1 -cbl 16 -umif 17 -umil 26 --start-trim 10 '
-    scratch: '2000'
-    mem: '8000'
-    time: '320'
+    mem: 8000
+    time: 320
     threads: 12
+  create_symlink:
+    mem: 200
+    time: 200
+    threads: 1
   analyse_hashing:
-    call: Rscript /path/to/scripts/analyseHashing.R
+    call: Rscript workflow/scripts/analyseHashing.R
     quantileThreshold: '0.99'
     normalisation: '1,2'
     normalisation_downstream: '1'
     save_negatives: 'TRUE'
-    scratch: '2000'
-    mem: '20000'
-    time: '320'
+    mem: 20000
+    time: 320
     threads: 8
   link_filter_cellranger:
     call: Rscript /path/to/scripts/link_preprocessing_and_singlecell_pipeline.R
-
