@@ -1,2 +1,5 @@
 results
 logs
+.lintr
+.snakemake
+workflow/.snakemake
