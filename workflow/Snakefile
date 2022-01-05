@@ -6,135 +6,37 @@ report: "../report/workflow.rst"
 
 
 # This function adapts the config object to include full path information
-include: "misc_snake.smk"
+include: "rules/misc_snake.smk"
 
 
 # input files and folders
-SAMPLEMAPPING = config["inputOutput"]["sample_map"]
-INPUTDIR_GEX = config["inputOutput"]["input_fastqs_gex"]
-INPUTDIR_ADT = config["inputOutput"]["input_fastqs_adt"]
-ROOTDIR = config["inputOutput"]["analysis_root_dir"]
 TMPDIR = config["inputOutput"]["analysis_temp_dir"]
+SAMPLEMAPPING = config["inputOutput"]["sample_map"]
 
 # Check if the uses specified the proper input and output directories
-if not "INPUTDIR_GEX" in globals():
-    print("You have to specify the root directory of the GEX fastq files!")
-    sys.exit(1)
-if not "INPUTDIR_ADT" in globals():
-    print("You have to specify the root directory of the ADT fastq files!")
-    sys.exit(1)
-if not "ROOTDIR" in globals():
-    print(
-        "You have to specify the master root directory where the analysis results will be placed!"
-    )
-    sys.exit(1)
 if not "TMPDIR" in globals():
     print(
         "You have to specify the root directory where temporary files will be stored!"
     )
     sys.exit(1)
 
-## Create a default outdir for the preprocessing output
-OUTDIR = ROOTDIR + "preprocessing/"
-
-
-# This is the default order in which the programs are executed
-# Note: currently this is the default also specified in the rule files, so currently this is only for explanatory reasons displayed here
-
-# GEX and ADT are preprocessed separately, so their outputs and inputs need to be separated
-CELLRANGER_GEX_IN = INPUTDIR_GEX
-CELLRANGER_GEX_OUT = OUTDIR + "cellranger_run_gex/"
-CELLRANGER_ADT_IN = INPUTDIR_ADT
-CELLRANGER_ADT_OUT = OUTDIR + "cellranger_run_adt/"
-
 
 ## Include the rules
-include: "../rules/gex_cellranger.py"
-include: "../rules/adt_cellranger.py"
-include: "../rules/adt_hashing.py"
+include: "rules/gex_cellranger.smk"
+include: "rules/adt_cellranger.smk"
+include: "rules/adt_hashing.smk"
 
 
-# Require all final files, from both hashed and non-hashed samples (if any)
-def getInputFiles(wildcards):
-    allFiles = []
+## Include Scampi as Module
+# https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA
+# module scampi_sc:
+#    snakefile:
+#        "../../../../git/scAmpi_single_cell_RNA/snake/snake_scAmpi_basic_master.snake"
+#    config:
+#        config["scampi"]
 
-    # Cellranger output for hashed samples (in preprocessing folder)
-    cr_hashed_gex = expand(
-        CELLRANGER_GEX_OUT + "{sample}.features.tsv", sample=getHashedSampleNames()
-    )
-    cr_hashed_adt = expand(
-        CELLRANGER_ADT_OUT + "{sample}.features.tsv", sample=getHashedSampleNames()
-    )
 
-    # Cellranger output for non-hashed samples (also in preprocessing folder)
-    cr_nonhashed_gex = expand(
-        CELLRANGER_GEX_OUT + "{sample}.features.tsv", sample=getNonHashedSampleNames()
-    )
-    cr_nonhashed_adt = expand(
-        CELLRANGER_ADT_OUT + "{sample}.features.tsv", sample=getNonHashedSampleNames()
-    )
-
-    # Hashing framework: symlinks to cellranger output (in pooled sample folders)
-    root_hashed_gex = expand(
-        ROOTDIR + "{sample}/analysis_pooledSample/cellranger_gex/{sample}.features.tsv",
-        sample=getHashedSampleNames(),
-    )
-    root_hashed_adt = expand(
-        ROOTDIR + "{sample}/analysis_pooledSample/cellranger_adt/{sample}.features.tsv",
-        sample=getHashedSampleNames(),
-    )
-    # Citeseq output ( in pooled analysis folder)
-    citeseq = expand(
-        ROOTDIR
-        + "{sample}/analysis_pooledSample/citeseq_count/{sample}.run_report.yaml",
-        sample=getHashedSampleNames(),
-    )
-    # Hashing output ( in pooled analysis folder)
-    hashing = expand(
-        ROOTDIR
-        + "{sample}/analysis_pooledSample/hashing_analysis/{sample}.complete_hashing.txt",
-        sample=getHashedSampleNames(),
-    )
-
-    # Non-hashing framework: symlinks to analysis output (in single-sample folder, no pooled)
-    root_nonhashed_gex = expand(
-        ROOTDIR
-        + "{sample}/analysis_{sample}/analysis/cellranger_run_gex/{sample}.features.tsv",
-        sample=getNonHashedSampleNames(),
-    )
-    root_nonhashed_adt = expand(
-        ROOTDIR
-        + "{sample}/analysis_{sample}/analysis/cellranger_run_adt/{sample}.features.tsv",
-        sample=getNonHashedSampleNames(),
-    )
-
-    # Add all strings to list of required files. Empty will be skipped
-    # Cellranger results
-    for f in cr_hashed_gex:
-        allFiles.append(f)
-    for f in cr_hashed_adt:
-        allFiles.append(f)
-    for f in cr_nonhashed_gex:
-        allFiles.append(f)
-    for f in cr_nonhashed_adt:
-        allFiles.append(f)
-    # Symlinks to analysis folder
-    for f in root_hashed_gex:
-        allFiles.append(f)
-    for f in root_hashed_adt:
-        allFiles.append(f)
-    for f in root_nonhashed_gex:
-        allFiles.append(f)
-    for f in root_nonhashed_adt:
-        allFiles.append(f)
-    # Citeseq
-    for f in citeseq:
-        allFiles.append(f)
-    # Hashing
-    for f in hashing:
-        allFiles.append(f)
-
-    return allFiles
+# use rule * from scampi_sc as scampi_*
 
 
 # This rule defines which files should be created
@@ -146,17 +48,15 @@ rule scPreprocessing_gex_adt:
     input:
         inputFiles=getInputFiles,
     output:
-        OUTDIR + "complete_sc_preprocessing_gex_adt.txt",
+        "results/complete_sc_preprocessing_gex_adt.txt",
     params:
-        lsfoutfile=OUTDIR + "complete_sc_preprocessing_gex_adt.lsfout.log",
-        lsferrfile=OUTDIR + "complete_sc_preprocessing_gex_adt.lsferr.log",
-        mem="1000",
-        scratch="1000",
-        time="1",
         filter_cellranger=config["tools"]["link_filter_cellranger"]["call"],
-        samplemapFile=SAMPLEMAPPING,
-        rootdir=ROOTDIR,
+        samplemapFile=config["inputOutput"]["sample_map"],
+        rootdir="results/",
+    resources:
+        mem_mb=1000,
+        time=1
     benchmark:
-        OUTDIR + "complete_sc_preprocessing_gex_adt.txt.benchmark"
+        "results/complete_sc_preprocessing_gex_adt.txt.benchmark"
     shell:
         "{params.filter_cellranger} --sampleMap {params.samplemapFile} --rootdir {params.rootdir} --technology ADT,GEX && date > {output}"

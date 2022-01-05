@@ -18,17 +18,17 @@ rule cellranger_count_gex:
         local_cores=config["tools"]["cellranger_count_gex"]["local_cores"],
         variousParams=config["tools"]["cellranger_count_gex"]["variousParams"],
         targetCells=getTargetCellsCellranger,
+        metrics_summary = "results/pooled_sample/{sample}.metrics_summary.csv",
+        web_summary = "results/pooled_sample/{sample}.web_summary.html",
+	mySample = '{sample}' 
     threads: config["tools"]["cellranger_count_gex"]["threads"]
     resources:
-        lsfoutfile="results/pooled_sample/cellranger_gex/{sample}.cellranger_count_gex.lsfout.log",
-        lsferrfile="results/pooled_sample/cellranger_gex/{sample}.cellranger_count_gex.lsferr.log",
-        scratch=config["tools"]["cellranger_count_gex"]["scratch"],
-        mem=config["tools"]["cellranger_count_gex"]["mem"],
-        time=config["tools"]["cellranger_count_gex"]["time"],
+        mem_mb=config["tools"]["cellranger_count_gex"]["mem"],
+        time_min=config["tools"]["cellranger_count_gex"]["time"]
     benchmark:
         "results/pooled_sample/cellranger_gex/{sample}.cellranger_count_gex.benchmark"
     # NOTE: cellranger count function cannot specify the output directory, the output it the path you call it from.
     # Therefore, a subshell is used here.
     # Also, unzip and symlink output files in preparation for downstream steps
     shell:
-        '(cd {params.cr_out}; {config[tools][cellranger_count_gex][call]} count --id={wildcards.sample} --transcriptome={input.reference} --localcores={params.local_cores} --fastqs={input.fastqs_dir} --nosecondary {params.variousParams} {params.targetCells}) ; gunzip {params.cr_out}{wildcards.sample}/outs/filtered_feature_bc_matrix/features.tsv.gz ; gunzip {params.cr_out}{wildcards.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz ; gunzip {params.cr_out}{wildcards.sample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz ; ln -s "{params.cr_out}{wildcards.sample}/outs/filtered_feature_bc_matrix/features.tsv" "{output.features_file}" ; ln -s "{params.cr_out}{wildcards.sample}/outs/filtered_feature_bc_matrix/matrix.mtx" "{output.matrix_file}" ; ln -s "{params.cr_out}{wildcards.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv" "{output.barcodes_file}" ; ln -s "{params.cr_out}{wildcards.sample}/outs/web_summary.html" "{output.web_file}" ; ln -s "{params.cr_out}{wildcards.sample}/outs/metrics_summary.csv" "{output.metrics_file}"'
+         '(cd {params.cr_out}; {config[tools][cellranger_count_gex][call]} count --id={params.mySample} --sample={params.mySample} --transcriptome={input.reference} --localcores={params.local_cores} --fastqs={input.fastqs_dir} --nosecondary {params.variousParams}); gunzip {params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/features.tsv.gz ; gunzip {params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz ; gunzip {params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz ; ln -s "{params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/features.tsv" "{output.features_file}"; ln -s "{params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/matrix.mtx" "{output.matrix_file}"; ln -s "{params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/barcodes.tsv" "{output.barcodes_file}" ; ln -s "{params.cr_out}{params.mySample}/outs/web_summary.html" "{params.web_summary}" ; ln -s "{params.cr_out}{params.mySample}/outs/metrics_summary.csv" "{params.metrics_summary}"'

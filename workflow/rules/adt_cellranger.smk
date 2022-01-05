@@ -1,7 +1,10 @@
 # Rules required for the basic cellranger run of sc ADT data
 # Lourdes Rosano, January 2020
 
+import os
 
+WORKDIR=os.getcwd()
+print(WORKDIR)
 
 # Preprocessing to generate library file for ADT cellranger from the provided input parameters
 # Library file has a fixed format: fastqs,sample,library_type (with header)
@@ -14,11 +17,8 @@ rule generate_library_adt:
         seqRunName=getSeqRunName,
     threads: config["tools"]["generate_library_adt"]["threads"]
     resources: 
-        scratch=config["tools"]["generate_library_adt"]["scratch"],
-        mem=config["tools"]["generate_library_adt"]["mem"],
-        time=config["tools"]["generate_library_adt"]["time"],
-        lsfoutfile="results/pooled_sample/cellranger_adt/{sample}.generate_library_adt.lsfout.log",
-        lsferrfile="results/pooled_sample/cellranger_adt/{sample}.generate_library_adt.lsferr.log"
+        mem_mb=config["tools"]["generate_library_adt"]["mem"],
+        time_min=config["tools"]["generate_library_adt"]["time"]
     benchmark:
         "results/pooled_sample/cellranger_adt/{sample}.generate_library_adt.benchmark"
     shell:
@@ -28,7 +28,7 @@ rule generate_library_adt:
 # Cellranger call to process the raw ADT samples
 rule cellranger_count_adt:
     input:
-        library="results/pooled_sample/cellranger_adt/{sample}.adt_library.txt",
+        library=WORKDIR + "/results/pooled_sample/cellranger_adt/{sample}.adt_library.txt",
         reference=config["resources"]["reference_transcriptome"],
         features_ref=getFeatRefFile,
     output:
@@ -54,11 +54,8 @@ rule cellranger_count_adt:
         targetCells=getTargetCellsCellranger,
     threads: config["tools"]["cellranger_count_adt"]["threads"]
     resources:
-        lsfoutfile="results/pooled_sample/cellranger_adt/{sample}.cellranger_count_adt.lsfout.log",
-        lsferrfile="results/pooled_sample/cellranger_adt/{sample}.cellranger_count_adt.lsferr.log",
-        scratch=config["tools"]["cellranger_count_adt"]["scratch"],
-        mem=config["tools"]["cellranger_count_adt"]["mem"],
-        time=config["tools"]["cellranger_count_adt"]["time"],
+        mem_mb=config["tools"]["cellranger_count_adt"]["mem"],
+        time_min=config["tools"]["cellranger_count_adt"]["time"]
     benchmark:
         "results/pooled_sample/cellranger_adt/{sample}.cellranger_count_adt.benchmark"
     # NOTE: cellranger count function cannot specify the output directory, the output it the path you call it from.

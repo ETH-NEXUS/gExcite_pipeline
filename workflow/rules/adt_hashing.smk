@@ -22,11 +22,8 @@ rule createTagFile:
     threads:
         config['tools']['create_tag_file']['threads']
     resources:
-        lsfoutfile = 'results/pooled_sample/citeseq_count/{sample}.create_tag_file.lsfout.log',
-        lsferrfile = 'results/pooled_sample/citeseq_count/{sample}.create_tag_file.lsferr.log',
-        scratch = config['tools']['create_tag_file']['scratch'],
-        mem = config['tools']['create_tag_file']['mem'],
-        time = config['tools']['create_tag_file']['time']
+        mem_mb = config['tools']['create_tag_file']['mem'],
+        time_min = config['tools']['create_tag_file']['time']
     benchmark:
         'results/pooled_sample/citeseq_count/{sample}.create_tag_file.benchmark'
     run:
@@ -48,15 +45,13 @@ rule run_citeseq_count:
     output:
         run_report = report("results/pooled_sample/citeseq_count/{sample}.run_report.yaml", caption="workflow/report/citeseq.rst", category="preprocessing QC")
     params:
-        lsfoutfile = 'results/pooled_sample/citeseq_count/{sample}.run_citeseq_count.lsfout.log',
-        lsferrfile = 'results/pooled_sample/citeseq_count/{sample}.run_citeseq_count.lsferr.log',
-        scratch = config['tools']['run_citeseq_count']['scratch'],
-        mem = config['tools']['run_citeseq_count']['mem'],
-        time = config['tools']['run_citeseq_count']['time'],
         outdir = 'results/pooled_sample/citeseq_count/',
         outfile = 'results/pooled_sample/citeseq_count/run_report.yaml',
         variousParams = config['tools']['run_citeseq_count']['variousParams'],
         targetCells = getTargetCellsCiteseqCount,
+    resources:
+        mem_mb = config['tools']['run_citeseq_count']['mem'],
+        time_min = config['tools']['run_citeseq_count']['time']
     threads:
         config['tools']['run_citeseq_count']['threads']
     benchmark:
@@ -64,7 +59,7 @@ rule run_citeseq_count:
     run:
         R1=",".join(input.R1)
         R2=",".join(input.R2)
-        shell("{config['tools']['run_citeseq_count']['call']} -R1 {R1} -R2 {R2} {params.variousParams} -o {params.outdir} {params.targetCells} -T {threads} -t {input.tags}; ln -fs {params.outfile} {output.run_report}")
+        shell("{config[tools][run_citeseq_count][call]} -R1 {R1} -R2 {R2} {params.variousParams} -o {params.outdir} {params.targetCells} -T {threads} -t {input.tags}; ln -fs {params.outfile} {output.run_report}")
 
 # Hashing Analysis Script requires the zipped cellranger files as input.
 # Input: Cellranger output files
@@ -82,11 +77,8 @@ rule create_symlink_hashing_input:
     params:
         root_out = 'results/pooled_sample/cellranger_adt/{sample}_zipped_files/'
     resources:
-        lsfoutfile = 'results/pooled_sample/cellranger_adt/{sample}.create_symlink_adt.lsfout.log',
-        lsferrfile = 'results/pooled_sample/cellranger_adt/{sample}.create_symlink_adt.lsferr.log',
-        scratch = config['tools']['create_symlink']['scratch'],
-        mem = config['tools']['create_symlink']['mem'],
-        time = config['tools']['create_symlink']['time']
+        mem_mb = config['tools']['create_symlink']['mem'],
+        time_min = config['tools']['create_symlink']['time']
     threads:
         config['tools']['create_symlink']['threads']
     benchmark:
@@ -108,6 +100,8 @@ rule analyse_hashing:
         tags = getTagFileHashedSamples
     output:
         successFile = 'results/pooled_sample/hashing_analysis/{sample}.complete_hashing.txt'
+    conda:
+        "../envs/analyse_hashing.yaml"
     params:
         adt_folder = 'results/pooled_sample/cellranger_adt/{sample}_zipped_files/',
         output_prefix = 'results/pooled_sample/hashing_analysis/{sample}',
@@ -117,17 +111,14 @@ rule analyse_hashing:
         save_negatives = config['tools']['analyse_hashing']['save_negatives'],
         citeseq_folder = 'results/pooled_sample/citeseq_count/umi_count/'
     resources:
-        lsfoutfile = 'results/pooled_sample/hashing_analysis/{sample}.analyse_hashing.lsfout.log',
-        lsferrfile = 'results/pooled_sample/hashing_analysis/{sample}.analyse_hashing.lsferr.log',
-        scratch = config['tools']['analyse_hashing']['scratch'],
-        mem = config['tools']['analyse_hashing']['mem'],
-        time = config['tools']['analyse_hashing']['time']
+        mem_mb = config['tools']['analyse_hashing']['mem'],
+        time_min = config['tools']['analyse_hashing']['time']
     threads:
         config['tools']['analyse_hashing']['threads']
     benchmark:
         'results/pooled_sample/hashing_analysis/{sample}.analyse_hashing.benchmark'
     shell:
-        '{config["tools"]["analyse_hashing"]["call"]} ' +
+        '{config[tools][analyse_hashing][call]} ' +
         '--citeseq_in {params.citeseq_folder} ' +
         '--adt_barcodes_in {params.adt_folder} ' +
         '--quantile_threshold {params.quantileThreshold} ' +
