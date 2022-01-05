@@ -1,5 +1,7 @@
 import os, glob, sys, datetime
 
+# Include Config file
+configfile: "config/config.yaml"
 
 # Include report functionality
 report: "../report/workflow.rst"
