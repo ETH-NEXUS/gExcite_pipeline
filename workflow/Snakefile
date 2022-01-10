@@ -29,18 +29,6 @@ include: "rules/adt_cellranger.smk"
 include: "rules/adt_hashing.smk"
 
 
-## Include Scampi as Module
-# https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA
-# module scampi_sc:
-#    snakefile:
-#        "../../../../git/scAmpi_single_cell_RNA/snake/snake_scAmpi_basic_master.snake"
-#    config:
-#        config["scampi"]
-
-
-# use rule * from scampi_sc as scampi_*
-
-
 # This rule defines which files should be created
 localrules:
     scPreprocessing_gex_adt,
@@ -61,4 +49,4 @@ rule scPreprocessing_gex_adt:
     benchmark:
         "results/complete_sc_preprocessing_gex_adt.txt.benchmark"
     shell:
-        "{params.filter_cellranger} --sampleMap {params.samplemapFile} --rootdir {params.rootdir} --technology ADT,GEX && date > {output}"
+        "{params.filter_cellranger} --sampleMap {params.samplemapFile} --rootdir {params.rootdir} --technology ADT,GEX && date > {output} "
