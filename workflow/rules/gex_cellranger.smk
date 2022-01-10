@@ -1,8 +1,8 @@
 # Cellranger call to process the raw GEX samples
 rule cellranger_count_gex:
     input:
-        fastqs_dir=config["inputOutput"]["input_fastqs_adt"] + "{sample}/",
-        reference=config["resources"]["reference_transcriptome"],
+        fastqs_dir=config["inputOutput"]["input_fastqs_gex"] + "{sample}/",
+        reference=config["resources"]["reference_transcriptome"]
     output:
         features_file="results/pooled_sample/cellranger_gex/{sample}.features.tsv",
         matrix_file="results/pooled_sample/cellranger_gex/{sample}.matrix.mtx",
