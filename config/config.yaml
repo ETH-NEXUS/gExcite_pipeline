@@ -1,14 +1,9 @@
 inputOutput:
-  input_fastqs_gex: >-
-    /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/fastqs_GEX/
-  input_fastqs_adt: >-
-    /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/fastqs_ADT/
-  analysis_root_dir: >-
-    /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/scGATE_workflow/results/
-  analysis_temp_dir: >-
-    /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/scGATE_workflow/tmp/
-  sample_map: >-
-    /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/scGATE_workflow/config/samplemap
+  input_fastqs_gex: /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/fastqs_GEX/
+  input_fastqs_adt: /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/fastqs_ADT/
+  analysis_root_dir: /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/scGATE_workflow/results/
+  analysis_temp_dir: /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/scGATE_workflow/tmp/
+  sample_map: /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/scGATE_workflow/config/samplemap
 resources:
   reference_transcriptome: >-
     /cluster/work/nexus/utilities/databases/singlecell/10xGenomics/gene_expression_3_0_2/refdata-cellranger-GRCh38-3.0.0
@@ -40,7 +35,7 @@ tools:
     call: '/cluster/customapps/nexus/single-cell/CITE-seq-Count_1.4.5/bin/CITE-seq-Count'
     variousParams: '-cbf 1 -cbl 16 -umif 17 -umil 26 --start-trim 10 '
     mem: 8000
-    time: 320
+    time: 1000
     threads: 12
   create_symlink:
     mem: 200
