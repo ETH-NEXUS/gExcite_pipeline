@@ -17,7 +17,7 @@ tools:
     local_cores: 24
     mem: 6000
     time: 1440
-    threads: 24
+    threads: 8
     variousParams: '--chemistry SC5P-R2'
   cellranger_count_adt:
     call: >-
@@ -25,7 +25,7 @@ tools:
     local_cores: 24
     mem: 6000
     time: 1440
-    threads: 24
+    threads: 8
     variousParams: '--chemistry SC5P-R2'
   create_tag_file:
     mem: 400
@@ -42,7 +42,6 @@ tools:
     time: 200
     threads: 1
   analyse_hashing:
-    call: Rscript workflow/scripts/analyseHashing.R
     quantileThreshold: '0.99'
     normalisation: '1,2'
     normalisation_downstream: '1'
