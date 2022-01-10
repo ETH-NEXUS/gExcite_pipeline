@@ -25,7 +25,7 @@ In general, if NovaSeq Data is analysed use the --use-conda variable to allow sn
 In case of combined GEX and ADT data the following snake file should be used [snake_prep_gex_adt_master.snake](snake_master/snake_prep_gex_adt_master.snake). (Exception NovaSeq Data: see below) If your data has been hashed, adapt the [samplemap](#samplemap)  to contain a link to the [Hashing Info File](#hashing-info-file).
 
 **IndexHopping removal**  
-In case of combined GEX and ADT NovaSeq data scripts are provided to clean up the data before a run. Please consult the Readme (snake_master/workflow/scripts/index_hopping_removal/README) here.
+In case of combined GEX and ADT NovaSeq data scripts are provided to clean up the data before a run. Please consult the [Readme](snake_master/workflow/scripts/index_hopping_removal/README) here.
 
 
 ### SampleMap Preprocessing
