@@ -5,6 +5,9 @@
 
 ## Installation instructions
 
+NOTES: Cellranger & Citeseq count manually
+else --use-conda
+
 
 ## Example data
 
@@ -17,27 +20,12 @@
 
 The single cell pipeline can currently handle a diverse set of input data and preprocess them to run with the GEX master pipeline.
 In general, if NovaSeq Data is analysed use the --use-conda variable to allow snakemake to activate the appropriate environment for index-hopping removal.
-#### ADT only
-In case of ADT only data the following snake file should be used [snake_prep_adt_master.snake](snake_master/snake_prep_adt_master.snake). (Exception NovaSeq Data: see below). If your data has been hashed, adapt the [samplemap](#samplemap)  to contain a link to the [Hashing Info File](#hashing-info-file). 
-
-**NovaSeq**  
-In case of ADT only NovaSeq data the following snake file should be used [snake_prep_adt_novaSeq_master.snake](snake_master/snake_prep_adt_novaSeq_master.snake).If your data has been hashed, adapt the [samplemap](#samplemap) to contain a link to the [Hashing Info File](#hashing-info-file).
-
-***
-
-#### GEX only
-Most likely in this case no preparation pipeline needs to be run. The [snake_gex_master.snake](snake_master/snake_gex_master.snake) can directly be used. 
-
-**NovaSeq**  
-In case of GEX only NovaSeq data the following snake file should be used [snake_prep_gex_novaSeq_master.snake](snake_master/snake_prep_gex_novaSeq_master.snake).
-
-***
 
 #### ADT and GEX combined
 In case of combined GEX and ADT data the following snake file should be used [snake_prep_gex_adt_master.snake](snake_master/snake_prep_gex_adt_master.snake). (Exception NovaSeq Data: see below) If your data has been hashed, adapt the [samplemap](#samplemap)  to contain a link to the [Hashing Info File](#hashing-info-file).
 
-**NovaSeq**  
-In case of combined GEX and ADT NovaSeq data the following snake file should be used [snake_prep_gex_adt_novaSeq_master.snake](snake_master/snake_prep_gex_adt_novaSeq_master.snake). If your data has been hashed, adapt the [samplemap](#samplemap)  to contain a link to the [Hashing Info File](#hashing-info-file).
+**IndexHopping removal**  
+In case of combined GEX and ADT NovaSeq data scripts are provided to clean up the data before a run. Please consult the Readme (snake_master/workflow/scripts/index_hopping_removal/README) here.
 
 
 ### SampleMap Preprocessing
@@ -65,4 +53,6 @@ In case of Hashed Samples we need to associate the hashtag barcodes, the tag nam
 Barcode1,TagName1,SampleA
 Barcode2,TagName2,SampleB
 ```
+
+## Running the pipeline
 
