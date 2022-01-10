@@ -4,12 +4,6 @@ from os import listdir
 from os.path import isfile, join
 
 
-def list_fastqs(base,Rvalue):
-    """Returns comma separated list of fastqs."""
-    onlyfiles = [base + f for f in listdir(base) if isfile(join(base, f)) and Rvalue in f]
-    return onlyfiles
-
-
 # Create Tag File that matches input requirement of CiteSeq Count
 
 rule createTagFile:
@@ -48,7 +42,7 @@ rule run_citeseq_count:
         outdir = 'results/pooled_sample/citeseq_count/',
         outfile = 'results/pooled_sample/citeseq_count/run_report.yaml',
         variousParams = config['tools']['run_citeseq_count']['variousParams'],
-        targetCells = getTargetCellsCiteseqCount,
+        targetCells = getTargetCellsCiteseqCount
     resources:
         mem_mb = config['tools']['run_citeseq_count']['mem'],
         time_min = config['tools']['run_citeseq_count']['time']
@@ -59,7 +53,7 @@ rule run_citeseq_count:
     run:
         R1=",".join(input.R1)
         R2=",".join(input.R2)
-        shell("{config[tools][run_citeseq_count][call]} -R1 {R1} -R2 {R2} {params.variousParams} -o {params.outdir} {params.targetCells} -T {threads} -t {input.tags}; ln -fs {params.outfile} {output.run_report}")
+        shell("{config[tools][run_citeseq_count][call]} -R1 {R1} -R2 {R2} {params.variousParams} -o {params.outdir} {params.targetCells} -T {threads} -t {input.tags} ; ln -fs {params.outfile} {output.run_report}")
 
 # Hashing Analysis Script requires the zipped cellranger files as input.
 # Input: Cellranger output files
@@ -85,7 +79,6 @@ rule create_symlink_hashing_input:
         'results/pooled_sample//cellranger_adt/{sample}.create_symlink_adt.benchmark'
     shell:
         'mkdir -p {params.root_out} ; gzip -c "{input.features_file_tmp}" > "{output.features_file}"; gzip -c "{input.matrix_file_tmp}" > "{output.matrix_file}"; gzip -c "{input.barcodes_file_tmp}" > "{output.barcodes_file}"'
-
 
 # Analyse Hashing: Produces one list / tag containing the barcodes & some qc plots.
 # Input: Output of Citeseq and Cellranger ADT run.
@@ -118,7 +111,7 @@ rule analyse_hashing:
     benchmark:
         'results/pooled_sample/hashing_analysis/{sample}.analyse_hashing.benchmark'
     shell:
-        '{config[tools][analyse_hashing][call]} ' +
+        'Rscript scripts/analyseHashing.R ' +
         '--citeseq_in {params.citeseq_folder} ' +
         '--adt_barcodes_in {params.adt_folder} ' +
         '--quantile_threshold {params.quantileThreshold} ' +
