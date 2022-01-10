@@ -1,5 +1,4 @@
 # Rules required for the basic cellranger run of sc ADT data
-# Lourdes Rosano, January 2020
 
 import os
 
@@ -12,9 +11,9 @@ rule generate_library_adt:
     input:
         fastqs_dir=config["inputOutput"]["input_fastqs_adt"] + "{sample}/",
     output:
-        library_file="results/pooled_sample/cellranger_adt/{sample}.adt_library.txt",
+        library_file= WORKDIR +"/results/pooled_sample/cellranger_adt/{sample}.adt_library.txt",
     params:
-        seqRunName=getSeqRunName,
+        seqRunName=getSeqRunName
     threads: config["tools"]["generate_library_adt"]["threads"]
     resources: 
         mem_mb=config["tools"]["generate_library_adt"]["mem"],
@@ -22,13 +21,13 @@ rule generate_library_adt:
     benchmark:
         "results/pooled_sample/cellranger_adt/{sample}.generate_library_adt.benchmark"
     shell:
-        'echo -e "fastqs,sample,library_type\n{input.fastqs_dir},{params.seqRunName},Antibody Capture" > {output.library_file}'
+        'echo -e "fastqs,sample,library_type\n{input.fastqs_dir},{wildcards.sample},Antibody Capture" > {output.library_file}'
 
 
 # Cellranger call to process the raw ADT samples
 rule cellranger_count_adt:
     input:
-        library=WORKDIR + "/results/pooled_sample/cellranger_adt/{sample}.adt_library.txt",
+        library= WORKDIR + "/results/pooled_sample/cellranger_adt/{sample}.adt_library.txt",
         reference=config["resources"]["reference_transcriptome"],
         features_ref=getFeatRefFile,
     output:
@@ -52,6 +51,7 @@ rule cellranger_count_adt:
         local_cores=config["tools"]["cellranger_count_adt"]["local_cores"],
         variousParams=config["tools"]["cellranger_count_adt"]["variousParams"],
         targetCells=getTargetCellsCellranger,
+        sample = '{sample}'
     threads: config["tools"]["cellranger_count_adt"]["threads"]
     resources:
         mem_mb=config["tools"]["cellranger_count_adt"]["mem"],
@@ -62,5 +62,5 @@ rule cellranger_count_adt:
     # Therefore, a subshell is used here.
     # Also, unzip and symlink output files in preparation for rule 'create_symlink_adt' or 'create_symlink_adt_nonHashed'
     shell:
-        '(cd {params.cr_out}; rm -r {wildcards.sample}/ ; {config[tools][cellranger_count_adt][call]} count --id={wildcards.sample} --transcriptome={input.reference} --localcores={params.local_cores} --libraries={input.library} --feature-ref={input.features_ref} --nosecondary {params.variousParams} {params.targetCells}) && gunzip -c {params.cr_out}{wildcards.sample}/outs/filtered_feature_bc_matrix/features.tsv.gz > {params.cr_out}{wildcards.sample}/outs/filtered_feature_bc_matrix/features.tsv ; gunzip -c {params.cr_out}{wildcards.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz > {params.cr_out}{wildcards.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv ; gunzip -c {params.cr_out}{wildcards.sample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz > {params.cr_out}{wildcards.sample}/outs/filtered_feature_bc_matrix/matrix.mtx && ln -s "{params.cr_out}{wildcards.sample}/outs/filtered_feature_bc_matrix/features.tsv" "{output.features_file}"; ln -s "{params.cr_out}{wildcards.sample}/outs/filtered_feature_bc_matrix/matrix.mtx" "{output.matrix_file}"; ln -s "{params.cr_out}{wildcards.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv" "{output.barcodes_file}" ; ln -s "{params.cr_out}{wildcards.sample}/outs/web_summary.html" "{output.web_file}" ; ln -s "{params.cr_out}{wildcards.sample}/outs/metrics_summary.csv" "{output.metrics_file}"'
+        '(cd {params.cr_out}; rm -r {params.sample}/ ; {config[tools][cellranger_count_adt][call]} count --id={params.sample} --transcriptome={input.reference} --localcores={params.local_cores} --libraries={input.library} --feature-ref={input.features_ref} --nosecondary {params.variousParams} {params.targetCells}) && gunzip -c {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/features.tsv.gz > {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/features.tsv ; gunzip -c {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz > {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv ; gunzip -c {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz > {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/matrix.mtx && ln -s "{params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/features.tsv" "{output.features_file}"; ln -s "{params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/matrix.mtx" "{output.matrix_file}"; ln -s "{params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv" "{output.barcodes_file}" ; ln -s "{params.cr_out}{params.sample}/outs/web_summary.html" "{output.web_file}" ; ln -s "{params.cr_out}{params.sample}/outs/metrics_summary.csv" "{output.metrics_file}"'
 
