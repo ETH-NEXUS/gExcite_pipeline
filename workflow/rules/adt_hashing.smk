@@ -14,10 +14,10 @@ rule createTagFile:
     params:
         outdir = 'results/pooled_sample/citeseq_count/'
     threads:
-        config['tools']['create_tag_file']['threads']
+        config['clusterResources']['lowRequirements']['threads']
     resources:
-        mem_mb = config['tools']['create_tag_file']['mem'],
-        time_min = config['tools']['create_tag_file']['time']
+        mem_mb = config['computingResources']['lowRequirements']['mem'],
+        time_min = config['computingResources']['lowRequirements']['time']
     benchmark:
         'results/pooled_sample/citeseq_count/{sample}.create_tag_file.benchmark'
     run:
@@ -44,10 +44,10 @@ rule run_citeseq_count:
         variousParams = config['tools']['run_citeseq_count']['variousParams'],
         targetCells = getTargetCellsCiteseqCount
     resources:
-        mem_mb = config['tools']['run_citeseq_count']['mem'],
-        time_min = config['tools']['run_citeseq_count']['time']
+        mem_mb = config['computingResources']['highRequirements']['mem'],
+        time_min = config['computingResources']['highRequirements']['time']
     threads:
-        config['tools']['run_citeseq_count']['threads']
+        config['computingResources']['highRequirements']['threads']
     benchmark:
         'results/pooled_sample/citeseq_count/{sample}.run_citeseq_count.benchmark'
     run:
@@ -71,10 +71,10 @@ rule create_symlink_hashing_input:
     params:
         root_out = 'results/pooled_sample/cellranger_adt/{sample}_zipped_files/'
     resources:
-        mem_mb = config['tools']['create_symlink']['mem'],
-        time_min = config['tools']['create_symlink']['time']
+        mem_mb = config['computingResources']['lowRequirements']['mem'],
+        time_min = config['computingResources']['lowRequirements']['time']
     threads:
-        config['tools']['create_symlink']['threads']
+        config['computingResources']['lowRequirements']['threads']
     benchmark:
         'results/pooled_sample//cellranger_adt/{sample}.create_symlink_adt.benchmark'
     shell:
@@ -104,10 +104,10 @@ rule analyse_hashing:
         save_negatives = config['tools']['analyse_hashing']['save_negatives'],
         citeseq_folder = 'results/pooled_sample/citeseq_count/umi_count/'
     resources:
-        mem_mb = config['tools']['analyse_hashing']['mem'],
-        time_min = config['tools']['analyse_hashing']['time']
+        mem_mb = config['computingResources']['highRequirements']['mem'],
+        time_min = config['computingResources']['highRequirements']['time']
     threads:
-        config['tools']['analyse_hashing']['threads']
+        config['computingResources']['highRequirements']['threads']
     benchmark:
         'results/pooled_sample/hashing_analysis/{sample}.analyse_hashing.benchmark'
     shell:

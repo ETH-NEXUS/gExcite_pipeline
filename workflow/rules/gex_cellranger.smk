@@ -20,10 +20,10 @@ rule cellranger_count_gex:
         metrics_summary = "results/pooled_sample/{sample}.metrics_summary.csv",
         web_summary = "results/pooled_sample/{sample}.web_summary.html",
 	mySample = '{sample}' 
-    threads: config["tools"]["cellranger_count_gex"]["threads"]
+    threads: config["computingResources"]["highRequirements"]["threads"]
     resources:
-        mem_mb=config["tools"]["cellranger_count_gex"]["mem"],
-        time_min=config["tools"]["cellranger_count_gex"]["time"]
+        mem_mb=config["computingResources"]["highRequirements"]["mem"],
+        time_min=config["computingResources"]["highRequirements"]["time"]
     benchmark:
         "results/pooled_sample/cellranger_gex/{sample}.cellranger_count_gex.benchmark"
     # NOTE: cellranger count function cannot specify the output directory, the output it the path you call it from.

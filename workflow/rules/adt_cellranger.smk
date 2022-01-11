@@ -14,10 +14,10 @@ rule generate_library_adt:
         library_file= WORKDIR +"/results/pooled_sample/cellranger_adt/{sample}.adt_library.txt",
     params:
         seqRunName=getSeqRunName
-    threads: config["tools"]["generate_library_adt"]["threads"]
+    threads: config["computingResources"]["lowRequirements"]["threads"]
     resources: 
-        mem_mb=config["tools"]["generate_library_adt"]["mem"],
-        time_min=config["tools"]["generate_library_adt"]["time"]
+        mem_mb=config["computingResources"]["lowRequirements"]["mem"],
+        time_min=config["computingResources"]["lowRequirements"]["time"]
     benchmark:
         "results/pooled_sample/cellranger_adt/{sample}.generate_library_adt.benchmark"
     shell:
@@ -51,10 +51,10 @@ rule cellranger_count_adt:
         variousParams=config["tools"]["cellranger_count_adt"]["variousParams"],
         targetCells=getTargetCellsCellranger,
         sample = '{sample}'
-    threads: config["tools"]["cellranger_count_adt"]["threads"]
+    threads: config["computingResources"]["highRequirements"]["threads"]
     resources:
-        mem_mb=config["tools"]["cellranger_count_adt"]["mem"],
-        time_min=config["tools"]["cellranger_count_adt"]["time"]
+        mem_mb=config["computingResources"]["highRequirements"]["mem"],
+        time_min=config["computingResources"]["highRequirements"]["time"]
     benchmark:
         "results/pooled_sample/cellranger_adt/{sample}.cellranger_count_adt.benchmark"
     # NOTE: cellranger count function cannot specify the output directory, the output it the path you call it from.
