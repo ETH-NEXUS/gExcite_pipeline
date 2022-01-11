@@ -15,7 +15,6 @@ rule cellranger_count_gex:
         metrics_file="results/pooled_sample/cellranger_gex/{sample}.metrics_summary.csv",
     params:
         cr_out="results/pooled_sample/cellranger_gex/",
-        local_cores=config["tools"]["cellranger_count_gex"]["local_cores"],
         variousParams=config["tools"]["cellranger_count_gex"]["variousParams"],
         targetCells=getTargetCellsCellranger,
         metrics_summary = "results/pooled_sample/{sample}.metrics_summary.csv",
@@ -31,4 +30,4 @@ rule cellranger_count_gex:
     # Therefore, a subshell is used here.
     # Also, unzip and symlink output files in preparation for downstream steps
     shell:
-         '(cd {params.cr_out}; {config[tools][cellranger_count_gex][call]} count --id={params.mySample} --sample={params.mySample} --transcriptome={input.reference} --localcores={params.local_cores} --fastqs={input.fastqs_dir} --nosecondary {params.variousParams}); gunzip {params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/features.tsv.gz ; gunzip {params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz ; gunzip {params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz ; ln -s "{params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/features.tsv" "{output.features_file}"; ln -s "{params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/matrix.mtx" "{output.matrix_file}"; ln -s "{params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/barcodes.tsv" "{output.barcodes_file}" ; ln -s "{params.cr_out}{params.mySample}/outs/web_summary.html" "{params.web_summary}" ; ln -s "{params.cr_out}{params.mySample}/outs/metrics_summary.csv" "{params.metrics_summary}"'
+         '(cd {params.cr_out}; {config[tools][cellranger_count_gex][call]} count --id={params.mySample} --sample={params.mySample} --transcriptome={input.reference} --fastqs={input.fastqs_dir} --nosecondary {params.variousParams}); gunzip {params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/features.tsv.gz ; gunzip {params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz ; gunzip {params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz ; ln -frs "{params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/features.tsv" "{output.features_file}"; ln -frs "{params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/matrix.mtx" "{output.matrix_file}"; ln -frs "{params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/barcodes.tsv" "{output.barcodes_file}" ; ln -frs "{params.cr_out}{params.mySample}/outs/web_summary.html" "{params.web_summary}" ; ln -frs "{params.cr_out}{params.mySample}/outs/metrics_summary.csv" "{params.metrics_summary}"'

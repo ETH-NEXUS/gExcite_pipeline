@@ -31,12 +31,12 @@ rule cellranger_count_adt:
         reference=config["resources"]["reference_transcriptome"],
         features_ref=getFeatRefFile,
     output:
-        zipped_features_file="results/pooled_sample/cellranger_adt/"
-        + "{sample}/outs/filtered_feature_bc_matrix/features.tsv.gz",
-        zipped_barcodes_file="results/pooled_sample/cellranger_adt/"
-        + "{sample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz",
-        zipped_matrix_file="results/pooled_sample/cellranger_adt/"
-        + "{sample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz",
+#        zipped_features_file="results/pooled_sample/cellranger_adt/"
+#        + "{sample}/outs/filtered_feature_bc_matrix/features.tsv.gz",
+#        zipped_barcodes_file="results/pooled_sample/cellranger_adt/"
+#        + "{sample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz",
+#        zipped_matrix_file="results/pooled_sample/cellranger_adt/"
+#        + "{sample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz",
         features_file="results/pooled_sample/cellranger_adt/{sample}.features.tsv",
         matrix_file="results/pooled_sample/cellranger_adt/{sample}.matrix.mtx",
         barcodes_file="results/pooled_sample/cellranger_adt/{sample}.barcodes.tsv",
@@ -48,7 +48,6 @@ rule cellranger_count_adt:
         metrics_file="results/pooled_sample/cellranger_adt/{sample}.metrics_summary.csv",
     params:
         cr_out="results/pooled_sample/cellranger_adt/",
-        local_cores=config["tools"]["cellranger_count_adt"]["local_cores"],
         variousParams=config["tools"]["cellranger_count_adt"]["variousParams"],
         targetCells=getTargetCellsCellranger,
         sample = '{sample}'
@@ -62,5 +61,5 @@ rule cellranger_count_adt:
     # Therefore, a subshell is used here.
     # Also, unzip and symlink output files in preparation for rule 'create_symlink_adt' or 'create_symlink_adt_nonHashed'
     shell:
-        '(cd {params.cr_out}; rm -r {params.sample}/ ; {config[tools][cellranger_count_adt][call]} count --id={params.sample} --transcriptome={input.reference} --localcores={params.local_cores} --libraries={input.library} --feature-ref={input.features_ref} --nosecondary {params.variousParams} {params.targetCells}) && gunzip -c {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/features.tsv.gz > {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/features.tsv ; gunzip -c {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz > {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv ; gunzip -c {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz > {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/matrix.mtx && ln -s "{params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/features.tsv" "{output.features_file}"; ln -s "{params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/matrix.mtx" "{output.matrix_file}"; ln -s "{params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv" "{output.barcodes_file}" ; ln -s "{params.cr_out}{params.sample}/outs/web_summary.html" "{output.web_file}" ; ln -s "{params.cr_out}{params.sample}/outs/metrics_summary.csv" "{output.metrics_file}"'
+        '(cd {params.cr_out}; rm -r {params.sample}/ ; {config[tools][cellranger_count_adt][call]} count --id={params.sample} --transcriptome={input.reference} --libraries={input.library} --feature-ref={input.features_ref} --nosecondary {params.variousParams} {params.targetCells}) && gunzip -c {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/features.tsv.gz > {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/features.tsv ; gunzip -c {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz > {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv ; gunzip -c {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz > {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/matrix.mtx && ln -rs "{params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/features.tsv" "{output.features_file}"; ln -rs "{params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/matrix.mtx" "{output.matrix_file}"; ln -rs "{params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv" "{output.barcodes_file}" ; ln -rs "{params.cr_out}{params.sample}/outs/web_summary.html" "{output.web_file}" ; ln -rs "{params.cr_out}{params.sample}/outs/metrics_summary.csv" "{output.metrics_file}"'
 
