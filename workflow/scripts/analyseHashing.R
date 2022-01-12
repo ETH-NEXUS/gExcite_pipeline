@@ -195,7 +195,6 @@ for (method in norm_methods) {
   # RIDGEPLOT
   # Group Cells based on the highest hashtag signal.
   print("Plotting RidgePlot")
-  RidgePlot(my_sample, assay = "HTO", features = rownames(my_sample[["HTO"]]), ncol = 2)
   rigdePlot <- RidgePlot(my_sample, assay = "HTO", features = rownames(my_sample[["HTO"]]), ncol = 2)
   ggplot2::ggsave(filename = paste(opt$output_prefix, method, "normalisation_ridgeplot.png", sep = "."), plot = rigdePlot)
 
@@ -485,7 +484,6 @@ histo_margin <- ggplot(cellData_htoCounts, aes(x = HTO_margin, fill = hash.ID)) 
   geom_histogram(binwidth = 0.1) +
   scale_fill_manual(name = "hash.ID", values = colours_hash.IDs[cellData_htoCounts_colours]) +
   ggtitle("HTO_margin (difference between signals for hash.maxID and hash.secondID)")
-histo_margin
 file_name <- paste(plot_prefix, "histo.hto_margin.png", sep = ".")
 print(file_name)
 ggplot2::ggsave(filename = file_name, plot = histo_margin, width = 22, height = 17, units = "cm")
@@ -496,7 +494,6 @@ histo_htoCounts <- ggplot(cellData_htoCounts, aes(x = nCount_HTO, fill = hash.ID
   coord_cartesian(xlim = c(0, quantile(cellData_htoCounts$nCount_HTO, .99))) +
   scale_fill_manual(name = "hash.ID", values = colours_hash.IDs[cellData_htoCounts_colours]) +
   ggtitle("Raw counts")
-histo_htoCounts
 file_name <- paste(plot_prefix, "histo.hto_counts.png", sep = ".")
 print(file_name)
 ggplot2::ggsave(filename = file_name, plot = histo_htoCounts, width = 19, height = 17, units = "cm")
@@ -512,7 +509,6 @@ singlet_histo_margin <- ggplot(data_only_singlets, aes(x = HTO_margin, fill = ha
   geom_histogram(binwidth = 0.1) +
   scale_fill_manual(name = "hash.ID", values = colours_hash.IDs[singlets_colours]) +
   ggtitle("HTO_margin (difference between signals for hash.maxID and hash.secondID)")
-singlet_histo_margin
 file_name <- paste(plot_prefix, "singlet_histo.hto_margin.png", sep = ".")
 print(file_name)
 ggplot2::ggsave(filename = file_name, plot = singlet_histo_margin, width = 22, height = 17, units = "cm")
@@ -523,7 +519,6 @@ singlet_histo_htoCounts <- ggplot(data_only_singlets, aes(x = nCount_HTO, fill =
   coord_cartesian(xlim = c(0, quantile(data_only_singlets$nCount_HTO, .99))) +
   scale_fill_manual(name = "hash.ID", values = colours_hash.IDs[singlets_colours]) +
   ggtitle("Raw counts")
-singlet_histo_htoCounts
 file_name <- paste(plot_prefix, "singlet_histo.hto_counts.png", sep = ".")
 print(file_name)
 ggplot2::ggsave(filename = file_name, plot = singlet_histo_htoCounts, width = 19, height = 17, units = "cm")
@@ -603,7 +598,6 @@ for (pair in pairs_tags) {
       vjust = -0.9, hjust = 0.2
     ) +
     ggtitle(paste0("All cells, raw counts of ", tag_x, " and ", tag_y))
-  scatter_plot_all
   file_name <- paste(plot_prefix, "scatterplot_raw_counts.all_cells", tag_x, tag_y, "png", sep = ".")
   print(file_name)
   ggplot2::ggsave(filename = file_name, plot = scatter_plot_all, width = 19, height = 17, units = "cm")
@@ -637,7 +631,6 @@ for (pair in pairs_tags) {
       vjust = -0.9, hjust = 0.2
     ) +
     ggtitle(paste0("Only cells with HTO_maxID == ", tag_x, " | ", tag_y))
-  scatter_plot_doublet_details
   file_name <- paste(plot_prefix, "scatterplot_raw_counts.doublet_details", tag_x, tag_y, "png", sep = ".")
   print(file_name)
   ggplot2::ggsave(filename = file_name, plot = scatter_plot_doublet_details, width = 19, height = 17, units = "cm")
@@ -672,7 +665,6 @@ for (pair in pairs_tags) {
       vjust = -0.9, hjust = 0.2
     ) +
     ggtitle(paste0("Only cells with HTO_maxID == ", tag_x, " | ", tag_y))
-  scatter_plot
   file_name <- paste(plot_prefix, "scatterplot_raw_counts", tag_x, tag_y, "png", sep = ".")
   print(file_name)
   ggplot2::ggsave(filename = file_name, plot = scatter_plot, width = 19, height = 17, units = "cm")
@@ -716,7 +708,6 @@ for (pair in pairs_tags) {
       vjust = -0.9, hjust = 0.2, color = "blue4"
     ) +
     ggtitle(paste0("Only cells with HTO_maxID == ", tag_x, " or HTO_maxID == ", tag_y))
-  scatter_plot2
   file_name2 <- paste(plot_prefix, "scatter_raw_counts", paste0(tag_x, "-highlighted"), tag_x, tag_y, "png", sep = ".")
   print(file_name2)
   ggplot2::ggsave(filename = file_name2, plot = scatter_plot2, width = 19, height = 17, units = "cm")
@@ -760,7 +751,6 @@ for (pair in pairs_tags) {
       vjust = -0.9, hjust = 0.2, color = "blue4"
     ) +
     ggtitle(paste0("Only cells with HTO_maxID == ", tag_x, " or HTO_maxID == ", tag_y))
-  scatter_plot3
   file_name3 <- paste(plot_prefix, "scatter_raw_counts", paste0(tag_y, "-highlighted"), tag_x, tag_y, "png", sep = ".")
   print(file_name3)
   ggplot2::ggsave(filename = file_name3, plot = scatter_plot3, width = 19, height = 17, units = "cm")
@@ -817,7 +807,6 @@ cluster_maxID <- ggplot(cellData_htoCounts_extended, aes(x = umap1, y = umap2, c
   guides(colour = guide_legend(override.aes = list(size = 4))) +
   xlab("UMAP 1") +
   ylab("UMAP 2")
-cluster_maxID
 cellData_htoCounts_colours <- match(cellData_htoCounts$HTO_classification, names(colours_hash.IDs))
 cluster_classification <- ggplot(cellData_htoCounts_extended, aes(x = umap1, y = umap2, color = HTO_classification)) +
   geom_point(size = 0.005) +
