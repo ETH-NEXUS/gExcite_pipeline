@@ -111,7 +111,7 @@ rule analyse_hashing:
     benchmark:
         'results/pooled_sample/hashing_analysis/{sample}.analyse_hashing.benchmark'
     shell:
-        'Rscript scripts/analyseHashing.R ' +
+        'Rscript ./workflow/scripts/analyseHashing.R ' +
         '--citeseq_in {params.citeseq_folder} ' +
         '--adt_barcodes_in {params.adt_folder} ' +
         '--quantile_threshold {params.quantileThreshold} ' +
