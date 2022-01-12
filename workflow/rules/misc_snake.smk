@@ -2,6 +2,8 @@ import os.path
 import sys
 import inspect
 import copy
+import pandas as pd
+from snakemake.utils import validate
 
 fail_instantly = False
 
@@ -56,40 +58,20 @@ class Config(object):
             else:
                 return Error(key=key, name=self.__name)
 
+samples = pd.read_table(config["inputOutput"]["sample_map"]).set_index("sample", drop=False)
+validate(samples, "../schema/sample_map.schema.yaml")
 
 config = Config(config)
 
 # Retrieve hashed samples from the sample map of a given experiment
-def getHashedSampleNames():
-    output = (
-        []
-    )
-    if output == []:
-        if not "SAMPLEMAPPING" in globals():
-            return ["NOMAPPINGFILE"]
-        try:
-            open(SAMPLEMAPPING, "r")
-        except IOError:
-            return ["NOMAPPINGFILE"]
-        sampleMap = dict()
-        with open(SAMPLEMAPPING, "r") as f:
-            for line in f:
-                if line.strip() != "":
-                    lineSplit = line.strip().split()
-                    sample = lineSplit[1].strip()
-                    status = lineSplit[2].strip()
-                    if status not in ["NH", "."]:
-                        if not os.path.isfile(status):
-                            raise ValueError(
-                                "Sample '%s' does not contain a valid hashing status/file in the sample map!"
-                                % (sample)
-                            )
-                    # Only include sample in output string if it is hashed ie. "H"
-                    if os.path.isfile(status):
-                        if not (sample in output):
-                            output.append(sample)
-    print(output)
-    return output
+HashedSamples = samples.loc[samples["HashingStatus"] != "."]
+HashedSampleNames = HashedSamples["sample"].tolist()
+print(HashedSampleNames)
+
+NonHashedSamples = samples.loc[samples["HashingStatus"] == "."]
+NonHashedSampleNames = NonHashedSamples["sample"].tolist()
+print(NonHashedSampleNames)
+
 
 
 # Require all final files, from both hashed and non-hashed samples (if any)
@@ -98,10 +80,10 @@ def getInputFiles(wildcards):
 
     # Cellranger output for hashed samples (in preprocessing folder)
     cr_hashed_gex = expand(
-        "results/pooled_sample/cellranger_gex/{sample}.features.tsv", sample=getHashedSampleNames()
+        "results/pooled_sample/cellranger_gex/{sample}.features.tsv", sample=HashedSampleNames
     )
     cr_hashed_adt = expand(
-        "results/pooled_sample/cellranger_adt/{sample}.features.tsv", sample=getHashedSampleNames()
+        "results/pooled_sample/cellranger_adt/{sample}.features.tsv", sample=HashedSampleNames
     )
 
 #    # Cellranger output for non-hashed samples (also in preprocessing folder)
@@ -115,21 +97,21 @@ def getInputFiles(wildcards):
     # Hashing framework: symlinks to cellranger output (in pooled sample folders)
     root_hashed_gex = expand(
         "results/pooled_sample/cellranger_gex/{sample}.features.tsv",
-        sample=getHashedSampleNames(),
+        sample=HashedSampleNames,
     )
     root_hashed_adt = expand(
         "results/pooled_sample/cellranger_adt/{sample}.features.tsv",
-        sample=getHashedSampleNames(),
+        sample=HashedSampleNames,
     )
     # Citeseq output ( in pooled analysis folder)
     citeseq = expand(
         "results/pooled_sample/citeseq_count/{sample}.run_report.yaml",
-        sample=getHashedSampleNames(),
+        sample=HashedSampleNames,
     )
     # Hashing output ( in pooled analysis folder)
     hashing = expand(
         "results/pooled_sample/hashing_analysis/{sample}.complete_hashing.txt",
-        sample=getHashedSampleNames(),
+        sample=HashedSampleNames,
     )
 
     # Non-hashing framework: symlinks to analysis output (in single-sample folder, no pooled)
@@ -184,10 +166,12 @@ def getTagFileHashedSamples(wildcards):
     sampleMap = dict()
     with open(SAMPLEMAPPING, "r") as f:
         for line in f:
+            if line.startswith("sample"):
+                continue
             if line.strip() != "":
                 lineSplit = line.strip().split()
-                sample = lineSplit[1].strip()
-                status = lineSplit[2].strip()
+                sample = lineSplit[0].strip()
+                status = lineSplit[1].strip()
                 if status not in ["NH", "."]:
                     if not os.path.isfile(status):
                         raise ValueError(
@@ -207,37 +191,6 @@ def getTagFileHashedSamples(wildcards):
     return sampleMap[wildcards.sample]
 
 
-# Retrieve non-hashed samples from the sample map of a given experiment
-def getNonHashedSampleNames():
-    output = (
-        []
-    )
-    if output == []:
-        if not "SAMPLEMAPPING" in globals():
-            return ["NOMAPPINGFILE"]
-        try:
-            open(SAMPLEMAPPING, "r")
-        except IOError:
-            return ["NOMAPPINGFILE"]
-        sampleMap = dict()
-        with open(SAMPLEMAPPING, "r") as f:
-            for line in f:
-                if line.strip() != "":
-                    lineSplit = line.strip().split()
-                    sample = lineSplit[1].strip()
-                    status = lineSplit[2].strip()
-                    if status not in ["NH", "H", "."]:
-                        if not os.path.isfile(status):
-                            raise ValueError(
-                                "Sample '%s' does not contain a valid hashing status in the sample map!"
-                                % (sample)
-                            )
-                    # Only include sample in output string if it is non-hashed ie. "NH"
-                    if status in ["NH", "."]:
-                        if not (sample in output):
-                            output.append(sample)
-    return output
-
 
 # Retrieve the number of target cells corresponding to a given sample set (both GEX and ADT)
 def getTargetCells(wildcards):
@@ -250,10 +203,12 @@ def getTargetCells(wildcards):
     sampleMap = dict()
     with open(SAMPLEMAPPING, "r") as f:
         for line in f:
+            if line.startswith("sample"):
+                continue
             if line.strip() != "":
                 lineSplit = line.strip().split()
-                sample = lineSplit[1].strip()
-                nCells = lineSplit[4].strip()
+                sample = lineSplit[0].strip()
+                nCells = lineSplit[3].strip()
                 if sample in sampleMap.keys():
                     raise ValueError(
                         "Sample '%s' is not unique in the sample map!"
@@ -307,10 +262,12 @@ def getSeqRunName(wildcards):
     sampleMap = dict()
     with open(SAMPLEMAPPING, "r") as f:
         for line in f:
+            if line.startswith("sample"):
+                continue
             if line.strip() != "":
                 lineSplit = line.strip().split()
-                sample = lineSplit[1].strip()
-                seqRun = lineSplit[3].strip()
+                sample = lineSplit[0].strip()
+                seqRun = lineSplit[2].strip()
                 if sample in sampleMap.keys():
                     raise ValueError(
                         "Sample '%s' is not unique in the sample map!"
@@ -341,10 +298,12 @@ def getFeatRefFile(wildcards):
     sampleMap = dict()
     with open(SAMPLEMAPPING, "r") as f:
         for line in f:
+            if line.startswith("sample"):
+                continue
             if line.strip() != "":
                 lineSplit = line.strip().split()
-                sample = lineSplit[1].strip()
-                featFile = lineSplit[5].strip()
+                sample = lineSplit[0].strip()
+                featFile = lineSplit[4].strip()
                 if sample in sampleMap.keys():
                     raise ValueError(
                         "Sample '%s' is not unique in the sample map!"
