@@ -1,0 +1,26 @@
+$schema: "https://json-schema.org/draft-06/schema#"
+description: an entry in the sample sheet
+properties:
+  sample:
+    type: string
+    description: sample name/identifier
+  HashingStatus:
+    type: string
+    description: Path to the Tag File
+  SeqRunName:
+    type: string
+    description: Sequencing sample name of ADT Fastq Files
+  nTargetCells:
+    type: integer
+    description: The number of cells that were targeted in the lab
+  featureReferenceFile: 
+    type: string
+    description: Path to the Feature File 
+
+required:
+  - sample
+  - HashingStatus
+  - SeqRunName
+  - nTargetCells
+  - featureReferenceFile
+
