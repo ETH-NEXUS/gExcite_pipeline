@@ -1,4 +1,6 @@
-import os, glob, sys, datetime
+# Define minimum Snakemake Version
+from snakemake.utils import min_version
+min_version("6.12.1")
 
 # Include Config file
 configfile: "config/config.yaml"
@@ -34,7 +36,7 @@ rule scPreprocessing_gex_adt:
         samplemapFile=config["inputOutput"]["sample_map"],
         rootdir="results/",
     conda:
-        "../envs/scPreprocessing_gex_adt.yaml"
+        "envs/scPreprocessing_gex_adt.yaml"
     resources:
         mem_mb=1000,
         time=1
