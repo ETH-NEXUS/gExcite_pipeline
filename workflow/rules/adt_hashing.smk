@@ -10,16 +10,16 @@ rule createTagFile:
     input:
         tags = getTagFileHashedSamples
     output:
-        tagFile = 'results/pooled_sample/citeseq_count/{sample}.tags.tsv'
+        tagFile = 'results/pooled_samples/citeseq_count/{sample}.tags.tsv'
     params:
-        outdir = 'results/pooled_sample/citeseq_count/'
+        outdir = 'results/pooled_samples/citeseq_count/'
     threads:
-        config['clusterResources']['lowRequirements']['threads']
+        config['computingResources']['lowRequirements']['threads']
     resources:
         mem_mb = config['computingResources']['lowRequirements']['mem'],
         time_min = config['computingResources']['lowRequirements']['time']
     benchmark:
-        'results/pooled_sample/citeseq_count/{sample}.create_tag_file.benchmark'
+        'results/pooled_samples/citeseq_count/{sample}.create_tag_file.benchmark'
     run:
         outTag = open(output.tagFile,"w")
         infile = open(input.tags,"r")
@@ -35,12 +35,12 @@ rule run_citeseq_count:
     input:
         R1 = lambda wildcards: list_fastqs(config["inputOutput"]["input_fastqs_adt"]+'{sample}/'.format(sample=wildcards.sample),"R1"),
         R2 = lambda wildcards: list_fastqs(config["inputOutput"]["input_fastqs_adt"]+'{sample}/'.format(sample=wildcards.sample),"R2"),
-        tags = 'results/pooled_sample/citeseq_count/{sample}.tags.tsv'
+        tags = 'results/pooled_samples/citeseq_count/{sample}.tags.tsv'
     output:
-        run_report = report("results/pooled_sample/citeseq_count/{sample}.run_report.yaml", caption="workflow/report/citeseq.rst", category="preprocessing QC")
+        run_report = report("results/pooled_samples/citeseq_count/{sample}.run_report.yaml", caption="workflow/report/citeseq.rst", category="preprocessing QC")
     params:
-        outdir = 'results/pooled_sample/citeseq_count/',
-        outfile = 'results/pooled_sample/citeseq_count/run_report.yaml',
+        outdir = 'results/pooled_samples/citeseq_count/{sample}/',
+        outfile = 'results/pooled_samples/citeseq_count/{sample}/run_report.yaml',
         variousParams = config['tools']['run_citeseq_count']['variousParams'],
         targetCells = getTargetCellsCiteseqCount
     resources:
@@ -49,7 +49,7 @@ rule run_citeseq_count:
     threads:
         config['computingResources']['highRequirements']['threads']
     benchmark:
-        'results/pooled_sample/citeseq_count/{sample}.run_citeseq_count.benchmark'
+        'results/pooled_samples/citeseq_count/{sample}.run_citeseq_count.benchmark'
     run:
         R1=",".join(input.R1)
         R2=",".join(input.R2)
@@ -61,22 +61,22 @@ rule run_citeseq_count:
 
 rule create_symlink_hashing_input:
     input:
-        features_file_tmp = 'results/pooled_sample/cellranger_adt/{sample}.features.tsv',
-        matrix_file_tmp = 'results/pooled_sample/cellranger_adt/{sample}.matrix.mtx',
-        barcodes_file_tmp = 'results/pooled_sample/cellranger_adt/{sample}.barcodes.tsv'
+        features_file_tmp = 'results/pooled_samples/cellranger_adt/{sample}.features.tsv',
+        matrix_file_tmp = 'results/pooled_samples/cellranger_adt/{sample}.matrix.mtx',
+        barcodes_file_tmp = 'results/pooled_samples/cellranger_adt/{sample}.barcodes.tsv'
     output:
-        features_file = 'results/pooled_sample/cellranger_adt/{sample}_zipped_files/features.tsv.gz',
-        matrix_file = 'results/pooled_sample/cellranger_adt/{sample}_zipped_files/matrix.mtx.gz',
-        barcodes_file = 'results/pooled_sample/cellranger_adt/{sample}_zipped_files/barcodes.tsv.gz'
+        features_file = 'results/pooled_samples/cellranger_adt/{sample}_zipped_files/features.tsv.gz',
+        matrix_file = 'results/pooled_samples/cellranger_adt/{sample}_zipped_files/matrix.mtx.gz',
+        barcodes_file = 'results/pooled_samples/cellranger_adt/{sample}_zipped_files/barcodes.tsv.gz'
     params:
-        root_out = 'results/pooled_sample/cellranger_adt/{sample}_zipped_files/'
+        root_out = 'results/pooled_samples/cellranger_adt/{sample}_zipped_files/'
     resources:
         mem_mb = config['computingResources']['lowRequirements']['mem'],
         time_min = config['computingResources']['lowRequirements']['time']
     threads:
         config['computingResources']['lowRequirements']['threads']
     benchmark:
-        'results/pooled_sample//cellranger_adt/{sample}.create_symlink_adt.benchmark'
+        'results/pooled_samples//cellranger_adt/{sample}.create_symlink_adt.benchmark'
     shell:
         'mkdir -p {params.root_out} ; gzip -c "{input.features_file_tmp}" > "{output.features_file}"; gzip -c "{input.matrix_file_tmp}" > "{output.matrix_file}"; gzip -c "{input.barcodes_file_tmp}" > "{output.barcodes_file}"'
 
@@ -86,30 +86,30 @@ rule create_symlink_hashing_input:
 
 rule analyse_hashing:
     input:
-        citeseq = 'results/pooled_sample/citeseq_count/{sample}.run_report.yaml',
-        adt_features = 'results/pooled_sample/cellranger_adt/{sample}_zipped_files/features.tsv.gz',
-        adt_matrix = 'results/pooled_sample/cellranger_adt/{sample}_zipped_files/matrix.mtx.gz',
-        adt_barcodes = 'results/pooled_sample/cellranger_adt/{sample}_zipped_files/barcodes.tsv.gz',
+        citeseq = 'results/pooled_samples/citeseq_count/{sample}.run_report.yaml',
+        adt_features = 'results/pooled_samples/cellranger_adt/{sample}_zipped_files/features.tsv.gz',
+        adt_matrix = 'results/pooled_samples/cellranger_adt/{sample}_zipped_files/matrix.mtx.gz',
+        adt_barcodes = 'results/pooled_samples/cellranger_adt/{sample}_zipped_files/barcodes.tsv.gz',
         tags = getTagFileHashedSamples
     output:
-        successFile = 'results/pooled_sample/hashing_analysis/{sample}.complete_hashing.txt'
+        successFile = 'results/pooled_samples/hashing_analysis/{sample}.complete_hashing.txt'
     conda:
         "../envs/analyse_hashing.yaml"
     params:
-        adt_folder = 'results/pooled_sample/cellranger_adt/{sample}_zipped_files/',
-        output_prefix = 'results/pooled_sample/hashing_analysis/{sample}',
+        adt_folder = 'results/pooled_samples/cellranger_adt/{sample}_zipped_files/',
+        output_prefix = 'results/pooled_samples/hashing_analysis/{sample}',
         quantileThreshold = config['tools']['analyse_hashing']['quantileThreshold'],
         normalisation = config['tools']['analyse_hashing']['normalisation'],
         normalisation_downstream = config['tools']['analyse_hashing']['normalisation_downstream'],
         save_negatives = config['tools']['analyse_hashing']['save_negatives'],
-        citeseq_folder = 'results/pooled_sample/citeseq_count/umi_count/'
+        citeseq_folder = 'results/pooled_samples/citeseq_count/umi_count/'
     resources:
         mem_mb = config['computingResources']['highRequirements']['mem'],
         time_min = config['computingResources']['highRequirements']['time']
     threads:
         config['computingResources']['highRequirements']['threads']
     benchmark:
-        'results/pooled_sample/hashing_analysis/{sample}.analyse_hashing.benchmark'
+        'results/pooled_samples/hashing_analysis/{sample}.analyse_hashing.benchmark'
     shell:
         'Rscript ./workflow/scripts/analyseHashing.R ' +
         '--citeseq_in {params.citeseq_folder} ' +
