@@ -66,11 +66,9 @@ config = Config(config)
 # Retrieve hashed samples from the sample map of a given experiment
 HashedSamples = samples.loc[samples["HashingStatus"] != "."]
 HashedSampleNames = HashedSamples["sample"].tolist()
-print(HashedSampleNames)
 
 NonHashedSamples = samples.loc[samples["HashingStatus"] == "."]
 NonHashedSampleNames = NonHashedSamples["sample"].tolist()
-print(NonHashedSampleNames)
 
 
 
@@ -135,7 +133,6 @@ def getInputFiles(wildcards):
     # Hashing
     for f in hashing:
         allFiles.append(f)
-    print(allFiles)
     return allFiles
 
 

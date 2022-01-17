@@ -3,7 +3,6 @@
 import os
 
 WORKDIR=os.getcwd()
-print(WORKDIR)
 
 # Preprocessing to generate library file for ADT cellranger from the provided input parameters
 # Library file has a fixed format: fastqs,sample,library_type (with header)
