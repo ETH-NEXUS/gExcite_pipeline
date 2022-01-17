@@ -1,0 +1,7 @@
+name: /cluster/customapps/nexus/single-cell/conda_envs/run_citeseq_count
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python
