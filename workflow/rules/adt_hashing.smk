@@ -33,12 +33,14 @@ rule createTagFile:
 
 rule run_citeseq_count:
     input:
-        R1 = lambda wildcards: list_fastqs(config["inputOutput"]["input_fastqs_adt"]+'{sample}/'.format(sample=wildcards.sample),"R1"),
-        R2 = lambda wildcards: list_fastqs(config["inputOutput"]["input_fastqs_adt"]+'{sample}/'.format(sample=wildcards.sample),"R2"),
         tags = 'results/pooled_samples/citeseq_count/{sample}.tags.tsv'
     output:
         run_report = report("results/pooled_samples/citeseq_count/{sample}.run_report.yaml", caption="workflow/report/citeseq.rst", category="preprocessing QC")
+    conda:
+        "../envs/run_citeseq_count.yaml"
     params:
+        R1 = lambda wildcards: ",".join(list_fastqs(config["inputOutput"]["input_fastqs_adt"]+'{sample}/'.format(sample=wildcards.sample),"R1")),
+        R2 = lambda wildcards: ",".join(list_fastqs(config["inputOutput"]["input_fastqs_adt"]+'{sample}/'.format(sample=wildcards.sample),"R2")),
         outdir = 'results/pooled_samples/citeseq_count/{sample}/',
         outfile = 'results/pooled_samples/citeseq_count/{sample}/run_report.yaml',
         variousParams = config['tools']['run_citeseq_count']['variousParams'],
@@ -50,10 +52,8 @@ rule run_citeseq_count:
         config['computingResources']['highRequirements']['threads']
     benchmark:
         'results/pooled_samples/citeseq_count/{sample}.run_citeseq_count.benchmark'
-    run:
-        R1=",".join(input.R1)
-        R2=",".join(input.R2)
-        shell("{config[tools][run_citeseq_count][call]} -R1 {R1} -R2 {R2} {params.variousParams} -o {params.outdir} {params.targetCells} -T {threads} -t {input.tags} ; ln -frs {params.outfile} {output.run_report}")
+    shell:
+        '{config[tools][run_citeseq_count][call]} -R1 {params.R1} -R2 {params.R2} {params.variousParams} -o {params.outdir} {params.targetCells} -T {threads} -t {input.tags} ; ln -frs {params.outfile} {output.run_report}'
 
 # Hashing Analysis Script requires the zipped cellranger files as input.
 # Input: Cellranger output files
@@ -76,7 +76,7 @@ rule create_symlink_hashing_input:
     threads:
         config['computingResources']['lowRequirements']['threads']
     benchmark:
-        'results/pooled_samples//cellranger_adt/{sample}.create_symlink_adt.benchmark'
+        'results/pooled_samples/cellranger_adt/{sample}.create_symlink_adt.benchmark'
     shell:
         'mkdir -p {params.root_out} ; gzip -c "{input.features_file_tmp}" > "{output.features_file}"; gzip -c "{input.matrix_file_tmp}" > "{output.matrix_file}"; gzip -c "{input.barcodes_file_tmp}" > "{output.barcodes_file}"'
 
