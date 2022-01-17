@@ -43,4 +43,4 @@ rule scPreprocessing_gex_adt:
     benchmark:
         "results/complete_sc_preprocessing_gex_adt.txt.benchmark"
     shell:
-        "Rscript scripts/link_preprocessing_and_singlecell_pipeline.R --sampleMap {params.samplemapFile} --rootdir {params.rootdir} --technology ADT,GEX && date > {output} "
+        "Rscript workflow/scripts/link_preprocessing_and_singlecell_pipeline.R --sampleMap {params.samplemapFile} --rootdir {params.rootdir} && date > {output} "
