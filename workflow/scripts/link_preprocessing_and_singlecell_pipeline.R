@@ -12,15 +12,12 @@ cat("\n\n\n\n")
 
 option_list <- list(
   make_option("--sampleMap", type = "character", help = "Path to the samplemap."),
-  make_option("--rootdir", type = "character", help = "Path to the rootdirectory."),
-  make_option("--technology", type = "character", help = "Technology used: either ADT or ADT,GEX")
+  make_option("--rootdir", type = "character", help = "Path to the rootdirectory.")
 )
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
-sampleMap <- read.csv(opt$sampleMap, header = FALSE, sep = "\t")
-print(sampleMap)
-colnames(sampleMap) <- c("seqRunNumber", "SampleSet", "Status", "SequencingName", "TargetCells", "FeatureReference")
+sampleMap <- read.csv(opt$sampleMap, header = TRUE, sep = "\t")
 print(sampleMap)
 
 filter_cellRanger <- function(barcodeList, inputFolder, outputFolder, hashedSampleSet, sampleName) {
@@ -90,37 +87,36 @@ filter_cellRanger <- function(barcodeList, inputFolder, outputFolder, hashedSamp
 }
 
 
-
-for (status in sampleMap$Status) {
+for (status in sampleMap$HashingStatus) {
   print(status)
+  print("TEST")
   if (file.exists(status)) {
-    hashedSampleSet <- sampleMap$SampleSet[which(sampleMap$Status == status)]
+    hashedSampleSet <- sampleMap$sample[which(sampleMap$HashingStatus == status)]
     print(hashedSampleSet)
-    if (hashedSampleSet == "NH") {
+    if (hashedSampleSet == ".") {
       next
     }
     sampleTagMap <- read.csv(status, header = FALSE, sep = ",")
     colnames(sampleTagMap) <- c("barcode", "tagName", "sampleName")
     print(sampleTagMap)
     for (tag in sampleTagMap$tagName) {
+      print(tag)
       sampleName <- sampleTagMap$sampleName[which(sampleTagMap$tagName == tag)]
       # Create the required output directories
-      baseoutdir <- paste(opt$rootdir, hashedSampleSet, sampleName, "analysis", sep = "/")
-      outdirADT <- paste(baseoutdir, "cellranger_run_adt", sep = "/")
+      baseoutdir <- paste(opt$rootdir, hashedSampleSet, sep = "/")
+      outdirADT <- paste(baseoutdir, "cellranger_adt", sep = "/")
       dir.create(baseoutdir, recursive = TRUE)
       dir.create(outdirADT, showWarnings = FALSE)
       # Start defining input variables for CellRanger Filter Function
-      hashingdir <- paste(opt$rootdir, hashedSampleSet, "analysis_pooledSample/hashing_analysis/", sep = "/")
+      hashingdir <- paste(opt$rootdir, "pooled_sample/hashing_analysis/", sep = "/")
       barcodeFile <- paste(hashedSampleSet, tag, sampleName, "barcodes_singlets.txt", sep = ".")
-      indirADT <- paste(opt$rootdir, hashedSampleSet, "analysis_pooledSample/cellranger_adt/", sep = "/")
+      indirADT <- paste(opt$rootdir,"pooled_sample/cellranger_adt/", sep = "/")
       # Filter CellRanger
       filter_cellRanger(paste(hashingdir, barcodeFile, sep = ""), indirADT, outdirADT, hashedSampleSet, sampleName)
-      if (opt$technology == "ADT,GEX") {
-        outdirGEX <- paste(baseoutdir, "cellranger_run_gex", sep = "/")
-        dir.create(outdirGEX, showWarnings = FALSE)
-        indirGEX <- paste(opt$rootdir, hashedSampleSet, "analysis_pooledSample/cellranger_gex/", sep = "/")
-        filter_cellRanger(paste(hashingdir, barcodeFile, sep = ""), indirGEX, outdirGEX, hashedSampleSet, sampleName)
-      }
+      outdirGEX <- paste(baseoutdir, "cellranger_gex", sep = "/")
+      dir.create(outdirGEX, showWarnings = FALSE)
+      indirGEX <- paste(opt$rootdir, "pooled_sample/cellranger_gex/", sep = "/")
+      filter_cellRanger(paste(hashingdir, barcodeFile, sep = ""), indirGEX, outdirGEX, hashedSampleSet, sampleName)
     }
   }
 }
