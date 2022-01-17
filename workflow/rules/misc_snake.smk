@@ -80,10 +80,10 @@ def getInputFiles(wildcards):
 
     # Cellranger output for hashed samples (in preprocessing folder)
     cr_hashed_gex = expand(
-        "results/pooled_sample/cellranger_gex/{sample}.features.tsv", sample=HashedSampleNames
+        "results/pooled_samples/cellranger_gex/{sample}.features.tsv", sample=HashedSampleNames
     )
     cr_hashed_adt = expand(
-        "results/pooled_sample/cellranger_adt/{sample}.features.tsv", sample=HashedSampleNames
+        "results/pooled_samples/cellranger_adt/{sample}.features.tsv", sample=HashedSampleNames
     )
 
 #    # Cellranger output for non-hashed samples (also in preprocessing folder)
@@ -96,35 +96,23 @@ def getInputFiles(wildcards):
 
     # Hashing framework: symlinks to cellranger output (in pooled sample folders)
     root_hashed_gex = expand(
-        "results/pooled_sample/cellranger_gex/{sample}.features.tsv",
+        "results/pooled_samples/cellranger_gex/{sample}.features.tsv",
         sample=HashedSampleNames,
     )
     root_hashed_adt = expand(
-        "results/pooled_sample/cellranger_adt/{sample}.features.tsv",
+        "results/pooled_samples/cellranger_adt/{sample}.features.tsv",
         sample=HashedSampleNames,
     )
     # Citeseq output ( in pooled analysis folder)
     citeseq = expand(
-        "results/pooled_sample/citeseq_count/{sample}.run_report.yaml",
+        "results/pooled_samples/citeseq_count/{sample}.run_report.yaml",
         sample=HashedSampleNames,
     )
     # Hashing output ( in pooled analysis folder)
     hashing = expand(
-        "results/pooled_sample/hashing_analysis/{sample}.complete_hashing.txt",
+        "results/pooled_samples/hashing_analysis/{sample}.complete_hashing.txt",
         sample=HashedSampleNames,
     )
-
-    # Non-hashing framework: symlinks to analysis output (in single-sample folder, no pooled)
-#    root_nonhashed_gex = expand(
-#        ROOTDIR
-#        + "{sample}/analysis_{sample}/analysis/cellranger_run_gex/{sample}.features.tsv",
-#        sample=getNonHashedSampleNames(),
-#    )
-#    root_nonhashed_adt = expand(
-#        ROOTDIR
-#        + "{sample}/analysis_{sample}/analysis/cellranger_run_adt/{sample}.features.tsv",
-#        sample=getNonHashedSampleNames(),
-#    )
 
     # Add all strings to list of required files. Empty will be skipped
     # Cellranger results
@@ -141,10 +129,6 @@ def getInputFiles(wildcards):
         allFiles.append(f)
     for f in root_hashed_adt:
         allFiles.append(f)
-#    for f in root_nonhashed_gex:
-#        allFiles.append(f)
-#    for f in root_nonhashed_adt:
-#        allFiles.append(f)
     # Citeseq
     for f in citeseq:
         allFiles.append(f)
