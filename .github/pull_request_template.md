@@ -9,13 +9,12 @@ Please include a summary of the change.
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] A documentation update
 
-# Test?
+## Has the appropriate test been performed?
 
 - [ ] Feature test has been performed
 - [ ] A pipeline test has been performed
 
-
-# Checklist:
+## Checklist:
 
 - [ ] The code follows common style guidelines (linting your code is highly recommended)
 - [ ] The code is commented reasonably
