@@ -32,7 +32,7 @@ Where Read Type is one of: I1, R1, R2.
 
 When parameters in the third and fourth column do not need to be provided, "." can be used instead.
 
-### Hashing Info File
+## Hashing Info File
 In case of Hashed Samples we need to associate the hashtag barcodes, the tag names and the corresponting samplenames with the sampleset. To do so we need a file having the following structure:
 
 ```
@@ -40,6 +40,6 @@ Barcode1,TagName1,SampleA
 Barcode2,TagName2,SampleB
 ```
 
-### Feature Reference File
+## Feature Reference File
 
 For further information please consult the cellranger tool [documentation](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/feature-bc-analysis#feature-ref).
