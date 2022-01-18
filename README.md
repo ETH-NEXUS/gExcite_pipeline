@@ -3,7 +3,7 @@
 ## General overview
 
 
-### Installation instructions
+## Installation instructions
 Most of the software used in the default workflow can be installed in an automated fashion using snakemake's [--use-conda](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management) functionality. 
 The following software needs to be installed manually.
 
@@ -17,18 +17,18 @@ Webpage: [https://support.10xgenomics.com/single-cell-gene-expression/software/p
 ```
 
 
-### Example data
+## Example data
 
 
 
-### Before running the pipeline
+## Before running the pipeline
 
-### Configure the pipeline
+#### Configure the pipeline
 
 The pipeline must be appropriatly configured to your data. A detailed [Readme](config/README.md) can be found in the 'config' directory. 
 
 
-### Preprocessing
+#### Preprocessing
 
 **IndexHopping removal**  
 In case of combined GEX and ADT NovaSeq data scripts are provided to clean up the data before a run. Please consult the [Readme](workflow/scripts/index_hopping_removal/README.md) here.
