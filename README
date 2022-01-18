@@ -4,9 +4,17 @@
 
 
 ## Installation instructions
+Most of the software used in the default workflow can be installed in an automated fashion using snakemake's [--use-conda](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management) functionality. 
+The following software needs to be installed manually.
 
-NOTES: Cellranger & Citeseq count manually
-else --use-conda
+- [Cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger): Follow the instructions on the 10xGenomics installation support page to install cellranger and to include the cellranger binary to your path.
+Webpage: [https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation)
+
+- [CITE-seq-Count](https://hoohm.github.io/CITE-seq-Count/) 
+ 
+```
+>> pip install CITE-seq-Count
+```
 
 
 ## Example data
