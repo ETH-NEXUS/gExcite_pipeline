@@ -1,10 +1,24 @@
 # Overview
 
+# Installation
 
-# clean_adt_barcodes_indexHopping.R
+cellranger
+dropletUtils
+Matrix
 
-# clean_adt_features_indexHopping.R 
+# Preprocessing
+Cellranger on adt & GEX seperately 
+
 
 # clean_and_filter_swapped.R
 
+# clean_adt_barcodes_indexHopping.R
+
+# clean_adt_features_indexHopping.R
+
 # map_geneSymbols_indexHopping.R 
+
+
+# Postprocessing
+
+Mimick pipeline structure 
