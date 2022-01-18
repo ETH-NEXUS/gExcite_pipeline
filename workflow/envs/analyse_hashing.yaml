@@ -1,0 +1,17 @@
+name: /cluster/customapps/nexus/single-cell/conda_envs/scRNA_ADT_hashing
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - r-optparse
+  - r-seurat
+  - r-cowplot
+  - r-ggplot2
+  - r-viridislite
+  - r-paralleldist
+  - r-scales
+  - r-uwot
+  - r-patchwork
+  - r-plyr
+  - r-r.utils

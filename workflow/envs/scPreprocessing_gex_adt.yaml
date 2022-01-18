@@ -1,0 +1,10 @@
+name: /cluster/customapps/nexus/single-cell/conda_envs/scPreprocessing_gex_adt
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - r-optparse
+  - r-r.utils
+  - r-matrix
+

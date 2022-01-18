@@ -1,0 +1,57 @@
+inputOutput:
+  input_fastqs_gex: /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/fastqs_GEX/
+  input_fastqs_adt: /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/fastqs_ADT/
+  sample_map: config/samplemap
+
+resources:
+  # The following needs to point to the reference transcriptome that will be used by cellranger. 
+  reference_transcriptome: /cluster/work/nexus/utilities/databases/singlecell/10xGenomics/gene_expression_3_0_2/refdata-cellranger-GRCh38-3.0.0
+
+# The tools in this pipeline use a broad range of resources and have been assigned to the following three categories.
+# If there aren't enough resources specified it can be adapted in the tools corresponding section.
+computingResources:
+  lowRequirements:
+    mem: 400
+    time: 100
+    threads: 1
+  
+  mediumRequirements:
+    mem: 8000
+    time: 700
+    threads: 8
+
+  highRequirements:
+    mem: 16000
+    time: 1440
+    threads: 8
+
+tools:
+  # Cellranger can not be installed through Conda currently.
+  # It needs to be installed manually & the call in both cellranger rules needs to be adapted.
+  # variousParams can be set as described in the CiteSeq documentation 
+  cellranger_count_gex:
+    call: /cluster/work/nexus/utilities/sharedPrograms/cellranger/cellranger-6.1.1/bin/cellranger
+    variousParams: '--chemistry SC5P-R2'
+
+  cellranger_count_adt:
+    call:  /cluster/work/nexus/utilities/sharedPrograms/cellranger/cellranger-6.1.1/bin/cellranger
+    variousParams: '--chemistry SC5P-R2'
+
+  # CiteSeq can not be installed through Conda currently.
+  # It needs to be installed manually & the call here needs to be adapted.
+  # variousParams can be set as described in the CiteSeq documentation
+  run_citeseq_count:
+    call: '/cluster/customapps/nexus/single-cell/CITE-seq-Count_1.4.5/bin/CITE-seq-Count'
+    variousParams: '-cbf 1 -cbl 16 -umif 17 -umil 26 --start-trim 10 '
+
+  # The parameters of this custom script (analyseHashing.R) are descripted in the following lines.
+  # quantileThreshold: Quantile threshold for HTODemux() function (RPackage Seurat)
+  # normalisation: Parameter for normalisation. Can be '1' (normalisation across features), '2' (normalisation across cells), or '1,2' (both normalisations combined).
+  # normalisation_downstream: If normalisation = '1,2' the normalised counts of only one option are kept. This option can be '1' or '2'.
+  # save_negatives: If normalisation '1,2' is chosen this parameter decides if a given tag stays for the cell even if using the second normalisation method a 'Negative' is predicted. Can be 'FALSE' or 'TRUE', default is TRUE.
+  analyse_hashing:
+    quantileThreshold: '0.99'
+    normalisation: '1,2'
+    normalisation_downstream: '1'
+    save_negatives: 'TRUE'
+

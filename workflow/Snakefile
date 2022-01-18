@@ -1,0 +1,46 @@
+# Define minimum Snakemake Version
+from snakemake.utils import min_version
+min_version("6.12.1")
+
+# Include Config file
+configfile: "config/config.yaml"
+
+# Include report functionality
+report: "../report/workflow.rst"
+
+
+# This function adapts the config object to include full path information
+include: "rules/misc_snake.smk"
+
+
+# input files and folders
+SAMPLEMAPPING = config["inputOutput"]["sample_map"]
+
+## Include the rules
+include: "rules/gex_cellranger.smk"
+include: "rules/adt_cellranger.smk"
+include: "rules/adt_hashing.smk"
+
+
+# This rule defines which files should be created
+localrules:
+    scPreprocessing_gex_adt,
+
+
+rule scPreprocessing_gex_adt:
+    input:
+        inputFiles=getInputFiles,
+    output:
+        "results/complete_sc_preprocessing_gex_adt.txt",
+    params:
+        samplemapFile=config["inputOutput"]["sample_map"],
+        rootdir="results/",
+    conda:
+        "envs/scPreprocessing_gex_adt.yaml"
+    resources:
+        mem_mb=1000,
+        time=1
+    benchmark:
+        "results/complete_sc_preprocessing_gex_adt.txt.benchmark"
+    shell:
+        "Rscript workflow/scripts/link_preprocessing_and_singlecell_pipeline.R --sampleMap {params.samplemapFile} --rootdir {params.rootdir} && date > {output} "
