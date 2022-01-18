@@ -3,7 +3,7 @@
 ## General overview
 
 
-## Installation instructions
+### Installation instructions
 Most of the software used in the default workflow can be installed in an automated fashion using snakemake's [--use-conda](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management) functionality. 
 The following software needs to be installed manually.
 
@@ -17,50 +17,26 @@ Webpage: [https://support.10xgenomics.com/single-cell-gene-expression/software/p
 ```
 
 
-## Example data
+### Example data
 
 
 
-## Before running the pipeline
+### Before running the pipeline
 
-## Preprocessing
-### Dealing with different input data
+### Configure the pipeline
+The pipeline must be appropriatly configured to your data. A detailed readme can be found in the 'config' directory. 
 
-The single cell pipeline can currently handle a diverse set of input data and preprocess them to run with the GEX master pipeline.
-In general, if NovaSeq Data is analysed use the --use-conda variable to allow snakemake to activate the appropriate environment for index-hopping removal.
 
-#### ADT and GEX combined
-In case of combined GEX and ADT data the following snake file should be used [snake_prep_gex_adt_master.snake](snake_master/snake_prep_gex_adt_master.snake). (Exception NovaSeq Data: see below) If your data has been hashed, adapt the [samplemap](#samplemap)  to contain a link to the [Hashing Info File](#hashing-info-file).
+### Preprocessing
 
 **IndexHopping removal**  
 In case of combined GEX and ADT NovaSeq data scripts are provided to clean up the data before a run. Please consult the [Readme](snake_master/workflow/scripts/index_hopping_removal/README) here.
 
 
-### SampleMap Preprocessing
-
-In this pipeline, the sample map is used to specify sample-specific parameters. The sample map should have the following structure:
-```
-1       SampleSetName_1	HashingStatus_1	SeqName_ADT_1	nTargetCells_1	featFile_ADT_1
-1	SampleSetName_2	HashingStatus_2	SeqName_ADT_2	nTargetCells_2	featFile_ADT_2
-```
-- HashingStatus_x corresponds to the hashing status of sample set 'x'. Allowed values are: "NH" or "." for non-hashed). In case of hashed samplesets the entry needs to point to a File containing the necessary information (see [Hashing Info File](#hashing-info-file)).
-- SeqName_ADT_x corresponds to the sequencing sample name of the ADT sample for set 'x', as this parameter is only required for the CellRanger run of ADT data. It can be retrieved from the fastqs file names as follows:
-```
-[SequencingName_ADT_x]_S[Number]_L00[Lane Number]_[Read Type]_001.fastq.gz
-```
-Where Read Type is one of: I1, R1, R2.
-- nTargetCells_x corresponds to the original number of targeted cells for the sample in the given experiment. This parameter usually has to be specified for hashing experiments.
-- featFile_ADT_x corresponds to the ADT feature reference file for sample set 'x'. Beware: in order to be able to perform index hopping removal on ADT samples that have different reference files, these should be combined into a single joined reference file that is used for all available sample sets.
-
-When parameters in the third and fourth column do not need to be provided, "." can be used instead.
-
-### Hashing Info File
-In case of Hashed Samples we need to associate the hashtag barcodes, the tag names and the corresponting samplenames with the sampleset. To do so we need a file having the following structure:
-
-```
-Barcode1,TagName1,SampleA
-Barcode2,TagName2,SampleB
-```
-
 ## Running the pipeline
+Following the configuration of the pipeline a dryrun can be started using:
+```
+snakemake --use-conda --printshellcmds --dry-run
+```
+
 
