@@ -7,7 +7,6 @@ from snakemake.utils import validate
 
 fail_instantly = False
 
-
 class Error(object):
     def __init__(self, key, name):
         self.__key = key
@@ -136,35 +135,16 @@ def getInputFiles(wildcards):
     return allFiles
 
 
-# Retrieve filename listing tags for non-hashed samples.
+# Retrieve filename listing tags for hashed samples.
 def getTagFileHashedSamples(wildcards):
-    if not "SAMPLEMAPPING" in globals():
-        return ["NOMAPPINGFILE"]
-    try:
-        open(SAMPLEMAPPING, "r")
-    except IOError:
-        return ["NOMAPPINGFILE"]
-    sampleMap = dict()
-    with open(SAMPLEMAPPING, "r") as f:
-        for line in f:
-            if line.startswith("sample"):
-                continue
-            if line.strip() != "":
-                lineSplit = line.strip().split()
-                sample = lineSplit[0].strip()
-                status = lineSplit[1].strip()
-                if status not in ["NH", "."]:
-                    if not os.path.isfile(status):
-                        raise ValueError(
-                            "Sample '%s' does not contain a valid hashing status/file in the sample map!"
-                            % (sample)
-                        )
-                if sample in sampleMap.keys():
-                    raise ValueError(
-                        "Sample '%s' is not unique in the sample map!"
-                        % (wildcards.sample)
-                    )
-                sampleMap[sample] = status
+    HashedSamples = samples.loc[samples["HashingStatus"] != "."]
+    sampleMap = dict(zip(HashedSamples['sample'], HashedSamples['HashingStatus']))
+    # Tests if file is existing
+    if not os.path.isfile(sampleMap[wildcards.sample]):
+        raise ValueError(
+        "Sample '%s' does not contain a valid hashing status/file in the sample map!"
+        % (wildcards.sample)
+        )
     if wildcards.sample not in sampleMap.keys():
         raise ValueError(
             "Sample '%s' not found in the sample map!" % (wildcards.sample)
@@ -175,30 +155,8 @@ def getTagFileHashedSamples(wildcards):
 
 # Retrieve the number of target cells corresponding to a given sample set (both GEX and ADT)
 def getTargetCells(wildcards):
-    if not "SAMPLEMAPPING" in globals():
-        return ["NOMAPPINGFILE"]
-    try:
-        open(SAMPLEMAPPING, "r")
-    except IOError:
-        return ["NOMAPPINGFILE"]
-    sampleMap = dict()
-    with open(SAMPLEMAPPING, "r") as f:
-        for line in f:
-            if line.startswith("sample"):
-                continue
-            if line.strip() != "":
-                lineSplit = line.strip().split()
-                sample = lineSplit[0].strip()
-                nCells = lineSplit[3].strip()
-                if sample in sampleMap.keys():
-                    raise ValueError(
-                        "Sample '%s' is not unique in the sample map!"
-                        % (wildcards.sample)
-                    )
-                sampleMap[sample] = "."
-                if nCells != ".":
-                    sampleMap[sample] = int(nCells)
-
+    # Create dictionary with samples and nTargetCells
+    sampleMap = dict(zip(samples['sample'], samples['nTargetCells']))
     if wildcards.sample not in sampleMap.keys():
         raise ValueError(
             "Sample '%s' not found in the sample map!" % (wildcards.sample)
@@ -207,8 +165,6 @@ def getTargetCells(wildcards):
 
 
 # Preprend the retrieved target cell with the prefix required for citeseq count.
-
-
 def getTargetCellsCiteseqCount(wildcards):
     value = getTargetCells(wildcards)
     out = []
@@ -220,8 +176,6 @@ def getTargetCellsCiteseqCount(wildcards):
 
 
 # Preprend the retrieved target cell with the prefix required for cellranger count.
-
-
 def getTargetCellsCellranger(wildcards):
     value = getTargetCells(wildcards)
     out = []
@@ -234,33 +188,8 @@ def getTargetCellsCellranger(wildcards):
 
 # Retrieve the ADT sequencing run name corresponding to a given sample set
 def getSeqRunName(wildcards):
-    if not "SAMPLEMAPPING" in globals():
-        return ["NOMAPPINGFILE"]
-    try:
-        open(SAMPLEMAPPING, "r")
-    except IOError:
-        return ["NOMAPPINGFILE"]
-    sampleMap = dict()
-    with open(SAMPLEMAPPING, "r") as f:
-        for line in f:
-            if line.startswith("sample"):
-                continue
-            if line.strip() != "":
-                lineSplit = line.strip().split()
-                sample = lineSplit[0].strip()
-                seqRun = lineSplit[2].strip()
-                if sample in sampleMap.keys():
-                    raise ValueError(
-                        "Sample '%s' is not unique in the sample map!"
-                        % (wildcards.sample)
-                    )
-                if seqRun == ".":
-                    raise ValueError(
-                        "Sample '%s' does not contain a sequencing run name in the sample map!"
-                        % (wildcards.sample)
-                    )
-                sampleMap[sample] = seqRun
-
+    # Create dictionary with samples and SeqRunName
+    sampleMap = dict(zip(samples['sample'], samples['SeqRunName']))
     if wildcards.sample not in sampleMap.keys():
         raise ValueError(
             "Sample '%s' not found in the sample map!" % (wildcards.sample)
@@ -270,33 +199,8 @@ def getSeqRunName(wildcards):
 
 # Retrieve the ADT feature reference file corresponding to a given sample set
 def getFeatRefFile(wildcards):
-    if not "SAMPLEMAPPING" in globals():
-        return ["NOMAPPINGFILE"]
-    try:
-        open(SAMPLEMAPPING, "r")
-    except IOError:
-        return ["NOMAPPINGFILE"]
-    sampleMap = dict()
-    with open(SAMPLEMAPPING, "r") as f:
-        for line in f:
-            if line.startswith("sample"):
-                continue
-            if line.strip() != "":
-                lineSplit = line.strip().split()
-                sample = lineSplit[0].strip()
-                featFile = lineSplit[4].strip()
-                if sample in sampleMap.keys():
-                    raise ValueError(
-                        "Sample '%s' is not unique in the sample map!"
-                        % (wildcards.sample)
-                    )
-                if featFile == ".":
-                    raise ValueError(
-                        "Sample '%s' does not contain a feature reference file in the sample map!"
-                        % (wildcards.sample)
-                    )
-                sampleMap[sample] = featFile
-
+    # Create dictionary with samples and FeatureRefFile
+    sampleMap = dict(zip(samples['sample'], samples['featureReferenceFile']))
     if wildcards.sample not in sampleMap.keys():
         raise ValueError(
             "Sample '%s' not found in the sample map!" % (wildcards.sample)
