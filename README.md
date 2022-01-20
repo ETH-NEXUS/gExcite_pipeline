@@ -1,3 +1,4 @@
+[![Snakemake](https://img.shields.io/badge/snakemake-≥6.12.1-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)
 # scGate 
 
 ## General overview
