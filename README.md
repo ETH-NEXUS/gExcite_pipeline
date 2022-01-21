@@ -25,8 +25,15 @@ Webpage: [https://support.10xgenomics.com/single-cell-gene-expression/software/p
 
 
 ## Before running the pipeline
+Before the pipeline can run the ADT and the GEX fastq files have to be placed in a specific folder structure, the pipeline has to be configured appropriately and a preprocessing has to be performed if necessary. 
 
-### Configure the pipeline 
+### Prepare the fastq files
+The pipeline expects the fastq files per sample to be in the following folder structure and adhere to the naming schema: 
+
+/path/to/*input_fastqs_gex_directory*/*SAMPLENAME*/*SAMPLENAME*_S[Number]_L00[Lane Number]_[Read Type]_001.fastq.gz
+
+
+### Configure the pipeline
 
 The pipeline must be appropriatly configured to your data. A detailed [Readme](config/README.md) can be found in the 'config' directory. 
 
