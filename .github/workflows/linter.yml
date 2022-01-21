@@ -22,5 +22,4 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
-          VALIDATE_SNAKEMAKE_SNAKEFMT: true
           VALIDATE_YAML: true
