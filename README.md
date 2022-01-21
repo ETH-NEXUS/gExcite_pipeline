@@ -26,12 +26,12 @@ Webpage: [https://support.10xgenomics.com/single-cell-gene-expression/software/p
 
 ## Before running the pipeline
 
-#### Configure the pipeline
+### Configure the pipeline 
 
 The pipeline must be appropriatly configured to your data. A detailed [Readme](config/README.md) can be found in the 'config' directory. 
 
 
-#### Preprocessing
+### Preprocessing
 
 **IndexHopping removal**  
 In case of combined GEX and ADT NovaSeq data scripts are provided to clean up the data before a run. Please consult the [Readme](workflow/scripts/index_hopping_removal/README.md) here.
