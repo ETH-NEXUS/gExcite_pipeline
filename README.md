@@ -30,7 +30,7 @@ Before the pipeline can run the ADT and the GEX fastq files have to be placed in
 ### Prepare the fastq files
 The pipeline expects the fastq files per sample to be in the following folder structure and adhere to the naming schema: 
 
-/path/to/*input_fastqs_gex_directory*/*SAMPLENAME*/*SAMPLENAME*_S[Number]_L00[Lane Number]_[Read Type]_001.fastq.gz
+/path/to/**input_fastqs_gex_directory**/**SAMPLENAME**/**SAMPLENAME**_S[Number]_L00[Lane Number]_[Read Type]_001.fastq.gz
 
 
 ### Configure the pipeline
