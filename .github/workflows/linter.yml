@@ -24,3 +24,5 @@ jobs:
 
           VALIDATE_SNAKEMAKE_SNAKEFMT: true
           VALIDATE_R: true
+          VALIDATE_YAML: true
+          VALIDATE_MARKDOWN: true
