@@ -1,8 +1,7 @@
 inputOutput:
   input_fastqs_gex: /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/fastqs_GEX/
   input_fastqs_adt: /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/fastqs_ADT/
-  sample_map: config/samplemap
-  sample_map:
+  sample_map config/samplemap
 
 resources:
   # The following needs to point to the reference transcriptome that will be used by cellranger. 
