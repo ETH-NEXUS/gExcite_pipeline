@@ -7,6 +7,23 @@
 
 
 ## Installation instructions
+### Pipeline
+Given conda is installed on you system the pipeline can be set up using snakedeploy
+
+First create and activate an environment including Mamba, Snakemake and Snakedeploy:
+
+```
+conda create -c bioconda -c conda-forge --name snakemake mamba snakemake snakedeploy
+conda activate snakemake
+```
+
+Snakedeploy can now be used to deploy the workflow. 
+
+```
+snakedeploy deploy-workflow https://github.com/ETH-NEXUS/scGATE_workflow --tag master .
+```
+
+### Dependencies
 Most of the software used in the default workflow can be installed in an automated fashion using snakemake's [--use-conda](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management) functionality. 
 The following software needs to be installed manually.
 
@@ -16,7 +33,7 @@ Webpage: [https://support.10xgenomics.com/single-cell-gene-expression/software/p
 - [CITE-seq-Count](https://hoohm.github.io/CITE-seq-Count/) 
  
 ```
->> pip install CITE-seq-Count
+pip install CITE-seq-Count
 ```
 
 
