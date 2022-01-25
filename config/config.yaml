@@ -1,7 +1,7 @@
 inputOutput:
   input_fastqs_gex: /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/fastqs_GEX/
   input_fastqs_adt: /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/fastqs_ADT/
-  sample_map config/samplemap
+  sample_map: config/samplemap
 
 resources:
   # The following needs to point to the reference transcriptome that will be used by cellranger. 
@@ -16,13 +16,13 @@ computingResources:
     threads: 1
   
   mediumRequirements:
-    mem: 8000
+    mem: 4000
     time: 700
     threads: 8
 
   highRequirements:
-    mem: 16000
-    time: 1440
+    mem: 10000
+    time: 500
     threads: 8
 
 tools:
@@ -41,7 +41,7 @@ tools:
   # It needs to be installed manually & the call here needs to be adapted.
   # variousParams can be set as described in the CiteSeq documentation
   run_citeseq_count:
-    call: '/cluster/customapps/nexus/single-cell/CITE-seq-Count_1.4.5/bin/CITE-seq-Count'
+    call: 'module load gcc/4.8.5 ; module load python_cpu/3.7.4; /cluster/customapps/nexus/single-cell/CITE-seq-Count_1.4.5/bin/CITE-seq-Count'
     variousParams: '-cbf 1 -cbl 16 -umif 17 -umil 26 --start-trim 10 '
 
   # The parameters of this custom script (analyseHashing.R) are descripted in the following lines.
