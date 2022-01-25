@@ -36,8 +36,6 @@ rule run_citeseq_count:
         tags = 'results/pooled_samples/citeseq_count/{sample}.tags.tsv'
     output:
         run_report = report("results/pooled_samples/citeseq_count/{sample}.run_report.yaml", caption="workflow/report/citeseq.rst", category="preprocessing QC")
-    conda:
-        "../envs/run_citeseq_count.yaml"
     params:
         R1 = lambda wildcards: ",".join(list_fastqs(config["inputOutput"]["input_fastqs_adt"]+'{sample}/'.format(sample=wildcards.sample),"R1")),
         R2 = lambda wildcards: ",".join(list_fastqs(config["inputOutput"]["input_fastqs_adt"]+'{sample}/'.format(sample=wildcards.sample),"R2")),
@@ -102,7 +100,7 @@ rule analyse_hashing:
         normalisation = config['tools']['analyse_hashing']['normalisation'],
         normalisation_downstream = config['tools']['analyse_hashing']['normalisation_downstream'],
         save_negatives = config['tools']['analyse_hashing']['save_negatives'],
-        citeseq_folder = 'results/pooled_samples/citeseq_count/umi_count/'
+        citeseq_folder = 'results/pooled_samples/citeseq_count/{sample}/umi_count/'
     resources:
         mem_mb = config['computingResources']['highRequirements']['mem'],
         time_min = config['computingResources']['highRequirements']['time']
