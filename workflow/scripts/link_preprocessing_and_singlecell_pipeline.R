@@ -89,7 +89,6 @@ filter_cellRanger <- function(barcodeList, inputFolder, outputFolder, hashedSamp
 
 for (status in sampleMap$HashingStatus) {
   print(status)
-  print("TEST")
   if (file.exists(status)) {
     hashedSampleSet <- sampleMap$sample[which(sampleMap$HashingStatus == status)]
     print(hashedSampleSet)
@@ -103,19 +102,19 @@ for (status in sampleMap$HashingStatus) {
       print(tag)
       sampleName <- sampleTagMap$sampleName[which(sampleTagMap$tagName == tag)]
       # Create the required output directories
-      baseoutdir <- paste(opt$rootdir, hashedSampleSet, sep = "/")
+      baseoutdir <- paste(opt$rootdir, sep = "/")
       outdirADT <- paste(baseoutdir, "cellranger_adt", sep = "/")
       dir.create(baseoutdir, recursive = TRUE)
       dir.create(outdirADT, showWarnings = FALSE)
       # Start defining input variables for CellRanger Filter Function
-      hashingdir <- paste(opt$rootdir, "pooled_sample/hashing_analysis/", sep = "/")
+      hashingdir <- paste(opt$rootdir, "pooled_samples/hashing_analysis/", sep = "/")
       barcodeFile <- paste(hashedSampleSet, tag, sampleName, "barcodes_singlets.txt", sep = ".")
-      indirADT <- paste(opt$rootdir,"pooled_sample/cellranger_adt/", sep = "/")
+      indirADT <- paste(opt$rootdir,"pooled_samples/cellranger_adt/", sep = "/")
       # Filter CellRanger
       filter_cellRanger(paste(hashingdir, barcodeFile, sep = ""), indirADT, outdirADT, hashedSampleSet, sampleName)
       outdirGEX <- paste(baseoutdir, "cellranger_gex", sep = "/")
       dir.create(outdirGEX, showWarnings = FALSE)
-      indirGEX <- paste(opt$rootdir, "pooled_sample/cellranger_gex/", sep = "/")
+      indirGEX <- paste(opt$rootdir, "pooled_samples/cellranger_gex/", sep = "/")
       filter_cellRanger(paste(hashingdir, barcodeFile, sep = ""), indirGEX, outdirGEX, hashedSampleSet, sampleName)
     }
   }
