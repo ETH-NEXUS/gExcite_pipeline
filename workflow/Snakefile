@@ -31,18 +31,15 @@ localrules:
 
 rule scPreprocessing_gex_adt:
     input:
-        inputFiles=getInputFiles,
+        #inputFiles=getInputFiles,
+        expand('results/cellranger_gex/{sample}.complete_demultiplexing.txt', sample=HashedSampleNames), 
+        expand('results/cellranger_adt/{sample}.complete_demultiplexing.txt', sample=HashedSampleNames)
     output:
         "results/complete_sc_preprocessing_gex_adt.txt",
-    params:
-        samplemapFile=config["inputOutput"]["sample_map"],
-        rootdir="results/",
-    conda:
-        "envs/scPreprocessing_gex_adt.yaml"
     resources:
         mem_mb=1000,
         time=1
     benchmark:
         "results/complete_sc_preprocessing_gex_adt.txt.benchmark"
     shell:
-        "Rscript workflow/scripts/link_preprocessing_and_singlecell_pipeline.R --sampleMap {params.samplemapFile} --rootdir {params.rootdir} && date > {output} "
+        "date > {output} "

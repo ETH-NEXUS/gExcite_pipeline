@@ -119,3 +119,20 @@ rule analyse_hashing:
         '--save_negatives {params.save_negatives} ' +
         '--output_prefix {params.output_prefix} '+
         '&& date > {output.successFile}'
+
+rule demultiplex_count_matrix:
+    input:
+        hashingSuccessFile = 'results/pooled_samples/hashing_analysis/{sample}.complete_hashing.txt'
+    output:
+        cellranger_adt = 'results/cellranger_adt/{sample}.complete_demultiplexing.txt',
+        cellranger_gex = 'results/cellranger_gex/{sample}.complete_demultiplexing.txt'
+    conda:
+        "../envs/demultiplex_count_matrix.yaml"
+    params:
+        samplemapFile=config["inputOutput"]["sample_map"]
+    resources:
+        mem_mb = config['computingResources']['mediumRequirements']['mem'],
+        time_min = config['computingResources']['mediumRequirements']['time']
+    threads:config['computingResources']['mediumRequirements']['threads']
+    shell:
+        "Rscript workflow/scripts/demultiplex_count_matrix.R --sampleMap {params.samplemapFile} --rootdir './results/'"
