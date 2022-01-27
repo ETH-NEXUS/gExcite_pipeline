@@ -31,7 +31,6 @@ localrules:
 
 rule scPreprocessing_gex_adt:
     input:
-        #inputFiles=getInputFiles,
         expand('results/cellranger_gex/{sample}.complete_demultiplexing.txt', sample=HashedSampleNames), 
         expand('results/cellranger_adt/{sample}.complete_demultiplexing.txt', sample=HashedSampleNames)
     output:
