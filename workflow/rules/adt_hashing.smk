@@ -124,8 +124,12 @@ rule demultiplex_count_matrix:
     input:
         hashingSuccessFile = 'results/pooled_samples/hashing_analysis/{sample}.complete_hashing.txt'
     output:
-        cellranger_adt = 'results/cellranger_adt/{sample}.complete_demultiplexing.txt',
-        cellranger_gex = 'results/cellranger_gex/{sample}.complete_demultiplexing.txt'
+        cellranger_gex_mtx = 'results/cellranger_gex/{sample}.{demultiplexed}.matrix.mtx',
+        cellranger_gex_feature = 'results/cellranger_gex/{sample}.{demultiplexed}.features.tsv',
+        cellranger_gex_barcode = 'results/cellranger_gex/{sample}.{demultiplexed}.barcodes.tsv',
+        cellranger_adt_mtx = 'results/cellranger_adt/{sample}.{demultiplexed}.matrix.mtx',
+        cellranger_adt_feature = 'results/cellranger_adt/{sample}.{demultiplexed}.features.tsv',
+        cellranger_adt_barcode = 'results/cellranger_adt/{sample}.{demultiplexed}.barcodes.tsv',
     conda:
         "../envs/demultiplex_count_matrix.yaml"
     params:
