@@ -11,18 +11,16 @@ report: "../report/workflow.rst"
 # This file includes common functions used in the pipeline
 include: "rules/misc_snake.smk"
 
+## Include the scampi module
+module scampi:
+    snakefile: "/cluster/work/nexus/internal_projects/scAmpi_restructuring/test_linda/scAmpi_single_cell_RNA/workflow/snake_scAmpi_basic_master.snake"
+    config: config["scampi"]
+
 ## Include the preprocessing rules
 include: "rules/gex_cellranger.smk"
 include: "rules/adt_cellranger.smk"
 include: "rules/adt_hashing.smk"
-
-## Include the scampi module
-#module scampi:
-#    snakefile: "/cluster/work/nexus/internal_projects/scGATE_publication/git/scAmpi_single_cell_RNA/snake/snake_scAmpi_basic_master.snake"
-#    config: "config/config.yaml"
-
-#use rule create_hdf5 from scampi as scampi_create_hdf5
-
+include: "rules/scampi_module.smk"
 
 # This rule defines which files should be created
 localrules:
@@ -31,8 +29,21 @@ localrules:
 
 rule scPreprocessing_gex_adt:
     input:
-        expand('results/cellranger_gex/{sample}.complete_demultiplexing.txt', sample=HashedSampleNames), 
-        expand('results/cellranger_adt/{sample}.complete_demultiplexing.txt', sample=HashedSampleNames)
+        # Final files from preprocessing
+        expand('results/cellranger_gex/{sample}.{demultiplexed}.matrix.mtx', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
+        expand('results/cellranger_gex/{sample}.{demultiplexed}.barcodes.tsv', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
+        expand('results/cellranger_gex/{sample}.{demultiplexed}.features.tsv', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
+        expand('results/cellranger_adt/{sample}.{demultiplexed}.matrix.mtx', sample=HashedSampleNames , demultiplexed = getDemultiplexedSamples()),
+        expand('results/cellranger_adt/{sample}.{demultiplexed}.barcodes.tsv', sample=HashedSampleNames , demultiplexed = getDemultiplexedSamples()),
+        expand('results/cellranger_adt/{sample}.{demultiplexed}.features.tsv', sample=HashedSampleNames , demultiplexed = getDemultiplexedSamples()),
+        # List of final files from scampi
+        expand('results/rawCounts/{sample}.{demultiplexed}.h5.histogram_library_sizes.png', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
+        expand('results/diff_exp/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.diffExp_success.txt', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
+        expand('results/gene_exp/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.gene_expression_per_cluster.tsv', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
+        expand('results/rawCounts/{sample}.{demultiplexed}.h5.histogram_library_sizes.png', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
+        expand('results/filteredCounts/{sample}.{demultiplexed}.genes_cells_filtered.h5.histogram_library_sizes.png', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
+        expand('results/plotting/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.celltype_barplot.png', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
+        expand('results/gsva/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.gsetscore_hm.png', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
     output:
         "results/complete_sc_preprocessing_gex_adt.txt",
     resources:
