@@ -20,7 +20,10 @@ module scampi:
 include: "rules/gex_cellranger.smk"
 include: "rules/adt_cellranger.smk"
 include: "rules/adt_hashing.smk"
+## Include scampi
 include: "rules/scampi_module.smk"
+## Include citseq rules
+include: "rules/adt_analyse_citeseq.smk"
 
 # This rule defines which files should be created
 localrules:
@@ -44,6 +47,8 @@ rule scPreprocessing_gex_adt:
         expand('results/filteredCounts/{sample}.{demultiplexed}.genes_cells_filtered.h5.histogram_library_sizes.png', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
         expand('results/plotting/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.celltype_barplot.png', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
         expand('results/gsva/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.gsetscore_hm.png', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
+        # List of final files from citeseq analysis
+        expand('results/citeseq_analysis/{sample}.{demultiplexed}.GEX_cellrangerADT_SCE.RDS', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples())
     output:
         "results/complete_sc_preprocessing_gex_adt.txt",
     resources:

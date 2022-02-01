@@ -7,6 +7,9 @@ inputOutput:
 resources:
   # The following needs to point to the reference transcriptome that will be used by cellranger. 
   reference_transcriptome: /cluster/work/nexus/utilities/databases/singlecell/10xGenomics/gene_expression_3_0_2/refdata-cellranger-GRCh38-3.0.0
+  adt_lookup: ""
+  adt_thresholds: ""
+
 
 # The tools in this pipeline use a broad range of resources and have been assigned to the following three categories.
 # If there aren't enough resources specified it can be adapted in the tools corresponding section.
@@ -56,6 +59,8 @@ tools:
     normalisation_downstream: '1'
     save_negatives: 'TRUE'
 
+  analyse_citeseq:
+    numberVariableGenes: 500
 
 scampi:
     resources:
