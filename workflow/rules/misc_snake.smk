@@ -82,7 +82,19 @@ def getTagFileHashedSamples(wildcards):
         )
     return sampleMap[wildcards.sample]
 
-
+# Retrieve demultiplexed sample names.
+def getDemultiplexedSamples():
+    HashedSamples = samples.loc[samples["HashingStatus"] != "."]
+    HashedSampleNames = HashedSamples["sample"].tolist()
+    DemultiplexedSamples = []
+    for sample in HashedSampleNames:
+        tableEntry = HashedSamples.loc[HashedSamples["sample"]==sample]
+        tagFile = tableEntry.loc[sample,"HashingStatus"]
+        subsampleTable = pd.read_table(tagFile,header=None,index_col=False, sep=",")
+        subsamples = subsampleTable.iloc[:,2].tolist()
+        DemultiplexedSamples.extend(subsamples)
+    return DemultiplexedSamples
+        
 
 # Retrieve the number of target cells corresponding to a given sample set (both GEX and ADT)
 def getTargetCells(wildcards):
