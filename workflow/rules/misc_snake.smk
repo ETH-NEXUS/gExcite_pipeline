@@ -63,13 +63,13 @@ validate(samples, "../schema/sample_map.schema.yaml")
 config = Config(config)
 
 # Retrieve hashed samples from the sample map of a given experiment
-HashedSamples = samples.loc[samples["HashingStatus"] != "."]
+HashedSamples = samples.loc[samples["HashingFile"]]
 HashedSampleNames = HashedSamples["sample"].tolist()
 
 # Retrieve filename listing tags for hashed samples.
 def getTagFileHashedSamples(wildcards):
-    HashedSamples = samples.loc[samples["HashingStatus"] != "."]
-    sampleMap = dict(zip(HashedSamples['sample'], HashedSamples['HashingStatus']))
+    HashedSamples = samples.loc[samples["HashingFile"]]
+    sampleMap = dict(zip(HashedSamples['sample'], HashedSamples['HashingFile']))
     # Tests if file is existing
     if not os.path.isfile(sampleMap[wildcards.sample]):
         raise ValueError(
@@ -84,12 +84,12 @@ def getTagFileHashedSamples(wildcards):
 
 # Retrieve demultiplexed sample names.
 def getDemultiplexedSamples():
-    HashedSamples = samples.loc[samples["HashingStatus"] != "."]
+    HashedSamples = samples.loc[samples["HashingFile"]]
     HashedSampleNames = HashedSamples["sample"].tolist()
     DemultiplexedSamples = []
     for sample in HashedSampleNames:
         tableEntry = HashedSamples.loc[HashedSamples["sample"]==sample]
-        tagFile = tableEntry.loc[sample,"HashingStatus"]
+        tagFile = tableEntry.loc[sample,"HashingFile"]
         subsampleTable = pd.read_table(tagFile,header=None,index_col=False, sep=",")
         subsamples = subsampleTable.iloc[:,2].tolist()
         DemultiplexedSamples.extend(subsamples)

@@ -1,3 +1,3 @@
-sample	HashingStatus	SeqRunName	nTargetCells	featureReferenceFile
+sample	HashingFile	SeqRunName	nTargetCells	featureReferenceFile
 PBMC_D1	/cluster/work/nexus/internal_projects/scGATE_publication/git/levesque_melanoma_2019/metadata/tags.20191130.PBMC_D1.csv	BSSE_QGF_132646_HHVFNDRXX_1_PBMC_mix_20k_ADT_E3_SI-NA-E3	20000	/cluster/work/nexus/internal_projects/scGATE_publication/git/levesque_melanoma_2019/metadata/feature_reference.20191130.txt
 PBMC_D2	/cluster/work/nexus/internal_projects/scGATE_publication/git/levesque_melanoma_2019/metadata/tags.20200218.PBMC_D2.csv	BSSE_QGF_136668_HKGHCDRXX_2/BSSE_QGF_136668_HKGHCDRXX_2_PBMC_D2_20k_GEX_E4	20000	/cluster/work/nexus/internal_projects/scGATE_publication/git/levesque_melanoma_2019/metadata/feature_reference.20200218.txt

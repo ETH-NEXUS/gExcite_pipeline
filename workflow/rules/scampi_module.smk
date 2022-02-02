@@ -80,20 +80,6 @@ use rule plotting from scampi as scampi_plotting with:
     threads:
         threads = config['computingResources']['mediumRequirements']['threads']
 
-use rule assemble_nonmalignant_cohort from scampi as scampi_assemble_nonmalignant_cohort with: 
-    resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
-    threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
-
-use rule plot_tSNEs_nonmalignant_cohort from scampi as scampi_plot_tSNEs_nonmalignant_cohort with:
-    resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
-    threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
-
 # Adapted the params here to avoid having a dublicated inputOutput section in the config file
 use rule diff_exp_genes from scampi as scampi_diff_exp_genes with:
     params: 
@@ -132,17 +118,4 @@ use rule generate_cell_type_boxplot from scampi as scampi_generate_cell_type_box
     threads:
         threads = config['computingResources']['mediumRequirements']['threads']
 
-use rule sample_integration from scampi as scampi_sample_integration with:
-    resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
-    threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
-
-use rule cellPercentInCluster from scampi as scampi_cellPercentInCluster with:
-    resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
-    threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
 

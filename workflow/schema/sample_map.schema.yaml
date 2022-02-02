@@ -4,7 +4,7 @@ properties:
   sample:
     type: string
     description: sample name/identifier
-  HashingStatus:
+  HashingFile:
     type: string
     description: Path to the Tag File
   SeqRunName:
@@ -20,7 +20,7 @@ properties:
 
 required:
   - sample
-  - HashingStatus
+  - HashingFile
   - SeqRunName
   - nTargetCells
   - featureReferenceFile
