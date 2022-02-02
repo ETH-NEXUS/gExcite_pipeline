@@ -7,9 +7,9 @@
 ##################################################
 
 ## TESTED ON THE FOLLOWING VERSIONS OF THE DEPENDENCIES:
-## SingleCellExperiment 1.14.1
+## SingleCellExperiment 1.16
 ## reshape2 1.4.4
-## optparse 1.6.6
+## optparse 1.7.1
 
 ## GENERAL:
 ## This script is the first part of a 3-part processing of single-cell data. Before moving to the analysis of the data, results from the single cell pipeline
