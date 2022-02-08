@@ -43,6 +43,8 @@ rule run_citeseq_count:
         outfile = 'results/pooled_samples/citeseq_count/{sample}/run_report.yaml',
         variousParams = config['tools']['run_citeseq_count']['variousParams'],
         targetCells = getTargetCellsCiteseqCount
+    conda:
+        "../envs/run_citeseq_count.yaml"
     resources:
         mem_mb = config['computingResources']['highRequirements']['mem'],
         time_min = config['computingResources']['highRequirements']['time']
