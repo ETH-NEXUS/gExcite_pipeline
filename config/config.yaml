@@ -32,7 +32,7 @@ computingResources:
 tools:
   # Cellranger can not be installed through Conda currently.
   # It needs to be installed manually & the call in both cellranger rules needs to be adapted.
-  # variousParams can be set as described in the CiteSeq documentation 
+  # variousParams can be set as described in the Cellranger documentation 
   cellranger_count_gex:
     call: /cluster/work/nexus/utilities/sharedPrograms/cellranger/cellranger-6.1.1/bin/cellranger
     variousParams: '--chemistry SC5P-R2'
@@ -41,11 +41,8 @@ tools:
     call:  /cluster/work/nexus/utilities/sharedPrograms/cellranger/cellranger-6.1.1/bin/cellranger
     variousParams: '--chemistry SC5P-R2'
 
-  # CiteSeq can not be installed through Conda currently.
-  # It needs to be installed manually & the call here needs to be adapted.
   # variousParams can be set as described in the CiteSeq documentation
   run_citeseq_count:
-    call: 'module load gcc/4.8.5 ; module load python_cpu/3.7.4; /cluster/customapps/nexus/single-cell/CITE-seq-Count_1.4.5/bin/CITE-seq-Count'
     variousParams: '-cbf 1 -cbl 16 -umif 17 -umil 26 --start-trim 10 '
 
   # The parameters of this custom script (analyseHashing.R) are descripted in the following lines.
