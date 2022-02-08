@@ -33,22 +33,22 @@ localrules:
 rule scPreprocessing_gex_adt:
     input:
         # Final files from preprocessing
-        expand('results/cellranger_gex/{sample}.{demultiplexed}.matrix.mtx', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
-        expand('results/cellranger_gex/{sample}.{demultiplexed}.barcodes.tsv', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
-        expand('results/cellranger_gex/{sample}.{demultiplexed}.features.tsv', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
-        expand('results/cellranger_adt/{sample}.{demultiplexed}.matrix.mtx', sample=HashedSampleNames , demultiplexed = getDemultiplexedSamples()),
-        expand('results/cellranger_adt/{sample}.{demultiplexed}.barcodes.tsv', sample=HashedSampleNames , demultiplexed = getDemultiplexedSamples()),
-        expand('results/cellranger_adt/{sample}.{demultiplexed}.features.tsv', sample=HashedSampleNames , demultiplexed = getDemultiplexedSamples()),
+        expand('results/cellranger_gex/{sample}.{demultiplexed}.matrix.mtx', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
+        expand('results/cellranger_gex/{sample}.{demultiplexed}.barcodes.tsv', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
+        expand('results/cellranger_gex/{sample}.{demultiplexed}.features.tsv', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
+        expand('results/cellranger_adt/{sample}.{demultiplexed}.matrix.mtx', sample=HashedSamples , demultiplexed = getDemultiplexedSamples()),
+        expand('results/cellranger_adt/{sample}.{demultiplexed}.barcodes.tsv', sample=HashedSamples , demultiplexed = getDemultiplexedSamples()),
+        expand('results/cellranger_adt/{sample}.{demultiplexed}.features.tsv', sample=HashedSamples , demultiplexed = getDemultiplexedSamples()),
         # List of final files from scampi
-        expand('results/rawCounts/{sample}.{demultiplexed}.h5.histogram_library_sizes.png', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
-        expand('results/diff_exp/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.diffExp_success.txt', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
-        expand('results/gene_exp/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.gene_expression_per_cluster.tsv', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
-        expand('results/rawCounts/{sample}.{demultiplexed}.h5.histogram_library_sizes.png', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
-        expand('results/filteredCounts/{sample}.{demultiplexed}.genes_cells_filtered.h5.histogram_library_sizes.png', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
-        expand('results/plotting/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.celltype_barplot.png', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
-        expand('results/gsva/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.gsetscore_hm.png', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples()),
+        expand('results/rawCounts/{sample}.{demultiplexed}.h5.histogram_library_sizes.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
+        expand('results/diff_exp/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.diffExp_success.txt', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
+        expand('results/gene_exp/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.gene_expression_per_cluster.tsv', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
+        expand('results/rawCounts/{sample}.{demultiplexed}.h5.histogram_library_sizes.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
+        expand('results/filteredCounts/{sample}.{demultiplexed}.genes_cells_filtered.h5.histogram_library_sizes.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
+        expand('results/plotting/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.celltype_barplot.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
+        expand('results/gsva/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.gsetscore_hm.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
         # List of final files from citeseq analysis
-        expand('results/citeseq_analysis/{sample}.{demultiplexed}.GEX_cellrangerADT_SCE.RDS', sample = HashedSampleNames, demultiplexed = getDemultiplexedSamples())
+        expand('results/citeseq_analysis/{sample}.{demultiplexed}.GEX_cellrangerADT_SCE.RDS', sample = HashedSamples, demultiplexed = getDemultiplexedSamples())
     output:
         "results/complete_sc_preprocessing_gex_adt.txt",
     resources:
