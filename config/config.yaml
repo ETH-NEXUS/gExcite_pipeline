@@ -2,14 +2,12 @@ inputOutput:
   input_fastqs_gex: /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/fastqs_GEX/
   input_fastqs_adt: /cluster/work/nexus/internal_projects/scGATE_publication/tests/linda_dev/fastqs_ADT/
   sample_map: config/samplemap
-  malignant_cell_type: ""
+  malignant_cell_type: "PBMC"
 
 resources:
   # The following needs to point to the reference transcriptome that will be used by cellranger. 
   reference_transcriptome: /cluster/work/nexus/utilities/databases/singlecell/10xGenomics/gene_expression_3_0_2/refdata-cellranger-GRCh38-3.0.0
   adt_lookup: ""
-  adt_thresholds: ""
-
 
 # The tools in this pipeline use a broad range of resources and have been assigned to the following three categories.
 # If there aren't enough resources specified it can be adapted in the tools corresponding section.
@@ -67,8 +65,6 @@ scampi:
         celltype_config: "path_to_scAmpi_git/required_files/melanoma/celltype_config_melanoma.tsv"
         # colour_config for a fixed assignment of colours to the cell types in celltype_config
         colour_config: "pfilter_genes_and_cells.Rath_to_scAmpi_git/required_files/melanoma/colour_config_melanoma.txt"
-        # genesets for GSVA analysis (scAmpi_basic) and geneSetEnrichment (scAmpi_clinical)
-        genesets: "path_to_scAmpi_git/required_files/hallmark_pathways_example.gmt"
         # gene expression of priority genes will be plotted and highlighted in per cluster gene expression (gene_exp)
         priority_genes: "path_to_scAmpi_git/required_files/melanoma/selected_genes_melanoma.txt"
 

@@ -53,7 +53,7 @@ rule run_citeseq_count:
     benchmark:
         'results/pooled_samples/citeseq_count/{sample}.run_citeseq_count.benchmark'
     shell:
-        '{config[tools][run_citeseq_count][call]} -R1 {params.R1} -R2 {params.R2} {params.variousParams} -o {params.outdir} {params.targetCells} -T {threads} -t {input.tags} ; ln -frs {params.outfile} {output.run_report}'
+        'CITE-seq-Count -R1 {params.R1} -R2 {params.R2} {params.variousParams} -o {params.outdir} {params.targetCells} -T {threads} -t {input.tags} ; ln -frs {params.outfile} {output.run_report}'
 
 # Hashing Analysis Script requires the zipped cellranger files as input.
 # Input: Cellranger output files

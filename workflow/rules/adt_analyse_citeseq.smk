@@ -1,21 +1,36 @@
+#Rule to create an initial threshold file
+rule create_initial_threshold_file:
+    input:
+        CellrangerADT = 'results/cellranger_adt/{sample}.features.tsv',
+    output:
+        thresholds = 'results/citeseq_analysis/{sample}.thresholds.tsv',
+    resources:
+        mem_mb = config['computingResources']['lowRequirements']['mem'],
+        time_min = config['computingResources']['lowRequirements']['time']
+    threads:config['computingResources']['lowRequirements']['threads']
+    shell:
+        "echo -e 'Antibody\t{wildcards.sample}' > {output.thresholds} ; " +
+	"awk ' {{ print $2 }}' {input.CellrangerADT} | sed 's/$/\t0/' >> {output.thresholds}"
+        
+
 #Rule to Analyse ADT Data in combination with GEXdata
 rule analyse_citeseq:
     input:
         RDS = 'results/atypical_removed/{sample}.genes_cells_filtered.corrected.atypical_removed.RDS' ,
         CellrangerADT = 'results/cellranger_adt/{sample}.matrix.mtx',
+        thresholds = 'results/citeseq_analysis/{sample}.thresholds.tsv',
         h5 = 'results/counts_corrected/{sample}.genes_cells_filtered.corrected.variable_genes.h5',
     output:
-        RDS = 'results/citeseq_analysis/{sample}.GEX_cellrangerADT_SCE.RDS',
-        completeFile = 'results/citeseq_analysis/{sample}.citeseq_analysis.complete.txt' 
+        RDS = 'results/citeseq_analysis/{sample}/{sample}.GEX_cellrangerADT_SCE.RDS',
+        completeFile = 'results/citeseq_analysis/{sample}/{sample}.citeseq_analysis.complete.txt' 
     conda:
         "../envs/adt_analyse_citeseq.yaml"
     params:
         ADTFolder = 'results/cellranger_adt/{sample}/outs/',
         colorConfig = config['scampi']['resources']['colour_config'] ,
         lookup = config['resources']['adt_lookup'],
-        threshold = config['resources']['adt_thresholds'],
         numberVariableGenes = config['tools']['analyse_citeseq']['numberVariableGenes'],
-        outdir = 'results/citeseq_analysis/' 
+        outdir = 'results/citeseq_analysis/{sample}/' 
     resources:
         mem_mb = config['computingResources']['mediumRequirements']['mem'],
         time_min = config['computingResources']['mediumRequirements']['time']
@@ -27,7 +42,7 @@ rule analyse_citeseq:
         "--h5 {input.h5}" +
         "--colorConfig {params.colorConfig}" +
         "--lookup {params.lookup}" +
-        "--threshold {params.threshold}" +
+        "--threshold {input.thresholds}" +
         "--threads {threads}" +
         "--sampleName {wildcards.sample}" +
         "--number_variable_genes {params.numberVariableGenes} " +

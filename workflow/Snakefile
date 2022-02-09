@@ -2,6 +2,7 @@
 from snakemake.utils import min_version
 min_version("6.12.1")
 
+
 # Include Config file
 configfile: "config/config.yaml"
 
@@ -48,7 +49,7 @@ rule scPreprocessing_gex_adt:
         expand('results/plotting/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.celltype_barplot.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
         expand('results/gsva/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.gsetscore_hm.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
         # List of final files from citeseq analysis
-        expand('results/citeseq_analysis/{sample}.{demultiplexed}.GEX_cellrangerADT_SCE.RDS', sample = HashedSamples, demultiplexed = getDemultiplexedSamples())
+        expand('results/citeseq_analysis/{sample}.{demultiplexed}/{sample}.{demultiplexed}.GEX_cellrangerADT_SCE.RDS', sample = HashedSamples, demultiplexed = getDemultiplexedSamples())
     output:
         "results/complete_sc_preprocessing_gex_adt.txt",
     resources:
