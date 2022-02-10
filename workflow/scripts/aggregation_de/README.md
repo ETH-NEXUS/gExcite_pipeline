@@ -15,7 +15,6 @@ DESeq2 framework is based on single sample data and works by "bulkyfying" the si
 The advantages are:
 - flexibility of the DE contrasts, as the user can potentially apply any complex contrast allowed by the DESeq2 workflow and the script allows for simplified definition of contrasts with multiple arbitrary covariates
 - using a common, widely known and accepted tool for DE
-- the aggregation and DE are performed starting from the single samples and not from an integrated Seurat object. This ensures
 The disadvantages are:
 - low quality results on ADT data
 
