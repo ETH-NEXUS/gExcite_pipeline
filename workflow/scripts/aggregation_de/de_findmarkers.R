@@ -7,9 +7,9 @@
 ##################################################
 
 ## TESTED ON THE FOLLOWING VERSIONS OF THE DEPENDENCIES:
-## Seurat x.x.x
+## Seurat 4.1.0
 ## ggplot2 3.3.5
-## optparse 1.6.6
+## optparse 1.7.1
 
 ## GENERAL:
 ## This script allows for Differential expression analysis to be directly performed on an integrated Seurat object, without the need to access single samples or clinical data files.

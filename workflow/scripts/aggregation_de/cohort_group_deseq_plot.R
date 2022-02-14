@@ -7,19 +7,19 @@
 ##################################################
 
 ## TESTED ON THE FOLLOWING VERSIONS OF THE DEPENDENCIES:
-## multcomp 1.4-17
-## DESeq2 1.32.0
+## multcomp 1.4-18
+## DESeq2 1.34.0
 ## reshape2 1.4.4
 ## ggplot2 3.3.5
 ## ggrepel 0.9.1
-## scran 1.20.1
+## scran 1.22.0
 ## dynamicTreeCut 1.63-1
 ## RColorBrewer 1.1-2
 ## pheatmap 1.0.12
-## GSVA 1.40.1
+## GSVA 1.42.0
 ## UpSetR 1.4.0
 ## zeallot 0.1.0
-## optparse 1.6.6
+## optparse 1.7.1
 
 ## GENERAL:
 ## This script is the third part of a 3-part processing of single-cell data. After the aggregation and normalization of the cohort samples performed with

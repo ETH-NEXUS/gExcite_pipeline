@@ -7,12 +7,12 @@
 ##################################################
 
 ## TESTED ON THE FOLLOWING VERSIONS OF THE DEPENDENCIES:
-## Seurat x.x.x
+## Seurat 4.1.0
 ## ggplot2 3.3.5
 ## ggrepel 0.9.1
 ## RColorBrewer 1.1-2
 ## pheatmap 1.0.12
-## optparse 1.6.6
+## optparse 1.7.1
 
 ## GENERAL:
 ## This script creates an heatmap based on a set of DE results coming from the script DE_findMarkers.R. Due to the level of complexity, the script is standalone to allow more granular options.

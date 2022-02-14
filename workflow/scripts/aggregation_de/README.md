@@ -1,6 +1,12 @@
 # Overview
 The folder contains scripts dedicated to the aggregation, normalization and differential expression analysis of single cell data.
 
+All necessary dependencies are available within the conda environment described in `envs/de_analysis.yml`.
+In order to use the environment please use the yaml file to create the environment and then activate it.
+- Install conda on your machine (https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)
+- create the conda environment: `conda env create -f de_analysis.yml`
+- activate the environment: `conda activate de_analysis`
+
 All scripts have a dedicated detailed documentation at the beginning of the files, that explains functionality, input, output, dependencies and other details. It is strongly suggested to familiarize with the specific documentation before running the scripts for the first time.
 
 When working with Single Cell data, we provide two separate methods for differential expression analysis: DESeq2 or Seurat findMarkers.
@@ -9,7 +15,6 @@ DESeq2 framework is based on single sample data and works by "bulkyfying" the si
 The advantages are:
 - flexibility of the DE contrasts, as the user can potentially apply any complex contrast allowed by the DESeq2 workflow and the script allows for simplified definition of contrasts with multiple arbitrary covariates
 - using a common, widely known and accepted tool for DE
-- the aggregation and DE are performed starting from the single samples and not from an integrated Seurat object. This ensures
 The disadvantages are:
 - low quality results on ADT data
 
