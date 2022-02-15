@@ -41,11 +41,11 @@ rule scPreprocessing_gex_adt:
         expand('results/cellranger_adt/{sample}.{demultiplexed}.barcodes.tsv', sample=HashedSamples , demultiplexed = getDemultiplexedSamples()),
         expand('results/cellranger_adt/{sample}.{demultiplexed}.features.tsv', sample=HashedSamples , demultiplexed = getDemultiplexedSamples()),
         # List of final files from scampi
-        expand('results/rawCounts/{sample}.{demultiplexed}.h5.histogram_library_sizes.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
+        expand('results/counts_raw/{sample}.{demultiplexed}.h5.histogram_library_sizes.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
         expand('results/diff_exp/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.diffExp_success.txt', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
         expand('results/gene_exp/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.gene_expression_per_cluster.tsv', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
-        expand('results/rawCounts/{sample}.{demultiplexed}.h5.histogram_library_sizes.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
-        expand('results/filteredCounts/{sample}.{demultiplexed}.genes_cells_filtered.h5.histogram_library_sizes.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
+        expand('results/counts_raw/{sample}.{demultiplexed}.h5.histogram_library_sizes.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
+        expand('results/counts_filtered/{sample}.{demultiplexed}.genes_cells_filtered.h5.histogram_library_sizes.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
         expand('results/plotting/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.celltype_barplot.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
         expand('results/gsva/{sample}.{demultiplexed}.genes_cells_filtered.corrected.atypical_removed.gsetscore_hm.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
         # List of final files from citeseq analysis
