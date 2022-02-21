@@ -125,6 +125,28 @@ for (ii in seq_len(length(allSplitFeatures))) {
       outname <- allSplitFeatures[ii] %&% "_" %&% myassay %&% "-" %&% allContrastFeatures[jj] %&% "_vs_" %&% allContrastFeatures[kk]
       allOutNames <- c(allOutNames, outname)
       saveRDS(mymarkers_pairwise, outname)
+      message("Plotting the boxplot for contrast " %&% allContrastFeatures[jj] %&% " vs " %&% allContrastFeatures[kk])
+      mycounts <- as.data.frame(GetAssayData(object=seurat_subset, slot="counts", assay=myassay))
+      mytopgenes <- head(mymarkers_pairwise[order(mymarkers_pairwise$p_val_adj),], 40)
+      mycounts <- mycounts[which(rownames(mycounts) %in% rownames(mytopgenes)),]
+      mycounts$gene = rownames(mycounts)
+      mycounts_melt <- melt(mycounts)
+      tmp_condi <- data.frame(condi = seurat_subset$myContrast, variable = names(seurat_subset$myContrast))
+      mycounts_melt <- left_join(mycounts_melt, tmp_condi, by="variable")
+      mycounts_melt <- mycounts_melt[which(mycounts_melt$condi %in% allContrastFeatures[c(jj,kk)]),]
+      p1 <- ggplot(mycounts_melt, aes(x = condi, y = value, fill = condi)) +
+        geom_boxplot(width = 0.4) +
+        xlab(contrastFeature) +
+        ylab("") +
+        facet_wrap(~gene, nrow = 5, scales = "free_y") +
+        theme(axis.text.x = element_blank()) +
+        scale_fill_discrete(name = contrastFeature) +
+        ggtitle(allSplitFeatures[ii] %&% ": " %&% contrastFeature)
+      ggsave(outdir %&% allSplitFeatures[ii] %&% "__" %&% contrastFeature %&% "__" %&% paste(allContrastFeatures[c(jj,kk)], collapse="-vs-")  %&% "__de_boxplot.png",
+        p1,
+        width = 30, height = 15, units = "cm"
+      )
+      ###
     }
   }
   for (jj in seq_len(length(allContrastFeatures))) {
@@ -182,3 +204,33 @@ for (i in seq_len(length(allOutNames))) {
     coord_cartesian(xlim = c(-10, 10))
   ggsave(paste0(allOutNames[i], "_volcano_zoom.png"), plot = p)
 }
+
+  message("Plotting the Pvalue density for " %&% allOutNames[i])
+  p <- ggplot(data = mydetable, aes(p_val, ..density.., fill="grey"))+
+          geom_histogram(bins = 100) +
+          geom_hline(yintercept = 1, col = "black") +
+          xlab("P-value") +
+          ylab("Density") +
+          scale_fill_brewer(palette = "Dark2") +
+          theme(legend.position = "none") +
+          scale_x_continuous(breaks = c(0, 0.25, 0.5, 0.75, 1)) +
+          coord_cartesian(ylim = c(0, 5)) +
+          ggtitle(allOutNames[i])
+  ggsave(paste0(allOutNames[i], "_pvd.png")
+
+  #TODO: complete the boxplots
+  message("Plotting the boxplots for the top 40 DE genes")
+  p <- ggplot(t_plot, aes(x = condi, y = value, fill = condi)) +
+              geom_boxplot(width = 0.4) +
+              xlab(this_comp) +
+              ylab("") +
+              facet_wrap(~gene, nrow = 5, scales = "free_y") +
+              theme(axis.text.x = element_blank()) +
+              scale_fill_manual(values = this_annot_colors, name = this_comp) +
+              ggtitle(this_ct %&% ": " %&% this_comp)
+            if (length(levels(t_plot$gene)) < 15) {
+              p1 <- p1 + geom_jitter(width = 0.2, color = "grey50", size = 2)
+            } else {
+              p1 <- p1 + geom_jitter(width = 0.2, color = "grey50", size = 0.5)
+            }
+  ggsave(paste0(allOutNames[i], "_boxplots.png")
