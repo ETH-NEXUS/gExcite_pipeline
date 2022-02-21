@@ -36,7 +36,7 @@ rule analyse_citeseq:
         time_min = config['computingResources']['mediumRequirements']['time']
     threads:config['computingResources']['mediumRequirements']['threads']
     shell:
-        "Rscript ../scripts/analyse_citeseq.R " +
+        "Rscript workflow/scripts/analyse_citeseq.R " +
         "--RDS {input.RDS}" +
         "--cellrangerADT {params.ADTFolder}" +
         "--h5 {input.h5}" +
