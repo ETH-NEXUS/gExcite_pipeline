@@ -5,62 +5,8 @@ import copy
 import pandas as pd
 from snakemake.utils import validate
 
-fail_instantly = False
-
-class Error(object):
-    def __init__(self, key, name):
-        self.__key = key
-        self.__name = name
-
-    def __add__(self, other):
-        return self
-
-    def __call__(self, wildcards=None):
-        sys.exit(
-            """
-            ===============================================
-            You have not specified '{}' for '{}'
-            ===============================================
-            """.format(
-                self.__key, self.__name
-            )
-        )
-
-    def __getitem__(self, value):
-        return Error(key=self.__key, name=self.__name)
-
-
-class Config(object):
-    def __init__(self, kwargs, name="Config"):
-        self.__name = name
-        self.__members = {}
-        for (key, value) in kwargs.items():
-            if isinstance(value, dict):
-                self.__members[key] = Config(kwargs=value, name=key)
-            else:
-                self.__members[key] = value
-
-    def __getitem__(self, key):
-        if key in self.__members:
-            return self.__members[key]
-        else:
-            if fail_instantly:
-                sys.exit(
-                    """
-                    ===============================================
-                    You have not specified '{}' for '{}'
-                    ===============================================
-                    """.format(
-                        key, self.__name
-                    )
-                )
-            else:
-                return Error(key=key, name=self.__name)
-
 samples = pd.read_table(config["inputOutput"]["sample_map"]).set_index("sample", drop=False)
 validate(samples, "../schema/sample_map.schema.yaml")
-
-config = Config(config)
 
 # Retrieve hashed samples from the sample map of a given experiment
 HashedSamples = samples["sample"].tolist()

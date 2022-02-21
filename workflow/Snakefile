@@ -14,7 +14,8 @@ include: "rules/misc_snake.smk"
 
 ## Include the scampi module
 module scampi:
-    snakefile: "/cluster/work/nexus/internal_projects/scAmpi_restructuring/test_linda/scAmpi_single_cell_RNA/workflow/snake_scAmpi_basic_master.snake"
+    skip_validation: True 
+    snakefile: "/cluster/work/nexus/internal_projects/scAmpi_restructuring/test_linda/scAmpi_single_cell_RNA/workflow/snakefile_basic.smk"
     config: config["scampi"]
 
 ## Include the preprocessing rules

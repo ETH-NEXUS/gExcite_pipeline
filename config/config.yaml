@@ -58,6 +58,8 @@ tools:
     numberVariableGenes: 500
 
 scampi:
+    inputOutput:
+        sample_map: config/scampi_samplemap
     resources:
         # celltype_lists gmx file containing a library of cell type classification gene lists
         celltype_lists: "path_to_scAmpi_git/required_files/melanoma/celltype_list_melanoma.gmx"
@@ -67,6 +69,8 @@ scampi:
         colour_config: "pfilter_genes_and_cells.Rath_to_scAmpi_git/required_files/melanoma/colour_config_melanoma.txt"
         # gene expression of priority genes will be plotted and highlighted in per cluster gene expression (gene_exp)
         priority_genes: "path_to_scAmpi_git/required_files/melanoma/selected_genes_melanoma.txt"
+        #
+        genesets: ""
 
     tools:
         filter_genes_and_cells:
