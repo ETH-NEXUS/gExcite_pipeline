@@ -4,6 +4,17 @@
 # All resources and threads are adapted to avoid having a dublicated computingResources section in the config.
 
 
+# Cellranger seems to be imported as well adapt it that dry run works. 
+use rule cellranger_count from scampi as scampi_cellranger_count with:
+    input:
+        fastqs_dir = config['inputOutput']['input_fastqs_gex'],
+        reference = config['resources']['reference_transcriptome']
+    resources:
+        mem_mb = config['computingResources']['mediumRequirements']['mem'],
+        time_min = config['computingResources']['mediumRequirements']['time']
+    threads:
+        threads = config['computingResources']['mediumRequirements']['threads']
+
 
 # Modify hdf5 rule in order to fit to the directory naming here. 
 use rule create_hdf5 from scampi as scampi_create_hdf5 with:
