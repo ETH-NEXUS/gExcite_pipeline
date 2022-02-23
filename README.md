@@ -30,12 +30,6 @@ The following software needs to be installed manually.
 - [Cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger): Follow the instructions on the 10xGenomics installation support page to install cellranger and to include the cellranger binary to your path.
 Webpage: [https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation)
 
-- [CITE-seq-Count](https://hoohm.github.io/CITE-seq-Count/) 
- 
-```
-pip install CITE-seq-Count
-```
-
 
 ## Example data
 
