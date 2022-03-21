@@ -16,10 +16,10 @@ rule create_initial_threshold_file:
 #Rule to Analyse ADT Data in combination with GEXdata
 rule analyse_citeseq:
     input:
-        RDS = 'results/atypical_removed/{sample}.genes_cells_filtered.corrected.atypical_removed.RDS' ,
+        RDS = 'results/atypical_removed/{sample}.atypical_removed.RDS' ,
         CellrangerADT = 'results/cellranger_adt/{sample}.matrix.mtx',
         thresholds = 'results/citeseq_analysis/{sample}.thresholds.tsv',
-        h5 = 'results/counts_corrected/{sample}.genes_cells_filtered.corrected.variable_genes.h5',
+        h5 = 'results/counts_corrected/{sample}.corrected.variable_genes.h5',
     output:
         RDS = 'results/citeseq_analysis/{sample}/{sample}.GEX_cellrangerADT_SCE.RDS',
         completeFile = 'results/citeseq_analysis/{sample}/{sample}.citeseq_analysis.complete.txt' 
