@@ -50,7 +50,6 @@ rule gExcite:
         expand('results/gene_exp/{sample}.{demultiplexed}.gene_expression_per_cluster.tsv', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
         expand('results/plotting/{sample}.{demultiplexed}.celltype_barplot.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
         expand('results/gsva/{sample}.{demultiplexed}.gsetscore_hm.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
-        expand('results/diff_exp_analysis/{sample}.{demultiplexed}/', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
         # List of final files from citeseq analysis
         expand('results/citeseq_analysis/{sample}.{demultiplexed}/{sample}.{demultiplexed}.GEX_cellrangerADT_SCE.RDS', sample = HashedSamples, demultiplexed = getDemultiplexedSamples())
     output:

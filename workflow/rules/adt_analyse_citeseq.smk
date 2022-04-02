@@ -5,11 +5,11 @@ rule create_initial_threshold_file:
     output:
         thresholds = 'results/citeseq_analysis/{sample}.thresholds.tsv',
     resources:
-        mem_mb = config['computingResources']['lowRequirements']['mem'],
-        time_min = config['computingResources']['lowRequirements']['time']
+        mem_mb = config['computingResources']['mem']['low'],
+        time_min = config['computingResources']['time']['low']
     log:
         "logs/create_initial_threshold_file/{sample}.log"
-    threads:config['computingResources']['lowRequirements']['threads']
+    threads:config['computingResources']['threads']['low']
     shell:
         "echo -e 'Antibody\t{wildcards.sample}' > {output.thresholds} ; " +
 	"awk ' {{ print $2 }}' {input.CellrangerADT} | sed 's/$/\t0/' >> {output.thresholds} &> {log}"
@@ -35,9 +35,9 @@ rule Rscript_analyse_citeseq:
     log:
         "logs/Rscript_analyse_citeseq/{sample}.log"
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
-    threads:config['computingResources']['mediumRequirements']['threads']
+        mem_mb = config['computingResources']['mem']['medium'],
+        time_min = config['computingResources']['time']['medium']
+    threads:config['computingResources']['threads']['medium']
     shell:
         "Rscript workflow/scripts/analyse_citeseq.R " +
         "--RDS {input.RDS} " +

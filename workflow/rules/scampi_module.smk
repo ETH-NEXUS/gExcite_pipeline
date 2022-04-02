@@ -11,106 +11,91 @@ use rule create_hdf5 from scampi as scampi_create_hdf5 with:
         matrix_file = 'results/cellranger_gex/{sample}.matrix.mtx',
         barcodes_file = 'results/cellranger_gex/{sample}.barcodes.tsv'
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
+        mem_mb = config['computingResources']['mem']['medium'],
+        time_min = config['computingResources']['time']['medium']
     threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
+        threads = config['computingResources']['threads']['medium']
 
 use rule identify_doublets from scampi as scampi_identify_doublets with:
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
+        mem_mb = config['computingResources']['mem']['medium'],
+        time_min = config['computingResources']['time']['medium']
     threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
+        threads = config['computingResources']['threads']['medium']
 
 use rule filter_genes_and_cells from scampi as scampi_filter_genes_and_cells with:
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
+        mem_mb = config['computingResources']['mem']['medium'],
+        time_min = config['computingResources']['time']['medium']
     threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
+        threads = config['computingResources']['threads']['medium']
 
 use rule sctransform_preprocessing from scampi as scampi_sctransform_preprocessing with:
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
+        mem_mb = config['computingResources']['mem']['medium'],
+        time_min = config['computingResources']['time']['medium']
     threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
+        threads = config['computingResources']['threads']['medium']
 
 use rule phenograph from scampi as scampi_phenograph with:
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
+        mem_mb = config['computingResources']['mem']['medium'],
+        time_min = config['computingResources']['time']['medium']
     threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
+        threads = config['computingResources']['threads']['medium']
 
 use rule prepare_celltyping from scampi as scampi_prepare_celltyping with:
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
+        mem_mb = config['computingResources']['mem']['medium'],
+        time_min = config['computingResources']['time']['medium']
     threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
+        threads = config['computingResources']['threads']['medium']
 
 use rule celltyping from scampi as scampi_celltyping with:
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
+        mem_mb = config['computingResources']['mem']['medium'],
+        time_min = config['computingResources']['time']['medium']
     threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
+        threads = config['computingResources']['threads']['medium']
 
 use rule remove_atypical_cells from scampi as scampi_remove_atypical with:
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
+        mem_mb = config['computingResources']['mem']['medium'],
+        time_min = config['computingResources']['time']['medium']
     threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
+        threads = config['computingResources']['threads']['medium']
 
 use rule gsva from scampi as scampi_gsva with:
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
+        mem_mb = config['computingResources']['mem']['medium'],
+        time_min = config['computingResources']['time']['medium']
     threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
+        threads = config['computingResources']['threads']['medium']
 
 use rule plotting from scampi as scampi_plotting with:
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
+        mem_mb = config['computingResources']['mem']['medium'],
+        time_min = config['computingResources']['time']['medium']
     threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
+        threads = config['computingResources']['threads']['medium']
 
 use rule gene_exp from scampi as scampi_gene_exp with:
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
+        mem_mb = config['computingResources']['mem']['medium'],
+        time_min = config['computingResources']['time']['medium']
     threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
+        threads = config['computingResources']['threads']['medium']
 
 use rule generate_qc_plots from scampi as scampi_generate_qc_plots with:
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
+        mem_mb = config['computingResources']['mem']['medium'],
+        time_min = config['computingResources']['time']['medium']
     threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
+        threads = config['computingResources']['threads']['medium']
 
 use rule generate_cell_type_boxplot from scampi as scampi_generate_cell_type_boxplot with:
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
+        mem_mb = config['computingResources']['mem']['medium'],
+        time_min = config['computingResources']['time']['medium']
     threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
-
-use rule cell_percent_in_cluster from scampi as scampi_cell_percent_in_cluster with:
-    resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
-    threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
-
-
-use rule diff_exp_analysis from scampi as scampi_diff_exp_analysis with:
-    resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
-    threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
+        threads = config['computingResources']['threads']['medium']

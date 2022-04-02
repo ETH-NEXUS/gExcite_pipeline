@@ -13,16 +13,16 @@ rule create_library_file_adt:
         library_file= WORKDIR +"/results/pooled_samples/cellranger_adt/{sample}.adt_library.txt",
     params:
         seqRunName=getSeqRunName
-    threads: config["computingResources"]["lowRequirements"]["threads"]
+    threads: config["computingResources"]["threads"]["low"]
     resources: 
-        mem_mb=config["computingResources"]["lowRequirements"]["mem"],
-        time_min=config["computingResources"]["lowRequirements"]["time"]
+        mem_mb=config["computingResources"]["mem"]["low"],
+        time_min=config["computingResources"]["time"]["low"]
     log:
         "logs/create_library_file_adt/{sample}.log"
     benchmark:
         "results/pooled_samples/cellranger_adt/{sample}.generate_library_adt.benchmark"
     shell:
-        'echo -e "fastqs,sample,library_type\n{input.fastqs_dir},{wildcards.sample},Antibody Capture" > {output.library_file} &> {log}'
+        'echo -e "fastqs,sample,library_type\n{input.fastqs_dir},{wildcards.sample},Antibody Capture" > {output.library_file}'
 
 
 # Cellranger call to process the raw ADT samples
@@ -46,12 +46,12 @@ rule cellranger_count_adt:
         variousParams=config["tools"]["cellranger_count_adt"]["variousParams"],
         targetCells=getTargetCellsCellranger,
         sample = '{sample}'
-    threads: config["computingResources"]["highRequirements"]["threads"]
+    threads: config["computingResources"]["threads"]["high"]
     log:
         "logs/cellranger_count_adt/{sample}.log"
     resources:
-        mem_mb=config["computingResources"]["highRequirements"]["mem"],
-        time_min=config["computingResources"]["highRequirements"]["time"]
+        mem_mb=config["computingResources"]["mem"]["high"],
+        time_min=config["computingResources"]["time"]["high"]
     benchmark:
         "results/pooled_samples/cellranger_adt/{sample}.cellranger_count_adt.benchmark"
     # NOTE: cellranger count function cannot specify the output directory, the output it the path you call it from.

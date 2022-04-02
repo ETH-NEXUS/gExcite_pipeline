@@ -14,10 +14,10 @@ rule create_tag_file:
     params:
         outdir = 'results/pooled_samples/citeseq_count/'
     threads:
-        config['computingResources']['lowRequirements']['threads']
+        config['computingResources']['threads']['low']
     resources:
-        mem_mb = config['computingResources']['lowRequirements']['mem'],
-        time_min = config['computingResources']['lowRequirements']['time']
+        mem_mb = config['computingResources']['mem']['low'],
+        time_min = config['computingResources']['time']['low']
     log:
         'logs/create_tag_file/{sample}.log'
     benchmark:
@@ -48,12 +48,12 @@ rule CITE_seq_Count:
     conda:
         "../envs/run_citeseq_count.yaml"
     resources:
-        mem_mb = config['computingResources']['highRequirements']['mem'],
-        time_min = config['computingResources']['highRequirements']['time']
+        mem_mb = config['computingResources']['mem']['high'],
+        time_min = config['computingResources']['time']['high']
     log:
         'logs/CITE-seq-Count/{sample}.log'
     threads:
-        config['computingResources']['highRequirements']['threads']
+        config['computingResources']['threads']['high']
     benchmark:
         'results/pooled_samples/citeseq_count/{sample}.run_citeseq_count.benchmark'
     shell:
@@ -75,10 +75,10 @@ rule gzip_files_hashingInput:
     params:
         root_out = 'results/pooled_samples/cellranger_adt/{sample}_zipped_files/'
     resources:
-        mem_mb = config['computingResources']['lowRequirements']['mem'],
-        time_min = config['computingResources']['lowRequirements']['time']
+        mem_mb = config['computingResources']['mem']['high'],
+        time_min = config['computingResources']['time']['high']
     threads:
-        config['computingResources']['lowRequirements']['threads']
+        config['computingResources']['threads']['high']
     log:
         'logs/gzip_files_hashingInput/{sample}.log'
     benchmark:
@@ -112,10 +112,10 @@ rule Rscript_analyseHashing:
     log:
         'logs/Rscript_analyseHashing/{sample}.log'
     resources:
-        mem_mb = config['computingResources']['highRequirements']['mem'],
-        time_min = config['computingResources']['highRequirements']['time']
+        mem_mb = config['computingResources']['mem']['high'],
+        time_min = config['computingResources']['time']['high']
     threads:
-        config['computingResources']['highRequirements']['threads']
+        config['computingResources']['threads']['high']
     benchmark:
         'results/pooled_samples/hashing_analysis/{sample}.analyse_hashing.benchmark'
     shell:
@@ -132,7 +132,10 @@ rule Rscript_analyseHashing:
 
 rule Rscript_demultiplex_count_matrix:
     input:
-        hashingSuccessFile = 'results/pooled_samples/hashing_analysis/{sample}.complete_hashing.txt'
+        hashingSuccessFile = 'results/pooled_samples/hashing_analysis/{sample}.complete_hashing.txt',
+        features_file="results/pooled_samples/cellranger_gex/{sample}.features.tsv",
+        matrix_file="results/pooled_samples/cellranger_gex/{sample}.matrix.mtx",
+        barcodes_file="results/pooled_samples/cellranger_gex/{sample}.barcodes.tsv"
     output:
         cellranger_gex_mtx = 'results/cellranger_gex/{sample}.{demultiplexed}.matrix.mtx',
         cellranger_gex_feature = 'results/cellranger_gex/{sample}.{demultiplexed}.features.tsv',
@@ -147,8 +150,8 @@ rule Rscript_demultiplex_count_matrix:
     log:
         'logs/Rscript_demultiplex_count_matrix/{sample}.{demultiplexed}.log'
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
-    threads:config['computingResources']['mediumRequirements']['threads']
+        mem_mb = config['computingResources']['mem']['medium'],
+        time_min = config['computingResources']['time']['medium']
+    threads:config['computingResources']['threads']['medium']
     shell:
         "Rscript workflow/scripts/demultiplex_count_matrix.R --sampleMap {params.samplemapFile} --sample {wildcards.sample} --rootdir './results/' &> {log}"
