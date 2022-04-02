@@ -6,7 +6,7 @@ from os.path import isfile, join
 
 # Create Tag File that matches input requirement of CiteSeq Count
 
-rule createTagFile:
+rule create_tag_file:
     input:
         tags = getTagFileHashedSamples
     output:
@@ -18,6 +18,8 @@ rule createTagFile:
     resources:
         mem_mb = config['computingResources']['lowRequirements']['mem'],
         time_min = config['computingResources']['lowRequirements']['time']
+    log:
+        'logs/create_tag_file/{sample}.log'
     benchmark:
         'results/pooled_samples/citeseq_count/{sample}.create_tag_file.benchmark'
     run:
@@ -31,7 +33,7 @@ rule createTagFile:
 # Input: Comma separated list of fastqs.
 # Output: Matrix, barcode & features file
 
-rule run_citeseq_count:
+rule CITE_seq_Count:
     input:
         tags = 'results/pooled_samples/citeseq_count/{sample}.tags.tsv'
     output:
@@ -48,18 +50,20 @@ rule run_citeseq_count:
     resources:
         mem_mb = config['computingResources']['highRequirements']['mem'],
         time_min = config['computingResources']['highRequirements']['time']
+    log:
+        'logs/CITE-seq-Count/{sample}.log'
     threads:
         config['computingResources']['highRequirements']['threads']
     benchmark:
         'results/pooled_samples/citeseq_count/{sample}.run_citeseq_count.benchmark'
     shell:
-        'CITE-seq-Count -R1 {params.R1} -R2 {params.R2} {params.variousParams} -o {params.outdir} {params.targetCells} -T {threads} -t {input.tags} ; ln -frs {params.outfile} {output.run_report}'
+        'CITE-seq-Count -R1 {params.R1} -R2 {params.R2} {params.variousParams} -o {params.outdir} {params.targetCells} -T {threads} -t {input.tags} ; ln -frs {params.outfile} {output.run_report} &> {log}'
 
 # Hashing Analysis Script requires the zipped cellranger files as input.
 # Input: Cellranger output files
 # Output: zipped feature files
 
-rule create_symlink_hashing_input:
+rule gzip_files_hashingInput:
     input:
         features_file_tmp = 'results/pooled_samples/cellranger_adt/{sample}.features.tsv',
         matrix_file_tmp = 'results/pooled_samples/cellranger_adt/{sample}.matrix.mtx',
@@ -75,6 +79,8 @@ rule create_symlink_hashing_input:
         time_min = config['computingResources']['lowRequirements']['time']
     threads:
         config['computingResources']['lowRequirements']['threads']
+    log:
+        'logs/gzip_files_hashingInput/{sample}.log'
     benchmark:
         'results/pooled_samples/cellranger_adt/{sample}.create_symlink_adt.benchmark'
     shell:
@@ -84,7 +90,7 @@ rule create_symlink_hashing_input:
 # Input: Output of Citeseq and Cellranger ADT run.
 # Output: One file / tag + one file / Negatives listing the barcodes found for the tag.
 
-rule analyse_hashing:
+rule Rscript_analyseHashing:
     input:
         citeseq = 'results/pooled_samples/citeseq_count/{sample}.run_report.yaml',
         adt_features = 'results/pooled_samples/cellranger_adt/{sample}_zipped_files/features.tsv.gz',
@@ -103,6 +109,8 @@ rule analyse_hashing:
         normalisation_downstream = config['tools']['analyse_hashing']['normalisation_downstream'],
         save_negatives = config['tools']['analyse_hashing']['save_negatives'],
         citeseq_folder = 'results/pooled_samples/citeseq_count/{sample}/umi_count/'
+    log:
+        'logs/Rscript_analyseHashing/{sample}.log'
     resources:
         mem_mb = config['computingResources']['highRequirements']['mem'],
         time_min = config['computingResources']['highRequirements']['time']
@@ -120,9 +128,9 @@ rule analyse_hashing:
         '--normalisation_downstream {params.normalisation_downstream} ' +
         '--save_negatives {params.save_negatives} ' +
         '--output_prefix {params.output_prefix} '+
-        '&& date > {output.successFile}'
+        '&> {log}'
 
-rule demultiplex_count_matrix:
+rule Rscript_demultiplex_count_matrix:
     input:
         hashingSuccessFile = 'results/pooled_samples/hashing_analysis/{sample}.complete_hashing.txt'
     output:
@@ -136,9 +144,11 @@ rule demultiplex_count_matrix:
         "../envs/demultiplex_count_matrix.yaml"
     params:
         samplemapFile=config["inputOutput"]["sample_map"]
+    log:
+        'logs/Rscript_demultiplex_count_matrix/{sample}.{demultiplexed}.log'
     resources:
         mem_mb = config['computingResources']['mediumRequirements']['mem'],
         time_min = config['computingResources']['mediumRequirements']['time']
     threads:config['computingResources']['mediumRequirements']['threads']
     shell:
-        "Rscript workflow/scripts/demultiplex_count_matrix.R --sampleMap {params.samplemapFile} --rootdir './results/'"
+        "Rscript workflow/scripts/demultiplex_count_matrix.R --sampleMap {params.samplemapFile} --sample {wildcards.sample} --rootdir './results/' &> {log}"

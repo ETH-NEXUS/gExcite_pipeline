@@ -4,18 +4,6 @@
 # All resources and threads are adapted to avoid having a dublicated computingResources section in the config.
 
 
-# Cellranger seems to be imported as well adapt it that dry run works. 
-use rule cellranger_count from scampi as scampi_cellranger_count with:
-    input:
-        fastqs_dir = config['inputOutput']['input_fastqs_gex'],
-        reference = config['resources']['reference_transcriptome']
-    resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
-    threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
-
-
 # Modify hdf5 rule in order to fit to the directory naming here. 
 use rule create_hdf5 from scampi as scampi_create_hdf5 with:
     input:
@@ -63,14 +51,14 @@ use rule prepare_celltyping from scampi as scampi_prepare_celltyping with:
     threads:
         threads = config['computingResources']['mediumRequirements']['threads']
 
-use rule cell_type_classification from scampi as scampi_cell_type_classification with:
+use rule celltyping from scampi as scampi_celltyping with:
     resources:
         mem_mb = config['computingResources']['mediumRequirements']['mem'],
         time_min = config['computingResources']['mediumRequirements']['time']
     threads:
         threads = config['computingResources']['mediumRequirements']['threads']
 
-use rule remove_atypical from scampi as scampi_remove_atypical with:
+use rule remove_atypical_cells from scampi as scampi_remove_atypical with:
     resources:
         mem_mb = config['computingResources']['mediumRequirements']['mem'],
         time_min = config['computingResources']['mediumRequirements']['time']
@@ -85,23 +73,6 @@ use rule gsva from scampi as scampi_gsva with:
         threads = config['computingResources']['mediumRequirements']['threads']
 
 use rule plotting from scampi as scampi_plotting with:
-    resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
-    threads:
-        threads = config['computingResources']['mediumRequirements']['threads']
-
-# Adapted the params here to avoid having a dublicated inputOutput section in the config file
-use rule diff_exp_genes from scampi as scampi_diff_exp_genes with:
-    params: 
-        malignant = config['inputOutput']['malignant_cell_type'],
-        sampleName = '{sample}',
-        threshold_comparison = config['scampi']['tools']['diff_exp']['threshold_comparison'],
-        fdr_cut = config['scampi']['tools']['diff_exp']['fdr_cut'],
-        fc_cut = config['scampi']['tools']['diff_exp']['fc_cut'],
-        mindiff2second = config['scampi']['tools']['diff_exp']['mindiff2second'],
-        minNumberNonMalignant = config['scampi']['tools']['diff_exp']['minNumberNonMalignant'],
-        outpath = 'results/diff_exp/'
     resources:
         mem_mb = config['computingResources']['mediumRequirements']['mem'],
         time_min = config['computingResources']['mediumRequirements']['time']
@@ -129,4 +100,17 @@ use rule generate_cell_type_boxplot from scampi as scampi_generate_cell_type_box
     threads:
         threads = config['computingResources']['mediumRequirements']['threads']
 
+use rule cell_percent_in_cluster from scampi as scampi_cell_percent_in_cluster with:
+    resources:
+        mem_mb = config['computingResources']['mediumRequirements']['mem'],
+        time_min = config['computingResources']['mediumRequirements']['time']
+    threads:
+        threads = config['computingResources']['mediumRequirements']['threads']
 
+
+use rule diff_exp_analysis from scampi as scampi_diff_exp_analysis with:
+    resources:
+        mem_mb = config['computingResources']['mediumRequirements']['mem'],
+        time_min = config['computingResources']['mediumRequirements']['time']
+    threads:
+        threads = config['computingResources']['mediumRequirements']['threads']

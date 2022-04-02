@@ -7,7 +7,7 @@ inputOutput:
 resources:
   # The following needs to point to the reference transcriptome that will be used by cellranger. 
   reference_transcriptome: /cluster/work/nexus/utilities/databases/singlecell/10xGenomics/gene_expression_3_0_2/refdata-cellranger-GRCh38-3.0.0
-  adt_lookup: ""
+  adt_lookup: "/cluster/work/nexus/internal_projects/scGATE_publication/git/levesque_melanoma_2019/metadata/lookup_gene_protein.20191130.txt"
 
 # The tools in this pipeline use a broad range of resources and have been assigned to the following three categories.
 # If there aren't enough resources specified it can be adapted in the tools corresponding section.
@@ -23,7 +23,7 @@ computingResources:
     threads: 8
 
   highRequirements:
-    mem: 10000
+    mem: 20000
     time: 500
     threads: 8
 
@@ -51,7 +51,7 @@ tools:
   analyse_hashing:
     quantileThreshold: '0.99'
     normalisation: '1,2'
-    normalisation_downstream: '1'
+    normalisation_downstream: '2'
     save_negatives: 'TRUE'
 
   analyse_citeseq:
@@ -59,18 +59,20 @@ tools:
 
 scampi:
     inputOutput:
-        sample_map: config/scampi_samplemap
+        malignant_cell_type: "melanoma"
+        # seems to be necessary to work with the module
+        sample_map: "config/dummy_scampi_samplemap"
     resources:
         # celltype_lists gmx file containing a library of cell type classification gene lists
-        celltype_lists: "path_to_scAmpi_git/required_files/melanoma/celltype_list_melanoma.gmx"
+        celltype_lists: "/cluster/work/nexus/internal_projects/scAmpi_restructuring/test_linda/scAmpi_single_cell_RNA/required_files/melanoma/celltype_list_melanoma.gmx"
         # celltype_config to easily adapt the cell type classification step
-        celltype_config: "path_to_scAmpi_git/required_files/melanoma/celltype_config_melanoma.tsv"
+        celltype_config: "/cluster/work/nexus/internal_projects/scAmpi_restructuring/test_linda/scAmpi_single_cell_RNA/required_files/melanoma/celltype_config_melanoma.tsv"
         # colour_config for a fixed assignment of colours to the cell types in celltype_config
-        colour_config: "pfilter_genes_and_cells.Rath_to_scAmpi_git/required_files/melanoma/colour_config_melanoma.txt"
+        colour_config: "/cluster/work/nexus/internal_projects/scAmpi_restructuring/test_linda/scAmpi_single_cell_RNA/required_files/melanoma//colour_config_melanoma.txt"
         # gene expression of priority genes will be plotted and highlighted in per cluster gene expression (gene_exp)
-        priority_genes: "path_to_scAmpi_git/required_files/melanoma/selected_genes_melanoma.txt"
+        priority_genes: "/cluster/work/nexus/internal_projects/scAmpi_restructuring/test_linda/scAmpi_single_cell_RNA/required_files/melanoma/selected_genes_melanoma.txt"
         #
-        genesets: ""
+        genesets: "/cluster/work/nexus/internal_projects/scAmpi_restructuring/test_linda/scAmpi_single_cell_RNA/required_files/hallmark_pathways_example.gmt"
 
     tools:
         filter_genes_and_cells:
@@ -86,6 +88,10 @@ scampi:
             genomeVersion: "GRCh38"
             # remove doublets detected in previous step
             remove_doublets: "TRUE"
+            # keep only protein-coding genes
+            protein_coding_only: "FALSE"
+            # minimum number of cells expressing a gene for the gene to be kept
+            minNumberCells: "20"
 
         sctransform_preprocessing:
             # number of genes with highest residual variance used for UMAP calculation and clustering
@@ -95,11 +101,11 @@ scampi:
             # number of nearest neighbours for UMAP calculation
             n_nn: "30"
 
-        cell_type_classification:
+        celltyping:
             # minimum number of cell-type-specific genes expressed by a cell to consider cell type, default is "5"
             min_genes: "5"
 
-        remove_atypical:
+        remove_atypical_cells:
             # threshold type, either "number_cells" or "percentage_cells"
             threshold_type: "percentage_cells"
             # default is "percentage_cells" and "5":
@@ -116,7 +122,7 @@ scampi:
                 # minimum number of cells to form a cluster
                 min_cluster_size: 20
 
-        diff_exp:
+        diff_exp_analysis:
             # minimum number of cells to be tested in DE analysis
             threshold_comparison: "20"
             # cut-off for p-value
@@ -140,3 +146,18 @@ scampi:
             # annotate with user-defined gene aliases
             use_alias: "TRUE"
 
+        cell_percent_in_cluster:
+            variousParams: "--malignant Melanoma"
+
+        parse_filter_DE_genes:
+            variousParams: "0.01
+                    gene_names
+                    padj
+                    diff
+                    test_statistic
+                    nonmal_max
+                    nonmal_min
+                    malig_mean
+                    1
+                    1
+                    pct_nonzero"

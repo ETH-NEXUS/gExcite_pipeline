@@ -20,5 +20,5 @@ dependencies:
   - r-dplyr
   - r-tibble
   - bioconductor-limma
-  - r-hdf5r
+  - bioconductor-rhdf5
   - r-bremsc

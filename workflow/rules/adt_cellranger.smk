@@ -6,7 +6,7 @@ WORKDIR=os.getcwd()
 
 # Preprocessing to generate library file for ADT cellranger from the provided input parameters
 # Library file has a fixed format: fastqs,sample,library_type (with header)
-rule generate_library_adt:
+rule create_library_file_adt:
     input:
         fastqs_dir=config["inputOutput"]["input_fastqs_adt"] + "{sample}/",
     output:
@@ -17,10 +17,12 @@ rule generate_library_adt:
     resources: 
         mem_mb=config["computingResources"]["lowRequirements"]["mem"],
         time_min=config["computingResources"]["lowRequirements"]["time"]
+    log:
+        "logs/create_library_file_adt/{sample}.log"
     benchmark:
         "results/pooled_samples/cellranger_adt/{sample}.generate_library_adt.benchmark"
     shell:
-        'echo -e "fastqs,sample,library_type\n{input.fastqs_dir},{wildcards.sample},Antibody Capture" > {output.library_file}'
+        'echo -e "fastqs,sample,library_type\n{input.fastqs_dir},{wildcards.sample},Antibody Capture" > {output.library_file} &> {log}'
 
 
 # Cellranger call to process the raw ADT samples
@@ -45,6 +47,8 @@ rule cellranger_count_adt:
         targetCells=getTargetCellsCellranger,
         sample = '{sample}'
     threads: config["computingResources"]["highRequirements"]["threads"]
+    log:
+        "logs/cellranger_count_adt/{sample}.log"
     resources:
         mem_mb=config["computingResources"]["highRequirements"]["mem"],
         time_min=config["computingResources"]["highRequirements"]["time"]
@@ -54,5 +58,5 @@ rule cellranger_count_adt:
     # Therefore, a subshell is used here.
     # Also, unzip and symlink output files in preparation for rule 'create_symlink_adt' or 'create_symlink_adt_nonHashed'
     shell:
-        '(cd {params.cr_out}; {config[tools][cellranger_count_adt][call]} count --id={params.sample} --transcriptome={input.reference} --libraries={input.library} --feature-ref={input.features_ref} --nosecondary {params.variousParams} {params.targetCells}) && gunzip -c {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/features.tsv.gz > {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/features.tsv ; gunzip -c {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz > {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv ; gunzip -c {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz > {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/matrix.mtx && ln -rs "{params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/features.tsv" "{output.features_file}"; ln -rs "{params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/matrix.mtx" "{output.matrix_file}"; ln -rs "{params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv" "{output.barcodes_file}" ; ln -rs "{params.cr_out}{params.sample}/outs/web_summary.html" "{output.web_file}" ; ln -rs "{params.cr_out}{params.sample}/outs/metrics_summary.csv" "{output.metrics_file}"'
+        '(cd {params.cr_out}; {config[tools][cellranger_count_adt][call]} count --id={params.sample} --transcriptome={input.reference} --libraries={input.library} --feature-ref={input.features_ref} --nosecondary {params.variousParams} {params.targetCells}) &> {log} && gunzip -c {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/features.tsv.gz > {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/features.tsv ; gunzip -c {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz > {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv ; gunzip -c {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz > {params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/matrix.mtx && ln -rs "{params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/features.tsv" "{output.features_file}"; ln -rs "{params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/matrix.mtx" "{output.matrix_file}"; ln -rs "{params.cr_out}{params.sample}/outs/filtered_feature_bc_matrix/barcodes.tsv" "{output.barcodes_file}" ; ln -rs "{params.cr_out}{params.sample}/outs/web_summary.html" "{output.web_file}" ; ln -rs "{params.cr_out}{params.sample}/outs/metrics_summary.csv" "{output.metrics_file}"'
 
