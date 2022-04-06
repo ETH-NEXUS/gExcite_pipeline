@@ -1,4 +1,4 @@
-name: /cluster/project/nexus/matteo/conda_envs/de_analysis
+name: /cluster/customapps/nexus/single-cell/conda_envs/de_analysis
 channels:
   - conda-forge
   - bioconda
@@ -319,4 +319,3 @@ dependencies:
   - xz=5.2.5=h516909a_1
   - zlib=1.2.11=h36c2ea0_1013
   - zstd=1.5.2=ha95c52a_0
-prefix: /cluster/project/nexus/matteo/conda_envs/de_analysis
