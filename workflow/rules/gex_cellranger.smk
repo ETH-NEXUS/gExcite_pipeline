@@ -25,7 +25,7 @@ rule cellranger_count_gex:
         mem_mb=config["computingResources"]["mem"]['high'],
         time_min=config["computingResources"]["time"]['high']
     benchmark:
-        "results/pooled_samples/cellranger_gex/{sample}.cellranger_count_gex.benchmark"
+        "results/pooled_samples/cellranger_gex/benchmark/{sample}.cellranger_count_gex.benchmark"
     # NOTE: cellranger count function cannot specify the output directory, the output it the path you call it from.
     # Therefore, a subshell is used here.
     # Also, unzip and symlink output files in preparation for downstream steps

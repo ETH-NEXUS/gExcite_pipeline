@@ -20,7 +20,7 @@ rule create_library_file_adt:
     log:
         "logs/create_library_file_adt/{sample}.log"
     benchmark:
-        "results/pooled_samples/cellranger_adt/{sample}.generate_library_adt.benchmark"
+        "results/pooled_samples/cellranger_adt/benchmark/{sample}.generate_library_adt.benchmark"
     shell:
         'echo -e "fastqs,sample,library_type\n{input.fastqs_dir},{wildcards.sample},Antibody Capture" > {output.library_file}'
 
@@ -53,7 +53,7 @@ rule cellranger_count_adt:
         mem_mb=config["computingResources"]["mem"]["high"],
         time_min=config["computingResources"]["time"]["high"]
     benchmark:
-        "results/pooled_samples/cellranger_adt/{sample}.cellranger_count_adt.benchmark"
+        "results/pooled_samples/cellranger_adt/benchmark/{sample}.cellranger_count_adt.benchmark"
     # NOTE: cellranger count function cannot specify the output directory, the output it the path you call it from.
     # Therefore, a subshell is used here.
     # Also, unzip and symlink output files in preparation for rule 'create_symlink_adt' or 'create_symlink_adt_nonHashed'

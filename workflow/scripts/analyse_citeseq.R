@@ -117,6 +117,8 @@ print("Number of cells in ADT analysis after filtering:")
 print(length(colnames(CellRangerADT)))
 # Check if a threshold can be assigned to every antibody.
 print("Checking if a the antibodies are correctly named in the cellranger feature, the threshold and the lookup file.")
+print(unique(rownames(CellRangerADT)))
+print(unique(rownames(thresholds)))
 stopifnot(setequal(unique(lookup$Antibody), unique(rownames(thresholds))))
 print(unique(rownames(CellRangerADT)))
 stopifnot(setequal(unique(lookup$Antibody), unique(rownames(CellRangerADT))))

@@ -21,7 +21,7 @@ rule create_tag_file:
     log:
         'logs/create_tag_file/{sample}.log'
     benchmark:
-        'results/pooled_samples/citeseq_count/{sample}.create_tag_file.benchmark'
+        'results/pooled_samples/citeseq_count/benchmark/{sample}.create_tag_file.benchmark'
     run:
         outTag = open(output.tagFile,"w")
         infile = open(input.tags,"r")
@@ -55,7 +55,7 @@ rule CITE_seq_Count:
     threads:
         config['computingResources']['threads']['high']
     benchmark:
-        'results/pooled_samples/citeseq_count/{sample}.run_citeseq_count.benchmark'
+        'results/pooled_samples/citeseq_count/benchmark/{sample}.run_citeseq_count.benchmark'
     shell:
         'CITE-seq-Count -R1 {params.R1} -R2 {params.R2} {params.variousParams} -o {params.outdir} {params.targetCells} -T {threads} -t {input.tags} ; ln -frs {params.outfile} {output.run_report} &> {log}'
 
@@ -82,7 +82,7 @@ rule gzip_files_hashingInput:
     log:
         'logs/gzip_files_hashingInput/{sample}.log'
     benchmark:
-        'results/pooled_samples/cellranger_adt/{sample}.create_symlink_adt.benchmark'
+        'results/pooled_samples/cellranger_adt/benchmark/{sample}.create_symlink_adt.benchmark'
     shell:
         'mkdir -p {params.root_out} ; gzip -c "{input.features_file_tmp}" > "{output.features_file}"; gzip -c "{input.matrix_file_tmp}" > "{output.matrix_file}"; gzip -c "{input.barcodes_file_tmp}" > "{output.barcodes_file}"'
 
@@ -117,7 +117,7 @@ rule Rscript_analyseHashing:
     threads:
         config['computingResources']['threads']['high']
     benchmark:
-        'results/pooled_samples/hashing_analysis/{sample}.analyse_hashing.benchmark'
+        'results/pooled_samples/hashing_analysis/benchmark/{sample}.analyse_hashing.benchmark'
     shell:
         'Rscript ./workflow/scripts/analyseHashing.R ' +
         '--citeseq_in {params.citeseq_folder} ' +
@@ -128,7 +128,7 @@ rule Rscript_analyseHashing:
         '--normalisation_downstream {params.normalisation_downstream} ' +
         '--save_negatives {params.save_negatives} ' +
         '--output_prefix {params.output_prefix} '+
-        '&> {log}'
+        '&> {log}; touch {output.successFile}'
 
 rule Rscript_demultiplex_count_matrix:
     input:
@@ -149,6 +149,8 @@ rule Rscript_demultiplex_count_matrix:
         samplemapFile=config["inputOutput"]["sample_map"]
     log:
         'logs/Rscript_demultiplex_count_matrix/{sample}.{demultiplexed}.log'
+    benchmark:
+        'results/cellranger_gex/benchmark/{sample}.{demultiplexed}.demultiplex_count_matrix.benchmark'
     resources:
         mem_mb = config['computingResources']['mem']['medium'],
         time_min = config['computingResources']['time']['medium']

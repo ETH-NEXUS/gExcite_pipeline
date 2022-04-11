@@ -15,7 +15,7 @@ computingResources:
   mem:
     low: 400
     medium: 4000
-    high: 10000
+    high: 15000
   time:
     low: 60
     medium: 500

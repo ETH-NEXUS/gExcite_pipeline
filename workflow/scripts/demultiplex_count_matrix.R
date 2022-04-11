@@ -74,8 +74,11 @@ filter_cellRanger <- function(barcodeList, inputFolder, outputFolder, hashedSamp
   colnames(subMat) <- NULL
   print(str(subMat))
   outbarcodes <- paste(outputFolder, paste(hashedSampleSet, sampleName, "barcodes.tsv", sep = "."), sep = "/")
+  print(outbarcodes)
   outmatrix <- paste(outputFolder, paste(hashedSampleSet, sampleName, "matrix.mtx", sep = "."), sep = "/")
+  print(outmatrix)
   outfeatures <- paste(outputFolder, paste(hashedSampleSet, sampleName, "features.tsv", sep = "."), sep = "/")
+  print(outfeatures)
   write.table(intersection, file = outbarcodes, row.names = FALSE, quote = FALSE, col.names = FALSE)
   Matrix::writeMM(subMat, file = outmatrix)
   file.copy(paste(inputFolder, paste(hashedSampleSet, "features.tsv", sep = "."), sep = "/"), outfeatures)

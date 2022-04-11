@@ -9,10 +9,12 @@ rule create_initial_threshold_file:
         time_min = config['computingResources']['time']['low']
     log:
         "logs/create_initial_threshold_file/{sample}.log"
+    benchmark:
+        'results/citeseq_analysis/benchmark/{sample}.create_initial_threshold_file.benchmark'
     threads:config['computingResources']['threads']['low']
     shell:
         "echo -e 'Antibody\t{wildcards.sample}' > {output.thresholds} ; " +
-	"awk ' {{ print $2 }}' {input.CellrangerADT} | sed 's/$/\t0/' >> {output.thresholds} &> {log}"
+	"awk ' {{ print $2 }}' {input.CellrangerADT} | sed 's/$/\t0/' >> {output.thresholds}"
         
 
 #Rule to Analyse ADT Data in combination with GEXdata
@@ -34,6 +36,8 @@ rule Rscript_analyse_citeseq:
         outdir = 'results/citeseq_analysis/{sample}/' 
     log:
         "logs/Rscript_analyse_citeseq/{sample}.log"
+    benchmark:
+        'results/citeseq_analysis/benchmark/{sample}.analyse_citeseq.benchmark'
     resources:
         mem_mb = config['computingResources']['mem']['medium'],
         time_min = config['computingResources']['time']['medium']
