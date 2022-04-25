@@ -80,7 +80,7 @@ seurat_subset <- readRDS(seuratFile)
 
 message("Loading the DE results")
 myfiles <- list.files(inputFolder)
-myline <- myassay %&% "-" %&% mycontrast %&% "$"
+myline <- myassay %&% "_" %&% mycontrast %&% "$"
 myfiles <- grep(myline, myfiles, value = TRUE)
 myfiles <- paste0(inputFolder, "/", myfiles)
 
