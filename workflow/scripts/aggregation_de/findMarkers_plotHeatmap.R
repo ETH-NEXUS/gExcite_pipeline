@@ -56,7 +56,7 @@ option_list <- list(
   make_option("--topMarkersNum", type = "integer", help = "Number of top markers to choose from each DE result table"),
   make_option("--outdir", type = "character", "Path to output directory"),
   make_option("--isLogNorm", type = "logical", default = FALSE, help = "Is the data stored in the Seurat object log-normalized?"),
-  make_option("--pvalueadjThreshold", type = "integer", default = NULL, help = "Is the selection of features to plot done on all genes (NULL) or only on genes under a certain PValue adjusted threshold?")
+  make_option("--pvalueadjThreshold", type = "double", default = NULL, help = "Is the selection of features to plot done on all genes (NULL) or only on genes under a certain PValue adjusted threshold?")
 )
 
 opt_parser <- OptionParser(option_list = option_list)
