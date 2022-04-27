@@ -8,9 +8,9 @@ WORKDIR=os.getcwd()
 # Library file has a fixed format: fastqs,sample,library_type (with header)
 rule create_library_file_adt:
     input:
-        fastqs_dir=config["inputOutput"]["input_fastqs_adt"] + "{sample}/",
+        fastqs_dir=config["inputOutput"]["input_fastqs_adt"] + "{sample_set}/",
     output:
-        library_file= WORKDIR +"/results/pooled_samples/cellranger_adt/{sample}.adt_library.txt",
+        library_file= WORKDIR +"/results/pooled_samples/cellranger_adt/{sample_set}.adt_library.txt",
     params:
         seqRunName=getSeqRunName
     threads: config["computingResources"]["threads"]["low"]
@@ -18,42 +18,42 @@ rule create_library_file_adt:
         mem_mb=config["computingResources"]["mem"]["low"],
         time_min=config["computingResources"]["time"]["low"]
     log:
-        "logs/create_library_file_adt/{sample}.log"
+        "logs/create_library_file_adt/{sample_set}.log"
     benchmark:
-        "results/pooled_samples/cellranger_adt/benchmark/{sample}.generate_library_adt.benchmark"
+        "results/pooled_samples/cellranger_adt/benchmark/{sample_set}.generate_library_adt.benchmark"
     shell:
-        'echo -e "fastqs,sample,library_type\n{input.fastqs_dir},{wildcards.sample},Antibody Capture" > {output.library_file}'
+        'echo -e "fastqs,sample,library_type\n{input.fastqs_dir},{wildcards.sample_set},Antibody Capture" > {output.library_file}'
 
 
 # Cellranger call to process the raw ADT samples
 rule cellranger_count_adt:
     input:
-        library= WORKDIR + "/results/pooled_samples/cellranger_adt/{sample}.adt_library.txt",
+        library= WORKDIR + "/results/pooled_samples/cellranger_adt/{sample_set}.adt_library.txt",
         reference=config["resources"]["reference_transcriptome"],
         features_ref=getFeatRefFile,
     output:
-        features_file="results/pooled_samples/cellranger_adt/{sample}.features.tsv",
-        matrix_file="results/pooled_samples/cellranger_adt/{sample}.matrix.mtx",
-        barcodes_file="results/pooled_samples/cellranger_adt/{sample}.barcodes.tsv",
+        features_file="results/pooled_samples/cellranger_adt/{sample_set}.features.tsv",
+        matrix_file="results/pooled_samples/cellranger_adt/{sample_set}.matrix.mtx",
+        barcodes_file="results/pooled_samples/cellranger_adt/{sample_set}.barcodes.tsv",
         web_file=report(
-            "results/pooled_samples/cellranger_adt/{sample}.web_summary.html",
+            "results/pooled_samples/cellranger_adt/{sample_set}.web_summary.html",
             caption="../report/cellranger_adt.rst",
             category="preprocessing QC",
         ),
-        metrics_file="results/pooled_samples/cellranger_adt/{sample}.metrics_summary.csv",
+        metrics_file="results/pooled_samples/cellranger_adt/{sample_set}.metrics_summary.csv",
     params:
         cr_out="results/pooled_samples/cellranger_adt/",
         variousParams=config["tools"]["cellranger_count_adt"]["variousParams"],
         targetCells=getTargetCellsCellranger,
-        sample = '{sample}'
+        sample = '{sample_set}'
     threads: config["computingResources"]["threads"]["high"]
     log:
-        "logs/cellranger_count_adt/{sample}.log"
+        "logs/cellranger_count_adt/{sample_set}.log"
     resources:
         mem_mb=config["computingResources"]["mem"]["high"],
         time_min=config["computingResources"]["time"]["high"]
     benchmark:
-        "results/pooled_samples/cellranger_adt/benchmark/{sample}.cellranger_count_adt.benchmark"
+        "results/pooled_samples/cellranger_adt/benchmark/{sample_set}.cellranger_count_adt.benchmark"
     # NOTE: cellranger count function cannot specify the output directory, the output it the path you call it from.
     # Therefore, a subshell is used here.
     # Also, unzip and symlink output files in preparation for rule 'create_symlink_adt' or 'create_symlink_adt_nonHashed'

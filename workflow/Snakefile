@@ -12,7 +12,7 @@ report: "../report/workflow.rst"
 # This file includes common functions used in the pipeline
 include: "rules/misc_snake.smk"
 
-## Include the scampi module
+## Include scampi as a module
 module scampi:
     skip_validation: True 
     snakefile: "/cluster/work/nexus/internal_projects/scAmpi_restructuring/test_linda/scAmpi_single_cell_RNA/workflow/snakefile_basic.smk"
@@ -35,23 +35,23 @@ localrules:
 rule gExcite:
     input:
         # Final files from preprocessing
-        expand('results/cellranger_gex/{sample}.{demultiplexed}.matrix.mtx', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
-        expand('results/cellranger_gex/{sample}.{demultiplexed}.barcodes.tsv', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
-        expand('results/cellranger_gex/{sample}.{demultiplexed}.features.tsv', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
-        expand('results/cellranger_adt/{sample}.{demultiplexed}.matrix.mtx', sample=HashedSamples , demultiplexed = getDemultiplexedSamples()),
-        expand('results/cellranger_adt/{sample}.{demultiplexed}.barcodes.tsv', sample=HashedSamples , demultiplexed = getDemultiplexedSamples()),
-        expand('results/cellranger_adt/{sample}.{demultiplexed}.features.tsv', sample=HashedSamples , demultiplexed = getDemultiplexedSamples()),
+        expand('results/cellranger_gex/{demultiplexed}.matrix.mtx',  demultiplexed = getCompleteSampleNames()),
+        expand('results/cellranger_gex/{demultiplexed}.barcodes.tsv',  demultiplexed = getCompleteSampleNames()),
+        expand('results/cellranger_gex/{demultiplexed}.features.tsv',  demultiplexed = getCompleteSampleNames()),
+        expand('results/cellranger_adt/{demultiplexed}.matrix.mtx',  demultiplexed = getCompleteSampleNames()),
+        expand('results/cellranger_adt/{demultiplexed}.barcodes.tsv',  demultiplexed = getCompleteSampleNames()),
+        expand('results/cellranger_adt/{demultiplexed}.features.tsv',  demultiplexed = getCompleteSampleNames()),
         # List of final files from scampi
-        expand('results/counts_raw/{sample}.{demultiplexed}.h5', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
-        expand('results/counts_filtered/{sample}.{demultiplexed}.doublet_barcodes.txt', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
-        expand('results/counts_raw/{sample}.{demultiplexed}.h5.histogram_library_sizes.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
-        expand('results/counts_corrected/{sample}.{demultiplexed}.corrected.RDS', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
-        expand('results/clustering/{sample}.{demultiplexed}.clusters_phenograph.csv', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
-        expand('results/gene_exp/{sample}.{demultiplexed}.gene_expression_per_cluster.tsv', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
-        expand('results/plotting/{sample}.{demultiplexed}.celltype_barplot.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
-        expand('results/gsva/{sample}.{demultiplexed}.gsetscore_hm.png', sample = HashedSamples, demultiplexed = getDemultiplexedSamples()),
+        expand('results/counts_raw/{demultiplexed}.h5',  demultiplexed = getCompleteSampleNames()),
+        expand('results/counts_filtered/{demultiplexed}.doublet_barcodes.txt',  demultiplexed = getCompleteSampleNames()),
+        expand('results/counts_raw/{demultiplexed}.h5.histogram_library_sizes.png',  demultiplexed = getCompleteSampleNames()),
+        expand('results/counts_corrected/{demultiplexed}.corrected.RDS',  demultiplexed = getCompleteSampleNames()),
+        expand('results/clustering/{demultiplexed}.clusters_phenograph.csv',  demultiplexed = getCompleteSampleNames()),
+        expand('results/gene_exp/{demultiplexed}.gene_expression_per_cluster.tsv',  demultiplexed = getCompleteSampleNames()),
+        expand('results/plotting/{demultiplexed}.celltype_barplot.png',  demultiplexed = getCompleteSampleNames()),
+        expand('results/gsva/{demultiplexed}.gsetscore_hm.png',  demultiplexed = getCompleteSampleNames()),
         # List of final files from citeseq analysis
-        expand('results/citeseq_analysis/{sample}.{demultiplexed}/{sample}.{demultiplexed}.GEX_cellrangerADT_SCE.RDS', sample = HashedSamples, demultiplexed = getDemultiplexedSamples())
+        expand('results/citeseq_analysis/{demultiplexed}/{demultiplexed}.GEX_cellrangerADT_SCE.RDS',  demultiplexed = getCompleteSampleNames())
     output:
         "results/complete_gExcite.txt",
     resources:

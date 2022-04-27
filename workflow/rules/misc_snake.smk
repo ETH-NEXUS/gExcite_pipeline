@@ -15,19 +15,31 @@ HashedSamples = samples["sample"].tolist()
 def getTagFileHashedSamples(wildcards):
     sampleMap = dict(zip(samples['sample'], samples['HashingFile']))
     # Tests if file is existing
-    if not os.path.isfile(sampleMap[wildcards.sample]):
+    if not os.path.isfile(sampleMap[wildcards.sample_set]):
         raise ValueError(
         "Sample '%s' does not contain a valid hashing status/file in the sample map!"
-        % (wildcards.sample)
+        % (wildcards.sample_set)
         )
-    if wildcards.sample not in sampleMap.keys():
+    if wildcards.sample_set not in sampleMap.keys():
         raise ValueError(
-            "Sample '%s' not found in the sample map!" % (wildcards.sample)
+            "Sample '%s' not found in the sample map!" % (wildcards.sample_set)
         )
-    return sampleMap[wildcards.sample]
+    return sampleMap[wildcards.sample_set]
 
 # Retrieve demultiplexed sample names.
-def getDemultiplexedSamples():
+def getDemultiplexedSamples(sample):
+    HashedSampleNames = samples["sample"].tolist()
+    DemultiplexedSamples = []
+    for HashedSample in HashedSampleNames:
+        if sample == HashedSample:
+            tableEntry = samples.loc[samples["sample"]==sample]
+            tagFile = tableEntry.loc[sample,"HashingFile"]
+            subsampleTable = pd.read_table(tagFile,header=None,index_col=False, sep=",")
+            DemultiplexedSamples = subsampleTable.iloc[:,2].tolist()
+    return DemultiplexedSamples
+# Retrieve demultiplexed sample names.
+
+def getCompleteSampleNames():
     HashedSampleNames = samples["sample"].tolist()
     DemultiplexedSamples = []
     for sample in HashedSampleNames:
@@ -35,7 +47,8 @@ def getDemultiplexedSamples():
         tagFile = tableEntry.loc[sample,"HashingFile"]
         subsampleTable = pd.read_table(tagFile,header=None,index_col=False, sep=",")
         subsamples = subsampleTable.iloc[:,2].tolist()
-        DemultiplexedSamples.extend(subsamples)
+        for subsample in subsamples:
+            DemultiplexedSamples.append(sample+"."+subsample)
     return DemultiplexedSamples
         
 
@@ -43,11 +56,11 @@ def getDemultiplexedSamples():
 def getTargetCells(wildcards):
     # Create dictionary with samples and nTargetCells
     sampleMap = dict(zip(samples['sample'], samples['nTargetCells']))
-    if wildcards.sample not in sampleMap.keys():
+    if wildcards.sample_set not in sampleMap.keys():
         raise ValueError(
-            "Sample '%s' not found in the sample map!" % (wildcards.sample)
+            "Sample '%s' not found in the sample map!" % (wildcards.sample_set)
         )
-    return sampleMap[wildcards.sample]
+    return sampleMap[wildcards.sample_set]
 
 
 # Preprend the retrieved target cell with the prefix required for citeseq count.
@@ -76,22 +89,22 @@ def getTargetCellsCellranger(wildcards):
 def getSeqRunName(wildcards):
     # Create dictionary with samples and SeqRunName
     sampleMap = dict(zip(samples['sample'], samples['SeqRunName']))
-    if wildcards.sample not in sampleMap.keys():
+    if wildcards.sample_set not in sampleMap.keys():
         raise ValueError(
-            "Sample '%s' not found in the sample map!" % (wildcards.sample)
+            "Sample '%s' not found in the sample map!" % (wildcards.sample_set)
         )
-    return sampleMap[wildcards.sample]
+    return sampleMap[wildcards.sample_set]
 
 
 # Retrieve the ADT feature reference file corresponding to a given sample set
 def getFeatRefFile(wildcards):
     # Create dictionary with samples and FeatureRefFile
     sampleMap = dict(zip(samples['sample'], samples['featureReferenceFile']))
-    if wildcards.sample not in sampleMap.keys():
+    if wildcards.sample_set not in sampleMap.keys():
         raise ValueError(
-            "Sample '%s' not found in the sample map!" % (wildcards.sample)
+            "Sample '%s' not found in the sample map!" % (wildcards.sample_set)
         )
-    return sampleMap[wildcards.sample]
+    return sampleMap[wildcards.sample_set]
 
 def list_fastqs(base,Rvalue):
     """Returns comma separated list of fastqs."""
