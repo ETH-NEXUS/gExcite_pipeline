@@ -22,15 +22,10 @@ sampleMap <- read.csv(opt$sampleMap, header = TRUE, sep = "\t")
 print(sampleMap)
 
 filter_cellRanger <- function(barcodeList, inputFolder, outputFolder, hashedSampleSet, sampleName) {
-  print(barcodeList)
-  print(inputFolder)
-  print(outputFolder)
-  print("TEST")
   # Read in hashing barcodes
   hashbarcodes <- read.table(barcodeList)
   # Read in cellranger barcodes
   sampleCellRanger <- read.table(paste(inputFolder, paste(hashedSampleSet, "barcodes.tsv", sep = "."), sep = "/"))
-  print("FILE")
   print(hashbarcodes[1, 1])
   barcode_length <- nchar(toString(hashbarcodes[1, 1]))
   print(paste0("Barcode length:", barcode_length))
@@ -94,17 +89,11 @@ filter_cellRanger <- function(barcodeList, inputFolder, outputFolder, hashedSamp
 
 
 hashedSampleSet <- opt$sampleSet
-print(hashedSampleSet)
 sample <- opt$sample
-print(sample)
 hashingFile = sampleMap$HashingFile[which(sampleMap$sample == opt$sampleSet)]
 print(hashingFile)
-print("reached0")
 sampleTagMap <- read.csv(hashingFile, header = FALSE, sep = ",")
-print("reached1")
 colnames(sampleTagMap) <- c("barcode", "tagName", "sampleName")
-print(sampleTagMap)
-print("reached2")
 # Create the required output directories
 baseoutdir <- "results/"
 outdirADT <- paste(baseoutdir, "cellranger_adt", sep = "/")
