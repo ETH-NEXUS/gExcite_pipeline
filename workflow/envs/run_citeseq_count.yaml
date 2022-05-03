@@ -1,9 +1,8 @@
-name: /cluster/customapps/nexus/single-cell/conda_envs/scPreprocessing_gex_adt
+name: run_citeseq_count
 channels:
-  - conda-forge
   - bioconda
+  - conda-forge
   - defaults
 dependencies:
-  - cite-seq-count 
-  - openssl
-
+  - cite-seq-count=1.4.4
+  - openssl=3.0.0

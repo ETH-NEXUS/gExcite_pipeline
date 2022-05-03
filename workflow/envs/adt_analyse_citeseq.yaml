@@ -1,24 +1,24 @@
-name: /cluster/customapps/nexus/single-cell/conda_envs/scRNA_ADT_hashing
+name: adt_analyse_citeseq
 channels:
-  - conda-forge
-  - bioconda
   - ligrob
+  - bioconda
+  - conda-forge
   - defaults
 dependencies:
-  - r-optparse
-  - r-seurat
-  - r-cowplot
-  - r-uwot
-  - bioconductor-singlecellexperiment
-  - r-rjson
-  - r-stringr
-  - r-pheatmap
-  - r-patchwork
-  - r-ggplot2
-  - r-reshape
-  - r-ggridges
-  - r-dplyr
-  - r-tibble
-  - bioconductor-limma
+  - bioconductor-limma=3.50.1
+  - bioconductor-singlecellexperiment=1.16.0
   - bioconductor-rhdf5
-  - r-bremsc
+  - r-bremsc=0.2.0
+  - r-cowplot=1.1.1
+  - r-dplyr=1.0.8
+  - r-ggplot2=3.3.5
+  - r-ggridges=0.5.3
+  - r-optparse=1.7.1
+  - r-patchwork=1.1.1
+  - r-pheatmap=1.0.12
+  - r-reshape=0.8.8
+  - r-rjson=0.2.21
+  - r-seurat=4.1.0
+  - r-stringr=1.4.0
+  - r-tibble=3.1.6
+  - r-uwot=0.1.11
