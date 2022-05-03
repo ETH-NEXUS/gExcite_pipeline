@@ -65,7 +65,6 @@ suppressPackageStartupMessages({
   library(ggplot2)
   library(ggrepel)
   library(scran)
-  library(uwot)
   library(dbscan)
   library(dynamicTreeCut)
   library(RColorBrewer)

@@ -55,7 +55,8 @@ option_list <- list(
   make_option("--splitFeature", type = "character", default = "", help = "Name of the feature to use to split the Seurat object. It must be an existing metadata column in the Seurat object"),
   make_option("--topMarkersNum", type = "integer", help = "Number of top markers to choose from each DE result table"),
   make_option("--outdir", type = "character", "Path to output directory"),
-  make_option("--isLogNorm", type = "logical", default = FALSE, help = "Is the data stored in the Seurat object log-normalized?")
+  make_option("--isLogNorm", type = "logical", default = FALSE, help = "Is the data stored in the Seurat object log-normalized?"),
+  make_option("--pvalueadjThreshold", type = "double", default = NULL, help = "Is the selection of features to plot done on all genes (NULL) or only on genes under a certain PValue adjusted threshold?")
 )
 
 opt_parser <- OptionParser(option_list = option_list)
@@ -72,13 +73,14 @@ myassay <- opt$assay
 mytop <- opt$topMarkersNum
 outdir <- opt$outdir %&% "/"
 isLogNorm <- opt$isLogNorm
+mypval <- opt$pvalueadjThreshold
 
 message("Loading the Seurat object")
 seurat_subset <- readRDS(seuratFile)
 
 message("Loading the DE results")
 myfiles <- list.files(inputFolder)
-myline <- myassay %&% "-" %&% mycontrast %&% "$"
+myline <- myassay %&% "_" %&% mycontrast %&% "$"
 myfiles <- grep(myline, myfiles, value = TRUE)
 myfiles <- paste0(inputFolder, "/", myfiles)
 
@@ -86,7 +88,14 @@ mygenes_group <- NULL
 for (i in seq_len(length(myfiles))) {
   mygenes <- readRDS(myfiles[i])
   mygenes <- mygenes[order(mygenes$p_val_adj), ]
-  mygenes_group <- c(mygenes_group, rownames(mygenes)[1:mytop])
+  if(!is.null(mypval)){
+    mygenes <- mygenes[which(mygenes$p_val_adj < mypval),]
+  }
+  if(nrow(mygenes) >= mytop){
+    mygenes_group <- c(mygenes_group, rownames(mygenes)[1:mytop])
+  }else{
+    mygenes_group <- c(mygenes_group, rownames(mygenes))
+  }
 }
 mygenes_group <- unique(mygenes_group)
 
