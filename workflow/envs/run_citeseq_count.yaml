@@ -6,3 +6,4 @@ channels:
 dependencies:
   - cite-seq-count=1.4.4
   - openssl=3.0.0
+  - python-levenshtein=0.12.2
