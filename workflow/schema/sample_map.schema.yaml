@@ -11,8 +11,7 @@ properties:
     type: string
     description: Sequencing sample name of ADT Fastq Files
   nTargetCells:
-    type: [integer,string]
-    pattern: ^[1-9]\d*|.$
+    type: integer
     description: The number of cells that were targeted in the lab
   featureReferenceFile: 
     type: string
