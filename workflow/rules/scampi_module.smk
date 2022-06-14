@@ -1,6 +1,6 @@
 
 # Import all the basic rules needed from scampi for the analysis one by one.
-# Adapt properties where necessary.
+# Adapt properties where necessary, currently only necessary in create_hdf5.
 # All resources and threads are adapted to avoid having a dublicated computingResources section in the config.
 
 

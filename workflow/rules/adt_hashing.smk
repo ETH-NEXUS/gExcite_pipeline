@@ -1,5 +1,4 @@
 # Rules to demultiplex & analyse hashed data. 
-
 from os import listdir
 from os.path import isfile, join
 
@@ -130,7 +129,9 @@ rule Rscript_analyseHashing:
         '--output_prefix {params.output_prefix} '+
         '&> {log}; touch {output.successFile}'
 
-
+# Rule to demultiplex the count matrix
+# Input: Hashing success File from the rule Rscript_analyseHashing and the cellranger files
+# Output: cellranger gex and adt files for every sample in sampleset (note! Rule runs once / sample)
 rule Rscript_demultiplex_count_matrix:
     input:
         successFile = 'results/pooled_samples/hashing_analysis/{sample_set}.complete_hashing.txt',

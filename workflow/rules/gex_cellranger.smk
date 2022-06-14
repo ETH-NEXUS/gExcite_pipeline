@@ -1,4 +1,6 @@
 # Cellranger call to process the raw GEX samples
+# input: fastq directory from config file and reference transcriptome read from config file
+# output: cellranger files
 rule cellranger_count_gex:
     input:
         fastqs_dir=config["inputOutput"]["input_fastqs_gex"] + "{sample_set}/",
