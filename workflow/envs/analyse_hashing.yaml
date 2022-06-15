@@ -4,14 +4,14 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - r-optparse
-  - r-seurat
-  - r-cowplot
-  - r-ggplot2
-  - r-viridislite
-  - r-paralleldist
-  - r-scales
-  - r-uwot
-  - r-patchwork
-  - r-plyr
-  - r-r.utils
+  - r-optparse=1.7.1
+  - r-seurat=4.1.0
+  - r-cowplot=1.1.1
+  - r-ggplot2=3.3.5
+  - r-viridislite=0.4.0
+  - r-paralleldist=0.2.6
+  - r-scales=1.1.1
+  - r-uwot=0.1.11
+  - r-patchwork=1.1.1
+  - r-plyr=1.8.6
+  - r-r.utils=2.11.0
