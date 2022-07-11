@@ -15,7 +15,7 @@ include: "rules/misc_snake.smk"
 ## Include scampi as a module
 module scampi:
     skip_validation: True 
-    snakefile: github("ETH-NEXUS/scAmpi_single_cell_RNA", path="workflow/Snakefile", commit = "b6abf0c")
+    snakefile: github("ETH-NEXUS/scAmpi_single_cell_RNA", path="workflow/Snakefile", commit = "88bc841")
     config: config["scampi"]
 
 ## Include the preprocessing rules
