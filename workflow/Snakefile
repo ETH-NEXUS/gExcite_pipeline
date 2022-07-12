@@ -44,7 +44,7 @@ rule gExcite:
         # List of final files from scampi
         expand('results/counts_raw/{demultiplexed}.h5',  demultiplexed = getCompleteSampleNames()),
         expand('results/counts_filtered/{demultiplexed}.doublet_barcodes.txt',  demultiplexed = getCompleteSampleNames()),
-        expand('results/counts_raw/{demultiplexed}.h5.histogram_library_sizes.png',  demultiplexed = getCompleteSampleNames()),
+        expand('results/counts_raw/{demultiplexed}.raw.histogram_library_sizes.png',  demultiplexed = getCompleteSampleNames()),
         expand('results/counts_corrected/{demultiplexed}.corrected.RDS',  demultiplexed = getCompleteSampleNames()),
         expand('results/clustering/{demultiplexed}.clusters_phenograph.csv',  demultiplexed = getCompleteSampleNames()),
         expand('results/gene_exp/{demultiplexed}.gene_expression_per_cluster.tsv',  demultiplexed = getCompleteSampleNames()),

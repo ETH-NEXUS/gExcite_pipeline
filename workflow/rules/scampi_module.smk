@@ -86,7 +86,7 @@ use rule gene_exp from scampi as scampi_gene_exp with:
     threads:
         threads = config['computingResources']['threads']['medium']
 
-use rule generate_qc_plots from scampi as scampi_generate_qc_plots with:
+use rule generate_qc_plots_raw from scampi as scampi_generate_qc_plots_raw with:
     resources:
         mem_mb = config['computingResources']['mem']['medium'],
         time_min = config['computingResources']['time']['medium']
