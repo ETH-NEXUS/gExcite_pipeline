@@ -21,7 +21,7 @@ conda activate snakemake
 Snakedeploy can now be used to deploy the workflow. 
 
 ```
-snakedeploy deploy-workflow https://github.com/ETH-NEXUS/scGATE_workflow --tag master .
+snakedeploy deploy-workflow https://github.com/ETH-NEXUS/scGATE_workflow --tag main .
 ```
 
 ### Dependencies
