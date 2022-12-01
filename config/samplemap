@@ -1,2 +1,2 @@
 sample	HashingFile	SeqRunName	nTargetCells	featureReferenceFile
-sampleA	tags.sampleA.csv	SeqRunNameSampleA	10000 feature_reference.sampleA.txt
+sampleA	tags.sampleA.csv	SeqRunNameSampleA	10000	feature_reference.sampleA.txt
