@@ -12,13 +12,14 @@ rule plot_combined_ridgeplot:
         "../envs/plot_combined_ridgeplot.yaml"
     params:
         ADTFolder = gatherCellrangerADTFolder() #'results/cellranger_adt/{sample}/outs/',
-        outdir = 'results/cohort_combined_analysis/'
+        outdir = 'results/cohort_combined_analysis/',
+        custom_script=workflow.source_path("../scripts/plot_citeseq_combined_ridgeplots.R"),
     resources:
         mem_mb = config['computingResources']['mediumRequirements']['mem'],
         time_min = config['computingResources']['mediumRequirements']['time']
     threads:config['computingResources']['mediumRequirements']['threads']
     shell:
-        "Rscript ../scripts/plot_citeseq_combined_ridgeplots.R " +
+        "Rscript {params.custom_script} " +
         "--atypicalRemoved {input.RDS}" +
         "--analysisADT {params.ADTFolder}" +
         "--sampleNames {wildcards.sample}" +
