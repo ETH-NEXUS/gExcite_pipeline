@@ -5,7 +5,7 @@ inputOutput:
   malignant_cell_type: "PBMC"
 
 resources:
-  # The following needs to point to the reference transcriptome that will be used by cellranger. 
+  # The following needs to point to the reference transcriptome that will be used by cellranger.
   reference_transcriptome: /path/to/reference/transcriptome/refdata-cellranger-GRCh38-3.0.0
   # The following need to point to a lookup table for a gene - protein name map
   adt_lookup: "/path/to/lookup_gene_protein.20191130.txt"
@@ -29,18 +29,18 @@ computingResources:
 tools:
   # Cellranger can not be installed through Conda currently.
   # It needs to be installed manually & the call in both cellranger rules needs to be adapted.
-  # variousParams can be set as described in the Cellranger documentation 
+  # variousParams can be set as described in the Cellranger documentation
   cellranger_count_gex:
     call: /path/to/cellranger
-    variousParams: '--chemistry SC5P-R2'
+    variousParams: "--chemistry SC5P-R2"
 
   cellranger_count_adt:
-    call:  /path/to/cellranger
-    variousParams: '--chemistry SC5P-R2'
+    call: /path/to/cellranger
+    variousParams: "--chemistry SC5P-R2"
 
   # variousParams can be set as described in the CiteSeq documentation
   run_citeseq_count:
-    variousParams: '-cbf 1 -cbl 16 -umif 17 -umil 26 --start-trim 10 '
+    variousParams: "-cbf 1 -cbl 16 -umif 17 -umil 26 --start-trim 10 "
 
   # The parameters of this custom script (analyseHashing.R) are descripted in the following lines.
   # quantileThreshold: Quantile threshold for HTODemux() function (RPackage Seurat)
@@ -48,115 +48,115 @@ tools:
   # normalisation_downstream: If normalisation = '1,2' the normalised counts of only one option are kept. This option can be '1' or '2'.
   # save_negatives: If normalisation '1,2' is chosen this parameter decides if a given tag stays for the cell even if using the second normalisation method a 'Negative' is predicted. Can be 'FALSE' or 'TRUE', default is TRUE.
   analyse_hashing:
-    quantileThreshold: '0.99'
-    normalisation: '1,2'
-    normalisation_downstream: '2'
-    save_negatives: 'TRUE'
+    quantileThreshold: "0.99"
+    normalisation: "1,2"
+    normalisation_downstream: "2"
+    save_negatives: "TRUE"
 
   analyse_citeseq:
     numberVariableGenes: 500
 
 scampi:
-    inputOutput:
-        malignant_cell_type: "melanoma"
-        # seems to be necessary to work with the module
-        sample_map: "config/dummy_scampi_samplemap"
-    resources:
-        # celltype_lists gmx file containing a library of cell type classification gene lists
-        celltype_lists: "/path/to/celltype_list_melanoma.gmx"
-        # celltype_config to easily adapt the cell type classification step
-        celltype_config: "/path/to/celltype_config_melanoma.tsv"
-        # colour_config for a fixed assignment of colours to the cell types in celltype_config
-        colour_config: "/path/to/colour_config_melanoma.txt"
-        # gene expression of priority genes will be plotted and highlighted in per cluster gene expression (gene_exp)
-        priority_genes: "/path/to/selected_genes_melanoma.txt"
-        #
-        genesets: "/path/to/hallmark_pathways_example.gmt"
+  inputOutput:
+    malignant_cell_type: "melanoma"
+    # seems to be necessary to work with the module
+    sample_map: "config/dummy_scampi_samplemap"
+  resources:
+    # celltype_lists gmx file containing a library of cell type classification gene lists
+    celltype_lists: "/path/to/celltype_list_melanoma.gmx"
+    # celltype_config to easily adapt the cell type classification step
+    celltype_config: "/path/to/celltype_config_melanoma.tsv"
+    # colour_config for a fixed assignment of colours to the cell types in celltype_config
+    colour_config: "/path/to/colour_config_melanoma.txt"
+    # gene expression of priority genes will be plotted and highlighted in per cluster gene expression (gene_exp)
+    priority_genes: "/path/to/selected_genes_melanoma.txt"
+    #
+    genesets: "/path/to/hallmark_pathways_example.gmt"
 
-    tools:
-        filter_genes_and_cells:
-            # cell outlier detection based on fractionMT, disabled per default ("100")
-            nmads_fractionMT: "100"
-            # cell outlier detection based on number of detected genes, disabled per default ("100")
-            nmads_NODG: "100"
-            # minimum number of detected genes for cells
-            threshold_NODG: "400"
-            # maximum fraction of reads mapping to MT genes for cells. Should be adapted based on cell types and expected values.
-            threshold_fractionMT: "0.5"
-            # genome version for selecting only protein-coding genes
-            genomeVersion: "GRCh38"
-            # remove doublets detected in previous step
-            remove_doublets: "TRUE"
-            # keep only protein-coding genes
-            protein_coding_only: "FALSE"
-            # minimum number of cells expressing a gene for the gene to be kept
-            minNumberCells: "20"
+  tools:
+    filter_genes_and_cells:
+      # cell outlier detection based on fractionMT, disabled per default ("100")
+      nmads_fractionMT: "100"
+      # cell outlier detection based on number of detected genes, disabled per default ("100")
+      nmads_NODG: "100"
+      # minimum number of detected genes for cells
+      threshold_NODG: "400"
+      # maximum fraction of reads mapping to MT genes for cells. Should be adapted based on cell types and expected values.
+      threshold_fractionMT: "0.5"
+      # genome version for selecting only protein-coding genes
+      genomeVersion: "GRCh38"
+      # remove doublets detected in previous step
+      remove_doublets: "TRUE"
+      # keep only protein-coding genes
+      protein_coding_only: "FALSE"
+      # minimum number of cells expressing a gene for the gene to be kept
+      minNumberCells: "20"
 
-        sctransform_preprocessing:
-            # number of genes with highest residual variance used for UMAP calculation and clustering
-            number_genes: "2000"
-            # minimum residual variance for genes to be used  for UMAP calculation and clustering
-            min_var: "1.5"
-            # number of nearest neighbours for UMAP calculation
-            n_nn: "30"
+    sctransform_preprocessing:
+      # number of genes with highest residual variance used for UMAP calculation and clustering
+      number_genes: "2000"
+      # minimum residual variance for genes to be used  for UMAP calculation and clustering
+      min_var: "1.5"
+      # number of nearest neighbours for UMAP calculation
+      n_nn: "30"
 
-        celltyping:
-            # minimum number of cell-type-specific genes expressed by a cell to consider cell type, default is "5"
-            min_genes: "5"
+    celltyping:
+      # minimum number of cell-type-specific genes expressed by a cell to consider cell type, default is "5"
+      min_genes: "5"
 
-        remove_atypical_cells:
-            # threshold type, either "number_cells" or "percentage_cells"
-            threshold_type: "percentage_cells"
-            # default is "percentage_cells" and "5":
-            # cells with cell type that less than 5 % of the cells in the cluster have are removed
-            threshold_filter: "5"
-            # absolute minimum number of cells of a cell type that will not be removed
-            min_threshold: "5"
+    remove_atypical_cells:
+      # threshold type, either "number_cells" or "percentage_cells"
+      threshold_type: "percentage_cells"
+      # default is "percentage_cells" and "5":
+      # cells with cell type that less than 5 % of the cells in the cluster have are removed
+      threshold_filter: "5"
+      # absolute minimum number of cells of a cell type that will not be removed
+      min_threshold: "5"
 
-        clustering:
-            phenograph:
-                # number of nearest neighbours
-                n_neighbours: 30
-                log_normalize: false
-                # minimum number of cells to form a cluster
-                min_cluster_size: 20
+    clustering:
+      phenograph:
+        # number of nearest neighbours
+        n_neighbours: 30
+        log_normalize: false
+        # minimum number of cells to form a cluster
+        min_cluster_size: 20
 
-        diff_exp_analysis:
-            # minimum number of cells to be tested in DE analysis
-            threshold_comparison: "20"
-            # cut-off for p-value
-            fdr_cut: "0.01"
-            # cut-off for fold change
-            fc_cut: "2"
-            # minimum difference in mean expression
-            mindiff2second: "1"
-            # minimum number of non-malignant clusters to test DE to each malignant cluster
-            minNumberNonMalignant: "2"
+    diff_exp_analysis:
+      # minimum number of cells to be tested in DE analysis
+      threshold_comparison: "20"
+      # cut-off for p-value
+      fdr_cut: "0.01"
+      # cut-off for fold change
+      fc_cut: "2"
+      # minimum difference in mean expression
+      mindiff2second: "1"
+      # minimum number of non-malignant clusters to test DE to each malignant cluster
+      minNumberNonMalignant: "2"
 
-        gene_exp:
-            # script includes filtering of genes that show non-zero expression in too few cells
-            # either "number_cells" or "percentage_cells"
-            type_sample: "number_cells"
-            # threshold for cells with  non-zero expression to calculate mean expression for gene
-            # default "0" keeps all genes
-            threshold_sample: "0"
+    gene_exp:
+      # script includes filtering of genes that show non-zero expression in too few cells
+      # either "number_cells" or "percentage_cells"
+      type_sample: "number_cells"
+      # threshold for cells with  non-zero expression to calculate mean expression for gene
+      # default "0" keeps all genes
+      threshold_sample: "0"
 
-        plotting:
-            # annotate with user-defined gene aliases
-            use_alias: "TRUE"
+    plotting:
+      # annotate with user-defined gene aliases
+      use_alias: "TRUE"
 
-        cell_percent_in_cluster:
-            variousParams: "--malignant Melanoma"
+    cell_percent_in_cluster:
+      variousParams: "--malignant Melanoma"
 
-        parse_filter_DE_genes:
-            variousParams: "0.01
-                    gene_names
-                    padj
-                    diff
-                    test_statistic
-                    nonmal_max
-                    nonmal_min
-                    malig_mean
-                    1
-                    1
-                    pct_nonzero"
+    parse_filter_DE_genes:
+      variousParams: "0.01
+        gene_names
+        padj
+        diff
+        test_statistic
+        nonmal_max
+        nonmal_min
+        malig_mean
+        1
+        1
+        pct_nonzero"
