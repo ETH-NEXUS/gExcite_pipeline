@@ -16,7 +16,7 @@ rule create_library_file_adt:
     threads: config["computingResources"]["threads"]["low"]
     resources: 
         mem_mb=config["computingResources"]["mem_mb"]["low"],
-        time_min=config["computingResources"]["time"]["low"]
+        time_min=config["computingResources"]["runtime"]["low"]
     log:
         "logs/create_library_file_adt/{sample_set}.log"
     benchmark:
@@ -51,7 +51,7 @@ rule cellranger_count_adt:
         "logs/cellranger_count_adt/{sample_set}.log"
     resources:
         mem_mb=config["computingResources"]["mem_mb"]["high"],
-        time_min=config["computingResources"]["time"]["high"]
+        time_min=config["computingResources"]["runtime"]["high"]
     benchmark:
         "results/pooled_samples/cellranger_adt/benchmark/{sample_set}.cellranger_count_adt.benchmark"
     # NOTE: cellranger count function cannot specify the output directory, the output it the path you call it from.
