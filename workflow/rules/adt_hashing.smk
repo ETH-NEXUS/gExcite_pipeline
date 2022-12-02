@@ -16,7 +16,7 @@ rule create_tag_file:
         config['computingResources']['threads']['low']
     resources:
         mem_mb = config['computingResources']['mem_mb']['low'],
-        time_min = config['computingResources']['runtime']['low']
+        runtime = config['computingResources']['runtime']['low']
     log:
         'logs/create_tag_file/{sample_set}.log'
     benchmark:
@@ -48,7 +48,7 @@ rule CITE_seq_Count:
         "../envs/run_citeseq_count.yaml"
     resources:
         mem_mb = config['computingResources']['mem_mb']['high'],
-        time_min = config['computingResources']['runtime']['high']
+        runtime = config['computingResources']['runtime']['high']
     log:
         'logs/CITE-seq-Count/{sample_set}.log'
     threads:
@@ -75,7 +75,7 @@ rule gzip_files_hashingInput:
         root_out = 'results/pooled_samples/cellranger_adt/{sample_set}_zipped_files/'
     resources:
         mem_mb = config['computingResources']['mem_mb']['high'],
-        time_min = config['computingResources']['runtime']['high']
+        runtime = config['computingResources']['runtime']['high']
     threads:
         config['computingResources']['threads']['high']
     log:
@@ -112,7 +112,7 @@ rule Rscript_analyseHashing:
         'logs/Rscript_analyseHashing/{sample_set}.log'
     resources:
         mem_mb = config['computingResources']['mem_mb']['high'],
-        time_min = config['computingResources']['runtime']['high']
+        runtime = config['computingResources']['runtime']['high']
     threads:
         config['computingResources']['threads']['high']
     benchmark:
@@ -155,7 +155,7 @@ rule Rscript_demultiplex_count_matrix:
          'results/cellranger_gex/benchmark/{sample_set}.{sample}.demultiplex_count_matrix.benchmark'
     resources:
         mem_mb = config['computingResources']['mem_mb']['medium'],
-        time_min = config['computingResources']['runtime']['medium']
+        runtime = config['computingResources']['runtime']['medium']
     threads:config['computingResources']['threads']['medium']
     shell:
         "Rscript workflow/scripts/demultiplex_count_matrix.R --sampleMap {params.samplemapFile} --sample {wildcards.sample} --sampleSet {wildcards.sample_set} &> {log} "

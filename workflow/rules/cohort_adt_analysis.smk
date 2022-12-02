@@ -15,7 +15,7 @@ rule plot_combined_ridgeplot:
         outdir = 'results/cohort_combined_analysis/'
     resources:
         mem_mb = config['computingResources']['mediumRequirements']['mem_mb'],
-        time_min = config['computingResources']['mediumRequirements']['runtime']
+        runtime = config['computingResources']['mediumRequirements']['runtime']
     threads:config['computingResources']['mediumRequirements']['threads']
     shell:
         "Rscript ../scripts/plot_citeseq_combined_ridgeplots.R " +
