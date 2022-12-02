@@ -14,7 +14,7 @@ rule plot_combined_ridgeplot:
         ADTFolder = gatherCellrangerADTFolder() #'results/cellranger_adt/{sample}/outs/',
         outdir = 'results/cohort_combined_analysis/'
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
+        mem_mb = config['computingResources']['mediumRequirements']['mem_mb'],
         time_min = config['computingResources']['mediumRequirements']['time']
     threads:config['computingResources']['mediumRequirements']['threads']
     shell:

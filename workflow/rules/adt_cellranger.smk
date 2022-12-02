@@ -15,7 +15,7 @@ rule create_library_file_adt:
         seqRunName=getSeqRunName
     threads: config["computingResources"]["threads"]["low"]
     resources: 
-        mem_mb=config["computingResources"]["mem"]["low"],
+        mem_mb=config["computingResources"]["mem_mb"]["low"],
         time_min=config["computingResources"]["time"]["low"]
     log:
         "logs/create_library_file_adt/{sample_set}.log"
@@ -50,7 +50,7 @@ rule cellranger_count_adt:
     log:
         "logs/cellranger_count_adt/{sample_set}.log"
     resources:
-        mem_mb=config["computingResources"]["mem"]["high"],
+        mem_mb=config["computingResources"]["mem_mb"]["high"],
         time_min=config["computingResources"]["time"]["high"]
     benchmark:
         "results/pooled_samples/cellranger_adt/benchmark/{sample_set}.cellranger_count_adt.benchmark"

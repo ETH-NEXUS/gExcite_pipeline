@@ -15,7 +15,7 @@ rule create_tag_file:
     threads:
         config['computingResources']['threads']['low']
     resources:
-        mem_mb = config['computingResources']['mem']['low'],
+        mem_mb = config['computingResources']['mem_mb']['low'],
         time_min = config['computingResources']['time']['low']
     log:
         'logs/create_tag_file/{sample_set}.log'
@@ -47,7 +47,7 @@ rule CITE_seq_Count:
     conda:
         "../envs/run_citeseq_count.yaml"
     resources:
-        mem_mb = config['computingResources']['mem']['high'],
+        mem_mb = config['computingResources']['mem_mb']['high'],
         time_min = config['computingResources']['time']['high']
     log:
         'logs/CITE-seq-Count/{sample_set}.log'
@@ -74,7 +74,7 @@ rule gzip_files_hashingInput:
     params:
         root_out = 'results/pooled_samples/cellranger_adt/{sample_set}_zipped_files/'
     resources:
-        mem_mb = config['computingResources']['mem']['high'],
+        mem_mb = config['computingResources']['mem_mb']['high'],
         time_min = config['computingResources']['time']['high']
     threads:
         config['computingResources']['threads']['high']
@@ -111,7 +111,7 @@ rule Rscript_analyseHashing:
     log:
         'logs/Rscript_analyseHashing/{sample_set}.log'
     resources:
-        mem_mb = config['computingResources']['mem']['high'],
+        mem_mb = config['computingResources']['mem_mb']['high'],
         time_min = config['computingResources']['time']['high']
     threads:
         config['computingResources']['threads']['high']
@@ -154,7 +154,7 @@ rule Rscript_demultiplex_count_matrix:
     benchmark:
          'results/cellranger_gex/benchmark/{sample_set}.{sample}.demultiplex_count_matrix.benchmark'
     resources:
-        mem_mb = config['computingResources']['mem']['medium'],
+        mem_mb = config['computingResources']['mem_mb']['medium'],
         time_min = config['computingResources']['time']['medium']
     threads:config['computingResources']['threads']['medium']
     shell:

@@ -24,7 +24,7 @@ rule cellranger_count_gex:
     log:
         "logs/cellranger_count_gex/{sample_set}.log"
     resources:
-        mem_mb=config["computingResources"]["mem"]['high'],
+        mem_mb=config["computingResources"]["mem_mb"]['high'],
         time_min=config["computingResources"]["time"]['high']
     benchmark:
         "results/pooled_samples/cellranger_gex/benchmark/{sample_set}.cellranger_count_gex.benchmark"
