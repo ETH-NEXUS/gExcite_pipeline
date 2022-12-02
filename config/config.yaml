@@ -13,11 +13,11 @@ resources:
 # The tools in this pipeline use a broad range of resources and have been assigned to the following three categories.
 # If there aren't enough resources specified it can be adapted in the tools corresponding section.
 computingResources:
-  mem:
-    low: 400
-    medium: 4000
-    high: 15000
-  time:
+  mem_mb:
+    low: 2000
+    medium: 16000
+    high: 40000
+  runtime:
     low: 60
     medium: 500
     high: 800
