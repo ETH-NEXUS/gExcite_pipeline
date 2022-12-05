@@ -107,7 +107,8 @@ rule Rscript_analyseHashing:
         normalisation = config['tools']['analyse_hashing']['normalisation'],
         normalisation_downstream = config['tools']['analyse_hashing']['normalisation_downstream'],
         save_negatives = config['tools']['analyse_hashing']['save_negatives'],
-        citeseq_folder = 'results/pooled_samples/citeseq_count/{sample_set}/umi_count/'
+        citeseq_folder = 'results/pooled_samples/citeseq_count/{sample_set}/umi_count/',
+        custom_script=workflow.source_path("../scripts/analyseHashing.R"),
     log:
         'logs/Rscript_analyseHashing/{sample_set}.log'
     resources:
@@ -118,7 +119,7 @@ rule Rscript_analyseHashing:
     benchmark:
         'results/pooled_samples/hashing_analysis/benchmark/{sample_set}.analyse_hashing.benchmark'
     shell:
-        'Rscript ./workflow/scripts/analyseHashing.R ' +
+        'Rscript {params.custom_script} ' +
         '--citeseq_in {params.citeseq_folder} ' +
         '--adt_barcodes_in {params.adt_folder} ' +
         '--quantile_threshold {params.quantileThreshold} ' +
@@ -148,7 +149,8 @@ rule Rscript_demultiplex_count_matrix:
     conda:
         "../envs/demultiplex_count_matrix.yaml"
     params:
-        samplemapFile=config["inputOutput"]["sample_map"]
+        samplemapFile=config["inputOutput"]["sample_map"],
+        custom_script=workflow.source_path("../scripts/demultiplex_count_matrix.R"),
     log:
          'logs/Rscript_demultiplex_count_matrix/{sample_set}.{sample}.log'
     benchmark:
@@ -158,4 +160,4 @@ rule Rscript_demultiplex_count_matrix:
         runtime = config['computingResources']['runtime']['medium']
     threads:config['computingResources']['threads']['medium']
     shell:
-        "Rscript workflow/scripts/demultiplex_count_matrix.R --sampleMap {params.samplemapFile} --sample {wildcards.sample} --sampleSet {wildcards.sample_set} &> {log} "
+        "Rscript {params.custom_script} --sampleMap {params.samplemapFile} --sample {wildcards.sample} --sampleSet {wildcards.sample_set} &> {log} "

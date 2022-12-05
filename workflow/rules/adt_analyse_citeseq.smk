@@ -38,7 +38,8 @@ rule Rscript_analyse_citeseq:
         colorConfig = config['scampi']['resources']['colour_config'] ,
         lookup = config['resources']['adt_lookup'],
         numberVariableGenes = config['tools']['analyse_citeseq']['numberVariableGenes'],
-        outdir = 'results/citeseq_analysis/{sample}/' 
+        outdir = 'results/citeseq_analysis/{sample}/',
+        custom_script = workflow.source_path("../scripts/analyse_citeseq.R"),
     log:
         "logs/Rscript_analyse_citeseq/{sample}.log"
     benchmark:
@@ -48,7 +49,7 @@ rule Rscript_analyse_citeseq:
         runtime = config['computingResources']['runtime']['medium']
     threads:config['computingResources']['threads']['medium']
     shell:
-        "Rscript workflow/scripts/analyse_citeseq.R " +
+        "Rscript {params.custom_script} " +
         "--RDS {input.RDS} " +
         "--cellrangerADT {params.ADTFolder} " +
         "--h5 {input.h5} " +
