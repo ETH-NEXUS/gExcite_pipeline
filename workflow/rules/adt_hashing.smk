@@ -74,10 +74,10 @@ rule gzip_files_hashingInput:
     params:
         root_out = 'results/pooled_samples/cellranger_adt/{sample_set}_zipped_files/'
     resources:
-        mem_mb = config['computingResources']['mem_mb']['high'],
-        runtime = config['computingResources']['runtime']['high']
+        mem_mb = config['computingResources']['mem_mb']['medium'],
+        runtime = config['computingResources']['runtime']['medium']
     threads:
-        config['computingResources']['threads']['high']
+        config['computingResources']['threads']['medium']
     log:
         'logs/gzip_files_hashingInput/{sample_set}.log'
     benchmark:
@@ -112,9 +112,9 @@ rule Rscript_analyseHashing:
         'logs/Rscript_analyseHashing/{sample_set}.log'
     resources:
         mem_mb = config['computingResources']['mem_mb']['high'],
-        runtime = config['computingResources']['runtime']['high']
+        runtime = config['computingResources']['runtime']['medium']
     threads:
-        config['computingResources']['threads']['high']
+        config['computingResources']['threads']['medium']
     benchmark:
         'results/pooled_samples/hashing_analysis/benchmark/{sample_set}.analyse_hashing.benchmark'
     shell:
