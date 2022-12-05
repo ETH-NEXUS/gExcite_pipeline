@@ -26,12 +26,12 @@ An example file ready for adaptation is provided in this directory.
 Example:
 
 ```
-sample  HashingFile   SeqRunName      nTargetCells    featureReferenceFile
-sampleA HashingFileA    SeqRunNameA     10000   featureReferenceFileA
-sampleB HashingFileB    SeqRunNameB     15000   featureReferenceFileB
+sample    HashingFile     SeqRunName      nTargetCells    featureReferenceFile
+sampleA   HashingFileA    SeqRunNameA     10000           featureReferenceFileA
+sampleB   HashingFileB    SeqRunNameB     15000           featureReferenceFileB
 ```
 
-- HashingStatus_x corresponds to a File containing the necessary information (see [HashingFile](#HashingFile)).
+- HashingStatus_x corresponds to a File containing the necessary information (see [HashingFile](#hashingfile)).
 - SeqName_ADT_x corresponds to the sequencing sample name of the ADT sample for set 'x', as this parameter is only required for the CellRanger run of ADT data. It can be retrieved from the fastqs file names as follows:
 
 ```
