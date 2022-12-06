@@ -19,7 +19,7 @@ rule cellranger_count_gex:
         cr_out="results/pooled_samples/cellranger_gex/",
         variousParams=config["tools"]["cellranger_count_gex"]["variousParams"],
         targetCells=getTargetCellsCellranger,
-	mySample = '{sample_set}' 
+        mySample = '{sample_set}',
     threads: config["computingResources"]["threads"]['high']
     log:
         "logs/cellranger_count_gex/{sample_set}.log"
