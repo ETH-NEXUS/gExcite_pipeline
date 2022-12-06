@@ -28,6 +28,8 @@ Snakedeploy can now be used to deploy the workflow:
 snakedeploy deploy-workflow https://github.com/ETH-NEXUSgExcite_pipeline --tag main .
 ```
 
+Note: Snakemake needs to access the internet for this set up. With Snakemake 7.13 there is also support for a local set up of modules. Please refer to the [Snakemake documentation on modules](https://snakemake.readthedocs.io/en/stable/snakefiles/modularization.html#modules) for more details.
+
 ### Dependencies
 
 Most of the software used in the default workflow can be installed in an automated fashion using Snakemake's [--use-conda](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management) functionality.
@@ -38,13 +40,14 @@ Webpage: [https://support.10xgenomics.com/single-cell-gene-expression/software/p
 
 ## Example data
 
-We provide example data with three hashed samples of human PBMC cells [here](https://drive.google.com/drive/folders/14clt2_E_P0-HEXlJwH1fHCk5KhpPpxMc?usp=share_link) that can be used for a test run performing hashing deconvolution, GEX analysis and ADT analysis.  
+We provide [example data for a test run](https://drive.google.com/drive/folders/14clt2_E_P0-HEXlJwH1fHCk5KhpPpxMc?usp=share_link) with three hashed samples of human PBMC cells. With this data hashing deconvolution, GEX analysis and ADT analysis can be performed.  
 The test data comprises
 
 - ADT FASTQ files
 - GEX FASTQ files
 - HashingFile with hashtag barcodes
 - featureReferenceFile with all ADT barcodes
+- samplemap template
 
 ## Before running the pipeline
 
@@ -77,7 +80,7 @@ input_fastqs_gex
 
 ### Configure the pipeline
 
-The pipeline must be appropriatly configured to your data. A detailed [Readme](config/README.md) can be found in the `config` directory.
+The pipeline must be appropriately configured to your data. A detailed [Readme](config/README.md) can be found in the `config` directory.
 
 ### Optional preprocessing
 
@@ -86,8 +89,11 @@ In case of combined GEX and ADT NovaSeq sequencing data, scripts are provided to
 
 ## Running the pipeline
 
-Following the configuration of the pipeline a dryrun can be started using:
+Following the configuration of the pipeline a run can be started using:
 
 ```
+# dry run
 snakemake --use-conda --printshellcmds --dry-run
+# analysis run
+snakemake --use-conda --printshellcmds
 ```
