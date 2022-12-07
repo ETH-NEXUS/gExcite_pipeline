@@ -15,8 +15,8 @@ rule create_tag_file:
     threads:
         config['computingResources']['threads']['low']
     resources:
-        mem_mb = config['computingResources']['mem']['low'],
-        time_min = config['computingResources']['time']['low']
+        mem_mb = config['computingResources']['mem_mb']['low'],
+        runtime = config['computingResources']['runtime']['low']
     log:
         'logs/create_tag_file/{sample_set}.log'
     benchmark:
@@ -47,8 +47,8 @@ rule CITE_seq_Count:
     conda:
         "../envs/run_citeseq_count.yaml"
     resources:
-        mem_mb = config['computingResources']['mem']['high'],
-        time_min = config['computingResources']['time']['high']
+        mem_mb = config['computingResources']['mem_mb']['high'],
+        runtime = config['computingResources']['runtime']['high']
     log:
         'logs/CITE-seq-Count/{sample_set}.log'
     threads:
@@ -74,10 +74,10 @@ rule gzip_files_hashingInput:
     params:
         root_out = 'results/pooled_samples/cellranger_adt/{sample_set}_zipped_files/'
     resources:
-        mem_mb = config['computingResources']['mem']['high'],
-        time_min = config['computingResources']['time']['high']
+        mem_mb = config['computingResources']['mem_mb']['medium'],
+        runtime = config['computingResources']['runtime']['medium']
     threads:
-        config['computingResources']['threads']['high']
+        config['computingResources']['threads']['medium']
     log:
         'logs/gzip_files_hashingInput/{sample_set}.log'
     benchmark:
@@ -112,10 +112,10 @@ rule Rscript_analyseHashing:
     log:
         'logs/Rscript_analyseHashing/{sample_set}.log'
     resources:
-        mem_mb = config['computingResources']['mem']['high'],
-        time_min = config['computingResources']['time']['high']
+        mem_mb = config['computingResources']['mem_mb']['high'],
+        runtime = config['computingResources']['runtime']['medium']
     threads:
-        config['computingResources']['threads']['high']
+        config['computingResources']['threads']['medium']
     benchmark:
         'results/pooled_samples/hashing_analysis/benchmark/{sample_set}.analyse_hashing.benchmark'
     shell:
@@ -156,8 +156,8 @@ rule Rscript_demultiplex_count_matrix:
     benchmark:
          'results/cellranger_gex/benchmark/{sample_set}.{sample}.demultiplex_count_matrix.benchmark'
     resources:
-        mem_mb = config['computingResources']['mem']['medium'],
-        time_min = config['computingResources']['time']['medium']
+        mem_mb = config['computingResources']['mem_mb']['medium'],
+        runtime = config['computingResources']['runtime']['medium']
     threads:config['computingResources']['threads']['medium']
     shell:
         "Rscript {params.custom_script} --sampleMap {params.samplemapFile} --sample {wildcards.sample} --sampleSet {wildcards.sample_set} &> {log} "

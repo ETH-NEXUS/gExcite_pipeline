@@ -19,13 +19,13 @@ rule cellranger_count_gex:
         cr_out="results/pooled_samples/cellranger_gex/",
         variousParams=config["tools"]["cellranger_count_gex"]["variousParams"],
         targetCells=getTargetCellsCellranger,
-	mySample = '{sample_set}' 
+        mySample = '{sample_set}',
     threads: config["computingResources"]["threads"]['high']
     log:
         "logs/cellranger_count_gex/{sample_set}.log"
     resources:
-        mem_mb=config["computingResources"]["mem"]['high'],
-        time_min=config["computingResources"]["time"]['high']
+        mem_mb=config["computingResources"]["mem_mb"]['high'],
+        runtime=config["computingResources"]["runtime"]['high']
     benchmark:
         "results/pooled_samples/cellranger_gex/benchmark/{sample_set}.cellranger_count_gex.benchmark"
     # NOTE: cellranger count function cannot specify the output directory, the output it the path you call it from.

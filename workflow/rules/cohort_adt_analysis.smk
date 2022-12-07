@@ -15,8 +15,8 @@ rule plot_combined_ridgeplot:
         outdir = 'results/cohort_combined_analysis/',
         custom_script=workflow.source_path("../scripts/plot_citeseq_combined_ridgeplots.R"),
     resources:
-        mem_mb = config['computingResources']['mediumRequirements']['mem'],
-        time_min = config['computingResources']['mediumRequirements']['time']
+        mem_mb = config['computingResources']['mediumRequirements']['mem_mb'],
+        runtime = config['computingResources']['mediumRequirements']['runtime']
     threads:config['computingResources']['mediumRequirements']['threads']
     shell:
         "Rscript {params.custom_script} " +

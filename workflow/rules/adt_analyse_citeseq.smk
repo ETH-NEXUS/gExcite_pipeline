@@ -8,8 +8,8 @@ rule create_initial_threshold_file:
     output:
         thresholds = 'results/citeseq_analysis/{sample}.thresholds.tsv',
     resources:
-        mem_mb = config['computingResources']['mem']['low'],
-        time_min = config['computingResources']['time']['low']
+        mem_mb = config['computingResources']['mem_mb']['low'],
+        runtime = config['computingResources']['runtime']['low']
     log:
         "logs/create_initial_threshold_file/{sample}.log"
     benchmark:
@@ -45,8 +45,8 @@ rule Rscript_analyse_citeseq:
     benchmark:
         'results/citeseq_analysis/benchmark/{sample}.analyse_citeseq.benchmark'
     resources:
-        mem_mb = config['computingResources']['mem']['medium'],
-        time_min = config['computingResources']['time']['medium']
+        mem_mb = config['computingResources']['mem_mb']['medium'],
+        runtime = config['computingResources']['runtime']['medium']
     threads:config['computingResources']['threads']['medium']
     shell:
         "Rscript {params.custom_script} " +
