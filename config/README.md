@@ -9,7 +9,8 @@ Before using the pipeline the following files need to be provided/adapted:
 
 ## config.yaml
 
-Before running the pipeline the `config.yaml` file needs to be adapted to contain the input and output paths for the intended analysis.  
+Before running the pipeline the `config.yaml` file needs to be adapted to contain the input and output paths for the intended analysis.
+
 Adapt in
 
 - the first section [`inputOutput`] the input directories `input_fastqs_gex`, `input_fastqs_adt`
@@ -31,30 +32,31 @@ sampleA   HashingFileA    SeqRunNameA     10000           featureReferenceFileA
 sampleB   HashingFileB    SeqRunNameB     15000           featureReferenceFileB
 ```
 
-- HashingStatus_x corresponds to a File containing the necessary information (see [HashingFile](#hashingfile)).
-- SeqName_ADT_x corresponds to the sequencing sample name of the ADT sample for set 'x', as this parameter is only required for the CellRanger run of ADT data. It can be retrieved from the fastqs file names as follows:
+With one line per set of samples
+
+- `sample` contains the sample identifier that is used throughout the pipeline
+- `HashingFile` contains the full path to the comma separated text file containing the hashtag barcodes and their assignment to individual sample names (see [HashingFile](#hashingfile)).
+- `SeqRunName` corresponds to the sequencing sample name of the ADT sample; this parameter is only required for the Cellranger run of ADT data. It can be retrieved from the FASTQ file names as follows:
 
 ```
-[SequencingName_ADT_x]_S[Number]_L00[Lane Number]_[Read Type]_001.fastq.gz
+[SeqRunName]_S[Number]_L00[Lane Number]_[Read Type]_001.fastq.gz
 ```
 
 Where Read Type is one of: I1, R1, R2.
 
-- nTargetCells corresponds to the number of targeted cells for the sample. This parameter usually has to be specified for hashing experiments.
-- featureReferenceFile corresponds to the ADT feature reference file for sample set 'x'. For further information please consult the cellranger tool documentation.
-
-When parameters in the third and fourth column do not need to be provided, "." can be used instead.
+- `nTargetCells` corresponds to the number of targeted cells for the sample.
+- `featureReferenceFile` corresponds to the ADT feature reference file for the sample set. For further information please consult the Cellranger tool documentation.
 
 ## HashingFile
 
 In case of hashed samples, the hashtag barcodes, the hashtag names, and the corresponding sample names must be associated with the sample set. To do so, we need a comma-separated file with the following structure:
 
 ```
-Barcode1,TagName1,SampleA
-Barcode2,TagName2,SampleB
+Barcode1,TagName1,sampleA
+Barcode2,TagName2,sampleB
 ```
 
 ##  featureReferenceFile
 
 The "featureReferenceFile" is a comma-separated text file describing all ADT antibodies used in the experiment at hand.
-For further information please consult the cellranger tool [documentation](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/feature-bc-analysis#feature-ref).
+For further information please consult the Cellranger tool [documentation](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/feature-bc-analysis#feature-ref).
