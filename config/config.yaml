@@ -57,20 +57,34 @@ tools:
     numberVariableGenes: 500
 
 scampi:
+  # scampi is a snakemake workflow that runs general scRNA processing steps
+  # scampi is used as a snakemake module inside of gExcie & therefore does not need to be installed seperatly 
+  # documentation for the required resources can be found here: https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/config/README_config_file.md
   inputOutput:
     malignant_cell_type: "melanoma"
-    # seems to be necessary to work with the module
+    # seems to be necessary to work with the module, is included in this git
+    # there should be no need to adapt this path
     sample_map: "config/dummy_scampi_samplemap"
   resources:
     # celltype_lists gmx file containing a library of cell type classification gene lists
-    celltype_lists: "/path/to/celltype_list_melanoma.gmx"
+    # An example file that works with the test data can be found here:
+    # https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/required_files/PBMC/celltype_list_PBMC_all.gmx
+    celltype_lists: "/path/to/celltype_list.gmx"
     # celltype_config to easily adapt the cell type classification step
-    celltype_config: "/path/to/celltype_config_melanoma.tsv"
+    # An example file that works with the test data can be found here:
+    # https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/required_files/PBMC/celltype_config_PBMC.tsv
+    celltype_config: "/path/to/celltype_config.tsv"
     # colour_config for a fixed assignment of colours to the cell types in celltype_config
-    colour_config: "/path/to/colour_config_melanoma.txt"
+    # An example file that works with the test data can be found here:
+    # https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/required_files/PBMC/colour_config_PBMC.txt
+    colour_config: "/path/to/colour_config.txt"
     # gene expression of priority genes will be plotted and highlighted in per cluster gene expression (gene_exp)
-    priority_genes: "/path/to/selected_genes_melanoma.txt"
-    #
+    # An example file that works with the test data can be found here:
+    # https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/required_files/PBMC/selected_genes_PBMC.txt 
+    priority_genes: "/path/to/selected_genes.txt"
+    # genesets for GSVA analysis
+    # An example file that works with the test data can be found here:
+    # https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/required_files/hallmark_pathways_example.gmt
     genesets: "/path/to/hallmark_pathways_example.gmt"
 
   tools:
