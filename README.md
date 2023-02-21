@@ -7,11 +7,11 @@
 ## General overview
 
 gExcite is a start-to-end workflow embedded in Snakemake that provides both, gene expression and CITE-seq analysis, as well as hashing deconvolution.  
-For an overview of all steps please see the Snakemake [rulegraph](images/gExcite_pipeline_rulegraph.png).
+For an overview of all steps please see the Snakemake [rulegraph](https://github.com/ETH-NEXUS/gExcite_pipeline/blob/update_doc/images/gExcite_pipeline_rulegraph.png).
 
 ## Remark
 
-This workflow makes use of Snakemake's functionality to include external workflows as a ![module](https://snakemake.readthedocs.io/en/stable/snakefiles/modularization.html#snakefiles-modules). 
+This workflow makes use of Snakemake's functionality to include external workflows as a [module](https://snakemake.readthedocs.io/en/stable/snakefiles/modularization.html#snakefiles-modules). 
 scAmpi, a workflow that provides basic scRNA processing steps, is included as a module into gExcite. Note that all documentation regarding scAmpi (especially regarding config file entries that must be adapted depending on the disease) can only be found in the ![scAmpi](https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA) git repository. 
 
 ## Installation instructions
