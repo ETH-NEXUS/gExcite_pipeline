@@ -7,11 +7,11 @@ inputOutput:
 resources:
   # The following needs to point to the reference transcriptome that will be used by cellranger.
   reference_transcriptome: /path/to/reference/transcriptome/refdata-cellranger-GRCh38-3.0.0
-  # The following need to point to a lookup table for a gene - protein name map
+  # The following needs to point to a lookup table for a gene - protein name map
   adt_lookup: "/path/to/lookup_gene_protein.20191130.txt"
 
 # The tools in this pipeline use a broad range of resources and have been assigned to the following three categories.
-# If there aren't enough resources specified it can be adapted in the tools corresponding section.
+# If there are not enough resources specified it can be adapted in the tools corresponding section.
 computingResources:
   mem_mb:
     low: 2000
@@ -27,7 +27,7 @@ computingResources:
     high: 8
 
 tools:
-  # Cellranger can not be installed through Conda currently.
+  # Cellranger cannot be installed through Conda currently.
   # It needs to be installed manually & the call in both cellranger rules needs to be adapted.
   # variousParams can be set as described in the Cellranger documentation
   cellranger_count_gex:
@@ -58,7 +58,7 @@ tools:
 
 scampi:
   # scampi is a snakemake workflow that runs general scRNA processing steps
-  # scampi is used as a snakemake module inside of gExcie & therefore does not need to be installed seperatly 
+  # scampi is used as a snakemake module inside of gExcite & therefore does not need to be installed separately 
   # documentation for the required resources can be found here: https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/config/README_config_file.md
   inputOutput:
     malignant_cell_type: "melanoma"
