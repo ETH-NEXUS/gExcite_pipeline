@@ -11,8 +11,8 @@ For an overview of all steps please see the Snakemake [rulegraph](images/gExcite
 
 ## Remark
 
-This workflow makes use of snakemakes functionality to include external workflows as a ![module](https://snakemake.readthedocs.io/en/stable/snakefiles/modularization.html#snakefiles-modules). 
-scAmpi a workflow that provides basic scRNA processing steps is included as a module into gExcite. Note that all documentation regarding scAmpi (especially regarding config entries that must be adapted depending on the disease) can only be found in the ![scAmpi](https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA) git. 
+This workflow makes use of Snakemake's functionality to include external workflows as a ![module](https://snakemake.readthedocs.io/en/stable/snakefiles/modularization.html#snakefiles-modules). 
+scAmpi, a workflow that provides basic scRNA processing steps, is included as a module into gExcite. Note that all documentation regarding scAmpi (especially regarding config file entries that must be adapted depending on the disease) can only be found in the ![scAmpi](https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA) git repository. 
 
 ## Installation instructions
 
