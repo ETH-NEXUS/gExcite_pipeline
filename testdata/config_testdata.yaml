@@ -1,12 +1,12 @@
 inputOutput:
-  input_fastqs_gex: /cluster/work/nexus/internal_projects/2023-03_gexcite_testrun/fastqs/gex/
-  input_fastqs_adt: /cluster/work/nexus/internal_projects/2023-03_gexcite_testrun/fastqs/adt/
+  input_fastqs_gex: "fastqs/gex/"
+  input_fastqs_adt: "fastqs/adt/"
   sample_map: "testdata/samplemap_testdata"
   malignant_cell_type: ""
 
 resources:
   # The following needs to point to the reference transcriptome that will be used by cellranger.
-  reference_transcriptome: /cluster/work/nexus/utilities/databases/singlecell/10xGenomics/gene_expression_3_0_2/refdata-cellranger-GRCh38-3.0.0
+  reference_transcriptome: /path/to/reference/transcriptome/refdata-cellranger-GRCh38-3.0.0
   # The following need to point to a lookup table for a gene - protein name map
   adt_lookup: "testdata/lookup_gene_protein.txt"
 
@@ -31,11 +31,11 @@ tools:
   # It needs to be installed manually & the call in both cellranger rules needs to be adapted.
   # variousParams can be set as described in the Cellranger documentation
   cellranger_count_gex:
-    call: /cluster/customapps/biomed/nexus/sharedutils/cellranger-7.0.1/bin/cellranger
+    call: /path/to/cellranger
     variousParams: "--chemistry SC5P-R2"
 
   cellranger_count_adt:
-    call: /cluster/customapps/biomed/nexus/sharedutils/cellranger-7.0.1/bin/cellranger
+    call: /path/to/cellranger
     variousParams: "--chemistry SC5P-R2"
 
   # variousParams can be set as described in the CiteSeq documentation
