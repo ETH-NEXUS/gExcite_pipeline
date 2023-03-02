@@ -99,7 +99,7 @@ def getSeqRunName(wildcards):
 # Retrieve the ADT feature reference file corresponding to a given sample set
 def getFeatRefFile(wildcards):
     # Create dictionary with samples and FeatureRefFile
-    sampleMap = dict(zip(samples['sample'], samples['featureReferenceFile']))
+    sampleMap = dict(zip(samples['sample'], WORKDIR + "/" + samples['featureReferenceFile']))
     if wildcards.sample_set not in sampleMap.keys():
         raise ValueError(
             "Sample '%s' not found in the sample map!" % (wildcards.sample_set)

@@ -45,7 +45,8 @@ With one line per set of samples
 Where Read Type is one of: I1, R1, R2.
 
 - `nTargetCells` corresponds to the number of targeted cells for the sample.
-- `featureReferenceFile` corresponds to the ADT feature reference file for the sample set. For further information please consult the Cellranger tool documentation.
+- `featureReferenceFile` corresponds to the ADT feature reference file for the sample set. For further information please consult the Cellranger tool documentation.  
+**NOTE:** the path to the FeatureReferenceFile must be relative to the gExcite working directory (usually `gExcite_pipeline/`).
 
 ## HashingFile
 
