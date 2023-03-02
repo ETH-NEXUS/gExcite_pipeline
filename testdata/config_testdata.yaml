@@ -74,7 +74,7 @@ scampi:
     # An example file that works with the test data can be found here:
     # https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/required_files/PBMC/celltype_config_PBMC.tsv
 
-    celltype_config: "testdata/scAmpi/celltype_list_PBMC_all.gmx"
+    celltype_config: "testdata/scAmpi/celltype_config_PBMC.tsv"
     # colour_config for a fixed assignment of colours to the cell types in celltype_config
     # An example file that works with the test data can be found here:
     # https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/required_files/PBMC/colour_config_PBMC.txt
