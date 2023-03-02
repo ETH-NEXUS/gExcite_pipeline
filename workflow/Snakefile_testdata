@@ -21,10 +21,10 @@ module scampi:
     skip_validation:
         True
     snakefile:
-        gitfile(
-            "file:/../../scAmpi_single_cell_RNA",
+        github(
+            "ETH-NEXUS/scAmpi_single_cell_RNA",
             path="workflow/snakefile_basic.smk",
-            commit="5e7a16dfda8638cbe49e89469945d35ba47ee764",
+            tag="v2.0.4",
         )
     config:
         config["scampi"]
