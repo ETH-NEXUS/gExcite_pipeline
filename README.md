@@ -7,12 +7,12 @@
 ## General overview
 
 gExcite is a start-to-end workflow embedded in Snakemake that provides both, gene expression and CITE-seq analysis, as well as hashing deconvolution.  
-For an overview of all steps please see the Snakemake [rulegraph](https://github.com/ETH-NEXUS/gExcite_pipeline/blob/update_doc/images/gExcite_pipeline_rulegraph.png).
+For an overview of all steps please see the Snakemake [rulegraph](https://github.com/ETH-NEXUS/gExcite_pipeline/blob/main/images/gExcite_pipeline_rulegraph.png).
 
 ## Remark
 
-This workflow makes use of Snakemake's functionality to include external workflows as a [module](https://snakemake.readthedocs.io/en/stable/snakefiles/modularization.html#snakefiles-modules). 
-scAmpi, a workflow that provides basic scRNA processing steps, is included as a module into gExcite. Note that all documentation regarding scAmpi (especially regarding config file entries that must be adapted depending on the disease) can only be found in the ![scAmpi](https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA) git repository. 
+This workflow makes use of Snakemake's functionality to include external workflows as a [module](https://snakemake.readthedocs.io/en/stable/snakefiles/modularization.html#snakefiles-modules).
+scAmpi, a workflow that provides basic scRNA processing steps, is included as a module into gExcite. Note that all documentation regarding scAmpi (especially regarding config file entries that must be adapted depending on the disease) can only be found in the ![scAmpi](https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA) git repository.
 
 ## Installation instructions
 
@@ -42,17 +42,6 @@ The following software needs to be installed manually.
 
 - [Cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger): Follow the instructions on the 10xGenomics installation support page to install cellranger and to include the cellranger binary to your path.
 Webpage: [https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation)
-
-## Example data
-
-We provide [example data for a test run](https://drive.google.com/drive/folders/14clt2_E_P0-HEXlJwH1fHCk5KhpPpxMc?usp=share_link) with three hashed samples of human PBMC cells. With this data hashing deconvolution, GEX analysis and ADT analysis can be performed.  
-The test data comprises
-
-- ADT FASTQ files
-- GEX FASTQ files
-- HashingFile with hashtag barcodes
-- featureReferenceFile with all ADT barcodes
-- samplemap template
 
 ## Before running the pipeline
 
@@ -101,4 +90,51 @@ Following the configuration of the pipeline a run can be started using:
 snakemake --use-conda --printshellcmds --dry-run
 # analysis run
 snakemake --use-conda --printshellcmds
+```
+
+## Example data
+
+We provide [example data for a test run](https://drive.google.com/drive/folders/14clt2_E_P0-HEXlJwH1fHCk5KhpPpxMc?usp=share_link) with three hashed samples of human PBMC cells. With this data hashing deconvolution, GEX analysis and ADT analysis can be performed.  
+The test data comprises
+
+- ADT FASTQ files
+- GEX FASTQ files
+
+HashingFile with hashtag barcodes, featureReferenceFile with all ADT barcodes, and samplemap are available in the `testdata` directory.  
+
+To start a test run
+
+1) Download the FASTQ files
+2) Move or link them into a subdirectory called `fastqs` in the gExcite working directory (usually `gExcite_pipeline`)
+3) Follow the software installation instructions
+4) Insert the paths to the available cellranger software and reference transcriptome into the testdata config `testdata/config_testdata.yaml`
+    - `cellranger_count_gex`
+    - `cellranger_count_adt`
+    - `reference_transcriptome`
+
+4. Start the Snakemake workflow with
+
+```
+snakemake -s workflow/Snakefile_testdata --configfile testdata/config_testdata.yaml --use-conda --printshellcmds
+```
+
+## Quick test run
+
+A quick test run on the example data can be performed that starts after the resource-intensive cellranger count and CITE-Seq steps.  
+
+To start a quick test run:
+
+1) Follow the software installation instructions
+2) To unpack the test data matrices run the following command in the gExcite working directory (usually gExcite_pipeline)
+
+```
+mv testdata/results_and_fastqs.tar.gz  . ; tar -xf results_and_fastqs.tar.gz
+```
+
+The directories `results` and `fastqs`, containing the raw count matrices, are now available in the working directory.
+
+3) Start the Snakemake workflow
+
+```
+snakemake -s workflow/Snakefile_testdata --configfile testdata/config_testdata.yaml --use-conda --printshellcmds
 ```
