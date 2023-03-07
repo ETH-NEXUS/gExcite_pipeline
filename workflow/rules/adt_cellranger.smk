@@ -9,7 +9,10 @@ WORKDIR = os.getcwd()
 # Library file has a fixed format: fastqs,sample,library_type (with header)
 rule create_library_file_adt:
     input:
-        fastqs_dir=config["inputOutput"]["input_fastqs_adt"] + "{sample_set}/",
+        fastqs_dir=WORKDIR
+        + "/"
+        + config["inputOutput"]["input_fastqs_adt"]
+        + "{sample_set}/",
     output:
         library_file=WORKDIR
         + "/results/pooled_samples/cellranger_adt/{sample_set}.adt_library.txt",

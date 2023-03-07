@@ -94,8 +94,9 @@ snakemake --use-conda --printshellcmds
 
 ## Example data
 
-We provide [example data for a test run](https://drive.google.com/drive/folders/14clt2_E_P0-HEXlJwH1fHCk5KhpPpxMc?usp=share_link) with three hashed samples of human PBMC cells. With this data hashing deconvolution, GEX analysis and ADT analysis can be performed.  
-The test data comprises
+We provide [example data for a test run](https://drive.google.com/drive/folders/14clt2_E_P0-HEXlJwH1fHCk5KhpPpxMc?usp=share_link) with three hashed samples of human PBMC cells, so that hashing deconvolution, GEX analysis and ADT analysis can be performed. For a quick test run starting after the resource-intensive Cellranger steps see next section "Quick test run".  
+
+The raw test data comprises
 
 - ADT FASTQ files
 - GEX FASTQ files
