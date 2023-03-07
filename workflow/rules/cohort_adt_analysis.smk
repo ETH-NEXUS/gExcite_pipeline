@@ -19,8 +19,9 @@ rule plot_combined_ridgeplot:
         runtime = config['computingResources']['mediumRequirements']['runtime']
     threads:config['computingResources']['mediumRequirements']['threads']
     shell:
-        "Rscript {params.custom_script} " +
-        "--atypicalRemoved {input.RDS}" +
-        "--analysisADT {params.ADTFolder}" +
-        "--sampleNames {wildcards.sample}" +
-        "--outfolder {params.outdir} && touch {output.completeFile}"
+        "Rscript {params.custom_script} "
+        "--atypicalRemoved {input.RDS} "
+        "--analysisADT {params.ADTFolder} "
+        "--sampleNames {wildcards.sample} "
+        "--outfolder {params.outdir} "
+        "&& touch {output.completeFile} "

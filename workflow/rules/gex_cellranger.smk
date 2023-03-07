@@ -1,10 +1,15 @@
+
+import os
+WORKDIR = os.getcwd()
+
 # Cellranger call to process the raw GEX samples
 # input: fastq directory from config file and reference transcriptome read from config file
+# NOTE: the fastq directory as set in the config is interpreted to be relative to the gExcite working directory
 # output: cellranger files
 rule cellranger_count_gex:
     input:
-        fastqs_dir=config["inputOutput"]["input_fastqs_gex"] + "{sample_set}/",
-        reference=config["resources"]["reference_transcriptome"]
+        fastqs_dir=WORKDIR + "/" + config["inputOutput"]["input_fastqs_gex"] + "{sample_set}/",
+        reference=config["resources"]["reference_transcriptome"],
     output:
         features_file="results/pooled_samples/cellranger_gex/{sample_set}.features.tsv",
         matrix_file="results/pooled_samples/cellranger_gex/{sample_set}.matrix.mtx",
@@ -19,17 +24,33 @@ rule cellranger_count_gex:
         cr_out="results/pooled_samples/cellranger_gex/",
         variousParams=config["tools"]["cellranger_count_gex"]["variousParams"],
         targetCells=getTargetCellsCellranger,
-        mySample = '{sample_set}',
-    threads: config["computingResources"]["threads"]['high']
+        mySample="{sample_set}",
+    threads: config["computingResources"]["threads"]["high"]
     log:
-        "logs/cellranger_count_gex/{sample_set}.log"
+        "logs/cellranger_count_gex/{sample_set}.log",
     resources:
-        mem_mb=config["computingResources"]["mem_mb"]['high'],
-        runtime=config["computingResources"]["runtime"]['high']
+        mem_mb=config["computingResources"]["mem_mb"]["high"],
+        runtime=config["computingResources"]["runtime"]["high"],
     benchmark:
         "results/pooled_samples/cellranger_gex/benchmark/{sample_set}.cellranger_count_gex.benchmark"
-    # NOTE: cellranger count function cannot specify the output directory, the output it the path you call it from.
+    # NOTE: cellranger count function cannot specify the output directory, the output is the path you call it from.
     # Therefore, a subshell is used here.
     # Also, unzip and symlink output files in preparation for downstream steps
     shell:
-         '(cd {params.cr_out}; {config[tools][cellranger_count_gex][call]} count --id={params.mySample} --sample={params.mySample} --transcriptome={input.reference} --fastqs={input.fastqs_dir} --nosecondary {params.variousParams}) &> {log} ; gunzip {params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/features.tsv.gz ; gunzip {params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz ; gunzip {params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz ; ln -frs "{params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/features.tsv" "{output.features_file}"; ln -frs "{params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/matrix.mtx" "{output.matrix_file}"; ln -frs "{params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/barcodes.tsv" "{output.barcodes_file}" ; ln -frs "{params.cr_out}{params.mySample}/outs/web_summary.html" "{output.web_file}" ; ln -frs "{params.cr_out}{params.mySample}/outs/metrics_summary.csv" "{output.metrics_file}"'
+        "(cd {params.cr_out}; "
+        "{config[tools][cellranger_count_gex][call]} count "
+        "--id={params.mySample} "
+        "--sample={params.mySample} "
+        "--transcriptome={input.reference} "
+        "--fastqs={input.fastqs_dir} "
+        "--nosecondary "
+        "{params.variousParams}) "
+        "&> {log} ; "
+        "gunzip {params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/features.tsv.gz ; "
+        "gunzip {params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/barcodes.tsv.gz ; "
+        "gunzip {params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/matrix.mtx.gz ; "
+        "ln -frs '{params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/features.tsv' '{output.features_file}' ; "
+        "ln -frs '{params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/matrix.mtx' '{output.matrix_file}' ; "
+        "ln -frs '{params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/barcodes.tsv' '{output.barcodes_file}' ; "
+        "ln -frs '{params.cr_out}{params.mySample}/outs/web_summary.html' '{output.web_file}' ; "
+        "ln -frs '{params.cr_out}{params.mySample}/outs/metrics_summary.csv' '{output.metrics_file}' "
