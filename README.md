@@ -94,48 +94,12 @@ snakemake --use-conda --printshellcmds
 
 ## Example data
 
-We provide [example data for a test run](https://drive.google.com/drive/folders/14clt2_E_P0-HEXlJwH1fHCk5KhpPpxMc?usp=share_link) with three hashed samples of human PBMC cells, so that hashing deconvolution, GEX analysis and ADT analysis can be performed. For a quick test run starting after the resource-intensive Cellranger steps see next section "Quick test run".  
+We provide [example data for a test run](https://drive.google.com/drive/folders/14clt2_E_P0-HEXlJwH1fHCk5KhpPpxMc?usp=share_link) with three hashed samples of human PBMC cells, so that hashing deconvolution, GEX analysis and ADT analysis can be performed. 
+For more details see the [README](testdata/README_testdata.md) in the testdata subdirectory. 
 
-The raw test data comprises
-
-- ADT FASTQ files
-- GEX FASTQ files
-
-HashingFile with hashtag barcodes, featureReferenceFile with all ADT barcodes, and samplemap are available in the `testdata` directory.  
-
-To start a test run
-
-1) Download the FASTQ files
-2) Move or link them into a subdirectory called `fastqs` in the gExcite working directory (usually `gExcite_pipeline`)
-3) Follow the software installation instructions
-4) Insert the paths to the available cellranger software and reference transcriptome into the testdata config `testdata/config_testdata.yaml`
-    - `cellranger_count_gex`
-    - `cellranger_count_adt`
-    - `reference_transcriptome`
-
-4. Start the Snakemake workflow with
-
-```
-snakemake -s workflow/Snakefile_testdata --configfile testdata/config_testdata.yaml --use-conda --printshellcmds
-```
 
 ## Quick test run
 
 A quick test run on the example data can be performed that starts after the resource-intensive cellranger count and CITE-Seq steps.  
+For more details see the [README](testdata/README_testdata.md) in the testdata subdirectory.
 
-To start a quick test run:
-
-1) Follow the software installation instructions
-2) To unpack the test data matrices run the following command in the gExcite working directory (usually gExcite_pipeline)
-
-```
-mv testdata/results_and_fastqs.tar.gz  . ; tar -xf results_and_fastqs.tar.gz
-```
-
-The directories `results` and `fastqs`, containing the raw count matrices, are now available in the working directory.
-
-3) Start the Snakemake workflow
-
-```
-snakemake -s workflow/Snakefile_testdata --configfile testdata/config_testdata.yaml --use-conda --printshellcmds
-```
