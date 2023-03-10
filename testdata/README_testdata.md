@@ -1,7 +1,4 @@
-### README testdat
-
-For a quick test run starting after the resource-intensive Cellranger steps see next section "Quick test run".  
-
+# README testdata
 
 
 ## Example data
@@ -14,9 +11,9 @@ The raw test data comprises
 - GEX FASTQ files
 
 All config files are ready to use in the `testdata` subdirectory.
-- HashingFile with hashtag barcodes
-- featureReferenceFile with all ADT barcodes
-- samplemap with sample information  
+- [HashingFile](HashingFile_PBMC_D1.csv) with hashtag barcodes
+- [featureReferenceFile](feature_reference.txt) with all ADT barcodes
+- [samplemap](samplemap_testdata) with sample information  
 
 
 ### Quick test run
@@ -46,11 +43,11 @@ snakemake -s workflow/Snakefile_testdata --configfile testdata/config_testdata.y
 To start a full test run that also includes the resource-intensive cellranger count and CITE-Seq steps:
 
 1) Download the FASTQ files
-2) Move or link them into a subdirectory called `fastqs` in the gExcite working directory (usually `gExcite_pipeline`). Make sure you follow the [expected folder structure](README.md) with a subdirectory per sample.
+2) Move or link them into a subdirectory called `fastqs` in the gExcite working directory (usually `gExcite_pipeline`). Make sure you follow the [expected folder structure](../README.md) with one subdirectory per sample.
 3) Install Snakemake, mamba and snakedeploy on your system
 4) Deploy the workflow with the automated `snakedeploy` command that requires internet access, or using a local set up as described in the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/snakefiles/modularization.html#modules).
 5) Install the software for the pipeline using Snakemake's `--use-conda` functionality
-6) Install the [Cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger)software. Follow the instructions on the 10xGenomics installation support page. Download the cellranger references as well.
+6) Install the [Cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger) software. Follow the instructions on the 10xGenomics installation support page. Download the cellranger references as well.
 4) Insert the paths to the available cellranger software and reference directory into the testdata config `testdata/config_testdata.yaml`
     - `cellranger_count_gex`
     - `cellranger_count_adt`
