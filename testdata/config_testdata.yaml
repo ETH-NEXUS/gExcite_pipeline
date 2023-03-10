@@ -1,4 +1,5 @@
 inputOutput:
+  # NOTE: the FASTQ input directories (gex and adt) are interpreted as relative to the gExcite working directory
   input_fastqs_gex: "fastqs/gex/"
   input_fastqs_adt: "fastqs/adt/"
   sample_map: "testdata/samplemap_testdata"
@@ -6,8 +7,9 @@ inputOutput:
 
 resources:
   # The following needs to point to the reference transcriptome that will be used by cellranger.
+  # NOTE: please provide the full path to the cellranger reference transcriptome
   reference_transcriptome: /path/to/reference/transcriptome/refdata-cellranger-GRCh38-3.0.0
-  # The following need to point to a lookup table for a gene - protein name map
+  # The following needs to point to a lookup table for a gene - protein name map
   adt_lookup: "testdata/lookup_gene_protein.txt"
 
 # The tools in this pipeline use a broad range of resources and have been assigned to the following three categories.
@@ -29,11 +31,12 @@ computingResources:
 tools:
   # Cellranger cannot be installed through Conda currently.
   # It needs to be installed manually & the call in both cellranger rules needs to be adapted.
+  # NOTE: please provide the full path to the cellranger installation
   # variousParams can be set as described in the Cellranger documentation
   cellranger_count_gex:
     call: /path/to/cellranger
     variousParams: "--chemistry SC5P-R2"
-
+  # NOTE: please provide the full path to the cellranger installation
   cellranger_count_adt:
     call: /path/to/cellranger
     variousParams: "--chemistry SC5P-R2"
@@ -62,9 +65,6 @@ scampi:
   # documentation for the required resources can be found here: https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/config/README_config_file.md
   inputOutput:
     malignant_cell_type: ""
-    # seems to be necessary to work with the module, is included in this git
-    # there should be no need to adapt this path
-    #sample_map: "testdata/scAmpi/dummy_scampi_samplemap"
   resources:
     # celltype_lists gmx file containing a library of cell type classification gene lists
     # An example file that works with the test data can be found here:
@@ -73,7 +73,6 @@ scampi:
     # celltype_config to easily adapt the cell type classification step
     # An example file that works with the test data can be found here:
     # https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/required_files/PBMC/celltype_config_PBMC.tsv
-
     celltype_config: "testdata/scAmpi/celltype_config_PBMC.tsv"
     # colour_config for a fixed assignment of colours to the cell types in celltype_config
     # An example file that works with the test data can be found here:
