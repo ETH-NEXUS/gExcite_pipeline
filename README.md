@@ -7,12 +7,12 @@
 ## General overview
 
 gExcite is a start-to-end workflow embedded in Snakemake that provides both, gene expression and CITE-seq analysis, as well as hashing deconvolution.  
-For an overview of all steps please see the Snakemake [rulegraph](https://github.com/ETH-NEXUS/gExcite_pipeline/blob/update_doc/images/gExcite_pipeline_rulegraph.png).
+For an overview of all steps please see the Snakemake [rulegraph](https://github.com/ETH-NEXUS/gExcite_pipeline/blob/main/images/gExcite_pipeline_rulegraph.png).
 
 ## Remark
 
-This workflow makes use of Snakemake's functionality to include external workflows as a [module](https://snakemake.readthedocs.io/en/stable/snakefiles/modularization.html#snakefiles-modules). 
-scAmpi, a workflow that provides basic scRNA processing steps, is included as a module into gExcite. Note that all documentation regarding scAmpi (especially regarding config file entries that must be adapted depending on the disease) can only be found in the ![scAmpi](https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA) git repository. 
+This workflow makes use of Snakemake's functionality to include external workflows as a [module](https://snakemake.readthedocs.io/en/stable/snakefiles/modularization.html#snakefiles-modules).
+scAmpi, a workflow that provides basic scRNA processing steps, is included as a module into gExcite. Note that all documentation regarding scAmpi (especially regarding config file entries that must be adapted depending on the disease) can only be found in the ![scAmpi](https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA) git repository.
 
 ## Installation instructions
 
@@ -42,17 +42,6 @@ The following software needs to be installed manually.
 
 - [Cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger): Follow the instructions on the 10xGenomics installation support page to install cellranger and to include the cellranger binary to your path.
 Webpage: [https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation)
-
-## Example data
-
-We provide [example data for a test run](https://drive.google.com/drive/folders/14clt2_E_P0-HEXlJwH1fHCk5KhpPpxMc?usp=share_link) with three hashed samples of human PBMC cells. With this data hashing deconvolution, GEX analysis and ADT analysis can be performed.  
-The test data comprises
-
-- ADT FASTQ files
-- GEX FASTQ files
-- HashingFile with hashtag barcodes
-- featureReferenceFile with all ADT barcodes
-- samplemap template
 
 ## Before running the pipeline
 
@@ -102,3 +91,15 @@ snakemake --use-conda --printshellcmds --dry-run
 # analysis run
 snakemake --use-conda --printshellcmds
 ```
+
+## Example data
+
+We provide [example data for a test run](https://drive.google.com/drive/folders/14clt2_E_P0-HEXlJwH1fHCk5KhpPpxMc?usp=share_link) with three hashed samples of human PBMC cells, so that hashing deconvolution, GEX analysis and ADT analysis can be performed. 
+For more details see the [README](testdata/README_testdata.md) in the testdata subdirectory. 
+
+
+## Quick test run
+
+A quick test run on the example data can be performed that starts after the resource-intensive cellranger count and CITE-Seq steps.  
+For more details see the [README](testdata/README_testdata.md) in the testdata subdirectory.
+

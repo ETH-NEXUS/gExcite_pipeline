@@ -1,4 +1,5 @@
 inputOutput:
+  # NOTE: the FASTQ input directories (gex and adt) are interpreted as relative to the gExcite working directory
   input_fastqs_gex: /path/to/input/folder/fastqs_GEX/
   input_fastqs_adt: /path/to/input/folder/fastqs_ADT/
   sample_map: config/samplemap
@@ -6,6 +7,7 @@ inputOutput:
 
 resources:
   # The following needs to point to the reference transcriptome that will be used by cellranger.
+  # NOTE: please provide the full path to the cellranger reference transcriptome
   reference_transcriptome: /path/to/reference/transcriptome/refdata-cellranger-GRCh38-3.0.0
   # The following needs to point to a lookup table for a gene - protein name map
   adt_lookup: "/path/to/lookup_gene_protein.20191130.txt"
@@ -29,11 +31,12 @@ computingResources:
 tools:
   # Cellranger cannot be installed through Conda currently.
   # It needs to be installed manually & the call in both cellranger rules needs to be adapted.
+  # NOTE: please provide the full path to the cellranger installation
   # variousParams can be set as described in the Cellranger documentation
   cellranger_count_gex:
     call: /path/to/cellranger
     variousParams: "--chemistry SC5P-R2"
-
+  # NOTE: please provide the full path to the cellranger installation
   cellranger_count_adt:
     call: /path/to/cellranger
     variousParams: "--chemistry SC5P-R2"
@@ -58,13 +61,10 @@ tools:
 
 scampi:
   # scampi is a snakemake workflow that runs general scRNA processing steps
-  # scampi is used as a snakemake module inside of gExcite & therefore does not need to be installed separately 
+  # scampi is used as a snakemake module inside of gExcite & therefore does not need to be installed separately
   # documentation for the required resources can be found here: https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/config/README_config_file.md
   inputOutput:
-    malignant_cell_type: "melanoma"
-    # seems to be necessary to work with the module, is included in this git
-    # there should be no need to adapt this path
-    sample_map: "config/dummy_scampi_samplemap"
+    malignant_cell_type: "PBMC"
   resources:
     # celltype_lists gmx file containing a library of cell type classification gene lists
     # An example file that works with the test data can be found here:
@@ -80,7 +80,7 @@ scampi:
     colour_config: "/path/to/colour_config.txt"
     # gene expression of priority genes will be plotted and highlighted in per cluster gene expression (gene_exp)
     # An example file that works with the test data can be found here:
-    # https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/required_files/PBMC/selected_genes_PBMC.txt 
+    # https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/required_files/PBMC/selected_genes_PBMC.txt
     priority_genes: "/path/to/selected_genes.txt"
     # genesets for GSVA analysis
     # An example file that works with the test data can be found here:

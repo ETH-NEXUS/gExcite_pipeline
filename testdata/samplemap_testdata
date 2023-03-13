@@ -1,0 +1,2 @@
+sample	HashingFile	SeqRunName	nTargetCells	featureReferenceFile
+PBMC_D1	testdata/HashingFile_PBMC_D1.csv	BSSE_QGF_132646_HHVFNDRXX_1_PBMC_mix_20k_ADT_E3_SI-NA-E3	20000	testdata/feature_reference.txt
