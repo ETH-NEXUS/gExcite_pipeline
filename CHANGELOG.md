@@ -5,11 +5,7 @@
 - expand test run settings with the possibility to omit the resource-intensive cellranger steps
 - update README.md and have separate testdata/README_testdata.md for describing the test run steps
 - adapt the FASTQ input interpretation: specifying the input relative to the working directory is now mandatory, not merely recommended
-
-## [Unreleased]
-
-### 2023-02-21 - Documentation
-Improved documentation on the use of scAmpi as a module in gExcite
+- Improved documentation on the use of scAmpi as a module in gExcite
 
 ## [1.0.0] - 2022-12-08
 
