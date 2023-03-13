@@ -11,13 +11,13 @@ Before using the pipeline the following files need to be provided/adapted:
 
 Before running the pipeline the `config.yaml` file needs to be adapted to contain the input and output paths for the intended analysis.
 
-Adapt in
+Adaptation necessary for a default run:
 
-- the first section [`inputOutput`] the input directories `input_fastqs_gex`, `input_fastqs_adt`
-- [`resources`][`reference_transcriptome`] the genomic reference used for the cellranger mapping
-- [`tools`][`cellranger_count_gex`] and [`cellranger_count_adt`] the path to the cellranger installation
-- [`computingResources`] the resources to your data and batch system. The example resources specify memory per job, not thread.
-- [`scampi`][`resources`] the cell type information, selected genes to show in expression plots, and gene sets for the GSVA analysis.
+- In section [`inputOutput`] the input directories `input_fastqs_gex`, `input_fastqs_adt` need to point to the location of the respective FASTQ files
+- In section [`resources`], `reference_transcriptome` needs to point to the location of the genomic reference used for the cellranger mapping
+- In sections [`tools`][`cellranger_count_gex`] and [`tools`][`cellranger_count_adt`], `call` needs to point to the the path to the cellranger installation
+- Section [`computingResources`] needs to list the resources that can be assigned to the analysis steps your data and batch system. The example resources specify memory per job, not thread.
+- Section [`scampi`][`resources`] needs to be filled with the cell type information, selected genes to show in expression plots, and gene sets for the GSVA analysis.
 
 ## samplemap
 
@@ -61,3 +61,7 @@ Barcode2,TagName2,sampleB
 
 The "featureReferenceFile" is a comma-separated text file describing all ADT antibodies used in the experiment at hand.
 For further information please consult the Cellranger tool [documentation](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/feature-bc-analysis#feature-ref).
+
+## Example
+
+A pre-compiled [example config file](testdata/config_testdata.yaml) is available in the testdata subdirectory

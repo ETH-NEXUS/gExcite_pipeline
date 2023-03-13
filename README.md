@@ -12,7 +12,7 @@ For an overview of all steps please see the Snakemake [rulegraph](https://github
 ## Remark
 
 This workflow makes use of Snakemake's functionality to include external workflows as a [module](https://snakemake.readthedocs.io/en/stable/snakefiles/modularization.html#snakefiles-modules).
-scAmpi, a workflow that provides basic scRNA processing steps, is included as a module into gExcite. Note that all documentation regarding scAmpi (especially regarding config file entries that must be adapted depending on the disease) can only be found in the ![scAmpi](https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA) git repository.
+scAmpi, a workflow that provides basic scRNA processing steps, is included as a module into gExcite. Note that all documentation regarding scAmpi (especially regarding config file entries that must be adapted depending on the disease) can only be found in the [scAmpi](https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA) git repository.
 
 ## Installation instructions
 
@@ -37,8 +37,8 @@ Note: Snakemake needs to access the internet for this set up. With Snakemake 7.1
 
 ### Dependencies
 
-Most of the software used in the default workflow can be installed in an automated fashion using Snakemake's [--use-conda](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management) functionality.
-The following software needs to be installed manually.
+Most of the software used in the default workflow can be installed in an automated fashion using Snakemake's [--use-conda](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management) functionality when running the pipeline.
+In case you would like to start from the raw sequencing data using cellranger processing, the following software needs to be installed manually.
 
 - [Cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger): Follow the instructions on the 10xGenomics installation support page to install cellranger and to include the cellranger binary to your path.
 Webpage: [https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation)
@@ -72,14 +72,16 @@ input_fastqs_gex
     └── SAMPLENAME_S4_L001_R2_001.fastq.gz
 ```
 
+Starting processing after the resource-intensive cellranger count and CITE-Seq steps requires the presence of dummy files in place of the FASTQ files described in this chapter. For more details see the [README](testdata/README_testdata.md) in the testdata subdirectory. For a full example of the required folder structure refer to the `results_and_fastqs.tar.gz` in the testdata subdirectory.
+
 ### Configure the pipeline
 
-The pipeline must be appropriately configured to your data. A detailed [Readme](config/README.md) can be found in the `config` directory.
+The pipeline must be appropriately configured to your data. A detailed [README](config/README.md) can be found in the `config` directory.
 
 ### Optional preprocessing
 
 **IndexHopping removal**  
-In case of combined GEX and ADT NovaSeq sequencing data, scripts are provided to clean up the data before a run. Please consult the [Readme](workflow/scripts/index_hopping_removal/README.md) here.
+In case of combined GEX and ADT NovaSeq sequencing data, scripts are provided to clean up the data before a run. Please consult the [README](workflow/scripts/index_hopping_removal/README.md) here.
 
 ## Running the pipeline
 
@@ -98,7 +100,7 @@ We provide [example data for a test run](https://drive.google.com/drive/folders/
 For more details see the [README](testdata/README_testdata.md) in the testdata subdirectory. 
 
 
-## Quick test run
+### Quick test run
 
 A quick test run on the example data can be performed that starts after the resource-intensive cellranger count and CITE-Seq steps.  
 For more details see the [README](testdata/README_testdata.md) in the testdata subdirectory.
