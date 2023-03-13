@@ -47,7 +47,7 @@ snakemake -s workflow/Snakefile_testdata --configfile testdata/config_testdata.y
 ### Full test run
 To start a full test run that also includes the resource-intensive cellranger count and CITE-Seq steps (please refer to section `Installation instructions` in the [project readme](../README.md) for details on steps 3-5):
 
-1) Download the FASTQ files archive and extract it with `tar xzf gexcite_testdata_fastq.tar.gz`
+1) Download the FASTQ files archive and extract it with `unzip gexcite_testdata_fastqs.zip`
 2) Move or link them into a subdirectory called `fastqs` in the gExcite working directory (usually `gExcite_pipeline`). Make sure you follow the [expected folder structure](../README.md) with one subdirectory per sample.
 3) Install Snakemake, mamba and snakedeploy on your system.
 4) Deploy the workflow with the automated `snakedeploy` command that requires internet access, or using a local set up as described in the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/snakefiles/modularization.html#modules).
