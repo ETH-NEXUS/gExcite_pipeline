@@ -30,7 +30,7 @@ conda activate snakemake
 Snakedeploy can now be used to deploy the workflow:
 
 ```
-snakedeploy deploy-workflow https://github.com/ETH-NEXUSgExcite_pipeline --tag main .
+snakedeploy deploy-workflow https://github.com/ETH-NEXUS/gExcite_pipeline --tag main .
 ```
 
 Note: Snakemake needs to access the internet for this set up. With Snakemake 7.13 there is also support for a local set up of modules. Please refer to the [Snakemake documentation on modules](https://snakemake.readthedocs.io/en/stable/snakefiles/modularization.html#modules) for more details.
