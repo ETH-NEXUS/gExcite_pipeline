@@ -56,7 +56,7 @@ To start a full test run that also includes the resource-intensive cellranger co
     - In section [`resources`], `reference_transcriptome` needs to point to the location of the genomic reference used for the cellranger mapping
     - In sections [`tools`][`cellranger_count_gex`] and [`tools`][`cellranger_count_adt`], `call` needs to point to the the path to the cellranger installation
 
-Refer to the [config README file] for more details
+Refer to the [config README file](../config/README.md) for more details
 
 7) Submit a dry-run to test the configuration
 

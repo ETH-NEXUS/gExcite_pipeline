@@ -19,6 +19,8 @@ Adaptation necessary for a default run:
 - Section [`computingResources`] needs to list the resources that can be assigned to the analysis steps your data and batch system. The example resources specify memory per job, not thread.
 - Section [`scampi`][`resources`] needs to be filled with the cell type information, selected genes to show in expression plots, and gene sets for the GSVA analysis.
 
+A pre-compiled [example config file](testdata/config_testdata.yaml) is available in the testdata subdirectory
+
 ## samplemap
 
 Further, a "samplemap" must be provided specifying sample-specific parameters in a tab-delimited text file.
@@ -62,6 +64,3 @@ Barcode2,TagName2,sampleB
 The "featureReferenceFile" is a comma-separated text file describing all ADT antibodies used in the experiment at hand.
 For further information please consult the Cellranger tool [documentation](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/feature-bc-analysis#feature-ref).
 
-## Example
-
-A pre-compiled [example config file](testdata/config_testdata.yaml) is available in the testdata subdirectory
