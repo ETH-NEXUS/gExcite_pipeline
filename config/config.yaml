@@ -65,6 +65,10 @@ scampi:
   # documentation for the required resources can be found here: https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/config/README_config_file.md
   inputOutput:
     malignant_cell_type: "PBMC"
+    # this file is necessary to run gExcite as a module, it is included in this git
+    # Snakemake tests for the existence of this file e.g. when running snakedeploy
+    # there should be no need to adapt this path
+    sample_map: "config/dummy_scampi_samplemap"
   resources:
     # celltype_lists gmx file containing a library of cell type classification gene lists
     # An example file that works with the test data can be found here:
