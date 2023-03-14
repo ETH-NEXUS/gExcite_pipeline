@@ -34,13 +34,13 @@ The directories `results` and `fastqs`, containing the raw count matrices, are n
 4) Submit a dry-run to test the configuration
 
 ```
-snakemake -s workflow/Snakefile_testdata --configfile testdata/config_testdata.yaml --use-conda --printshellcmds --dry-run
+snakemake -s workflow/Snakefile --configfile testdata/config_testdata.yaml --use-conda --printshellcmds --dry-run
 ```
 
 5) Start the Snakemake workflow
 
 ```
-snakemake -s workflow/Snakefile_testdata --configfile testdata/config_testdata.yaml --use-conda --printshellcmds
+snakemake -s workflow/Snakefile --configfile testdata/config_testdata.yaml --use-conda --printshellcmds
 ```
 
 
@@ -61,11 +61,11 @@ Refer to the [config README file](../config/README.md) for more details
 7) Submit a dry-run to test the configuration
 
 ```
-snakemake -s workflow/Snakefile_testdata --configfile testdata/config_testdata.yaml --use-conda --printshellcmds --dry-run
+snakemake -s workflow/Snakefile --configfile testdata/config_testdata.yaml --use-conda --printshellcmds --dry-run
 ```
 
 8) Start the Snakemake workflow with
 
 ```
-snakemake -s workflow/Snakefile_testdata --configfile testdata/config_testdata.yaml --use-conda --printshellcmds
+snakemake -s workflow/Snakefile --configfile testdata/config_testdata.yaml --use-conda --printshellcmds
 ```
