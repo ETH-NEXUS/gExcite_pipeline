@@ -19,7 +19,7 @@ Adaptation necessary for a default run:
 - Section [`computingResources`] needs to list the resources that can be assigned to the analysis steps your data and batch system. The example resources specify memory per job, not thread.
 - Section [`scampi`][`resources`] needs to be filled with the cell type information, selected genes to show in expression plots, and gene sets for the GSVA analysis.
 
-A pre-compiled [example config file](testdata/config_testdata.yaml) is available in the testdata subdirectory
+A pre-compiled [example config file](../testdata/config_testdata.yaml) is available in the testdata subdirectory
 
 ## samplemap
 
