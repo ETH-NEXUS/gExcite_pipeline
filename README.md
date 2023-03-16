@@ -6,7 +6,7 @@
 
 ## General overview
 
-gExcite is a start-to-end workflow embedded in Snakemake that provides both, gene expression and CITE-seq analysis, as well as hashing deconvolution.  
+gExcite is a start-to-end workflow embedded in Snakemake that provides both, gene expression and CITE-seq analysis, as well as hashing deconvolution. The workflow is compatible with and tested on Linux only, other Unix systems (including MacOS) are currently not supported. 
 For an overview of all steps please see the Snakemake [rulegraph](https://github.com/ETH-NEXUS/gExcite_pipeline/blob/main/images/gExcite_pipeline_rulegraph.png).
 
 ## Remark
