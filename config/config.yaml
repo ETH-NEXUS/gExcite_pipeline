@@ -1,7 +1,7 @@
 inputOutput:
   # NOTE: the FASTQ input directories (gex and adt) are interpreted as relative to the gExcite working directory
-  input_fastqs_gex: /path/to/input/folder/fastqs_GEX/
-  input_fastqs_adt: /path/to/input/folder/fastqs_ADT/
+  input_fastqs_gex: "fastqs/gex/"
+  input_fastqs_adt: "fastqs/adt/"
   sample_map: config/samplemap
   malignant_cell_type: "PBMC"
 
@@ -10,7 +10,7 @@ resources:
   # NOTE: please provide the full path to the cellranger reference transcriptome
   reference_transcriptome: /path/to/reference/transcriptome/refdata-cellranger-GRCh38-3.0.0
   # The following needs to point to a lookup table for a gene - protein name map
-  adt_lookup: "/path/to/lookup_gene_protein.20191130.txt"
+  adt_lookup: "testdata/lookup_gene_protein.txt"
 
 # The tools in this pipeline use a broad range of resources and have been assigned to the following three categories.
 # If there are not enough resources specified it can be adapted in the tools corresponding section.
@@ -26,7 +26,7 @@ computingResources:
   threads:
     low: 1
     medium: 4
-    high: 8
+    high: 12
 
 tools:
   # Cellranger cannot be installed through Conda currently.
@@ -65,27 +65,31 @@ scampi:
   # documentation for the required resources can be found here: https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/config/README_config_file.md
   inputOutput:
     malignant_cell_type: "PBMC"
+    # this file is necessary to run gExcite as a module, it is included in this git
+    # Snakemake tests for the existence of this file e.g. when running snakedeploy
+    # there should be no need to adapt this path
+    sample_map: "config/dummy_scampi_samplemap"
   resources:
     # celltype_lists gmx file containing a library of cell type classification gene lists
     # An example file that works with the test data can be found here:
     # https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/required_files/PBMC/celltype_list_PBMC_all.gmx
-    celltype_lists: "/path/to/celltype_list.gmx"
+    celltype_lists: "testdata/scAmpi/celltype_list_PBMC_all.gmx"
     # celltype_config to easily adapt the cell type classification step
     # An example file that works with the test data can be found here:
     # https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/required_files/PBMC/celltype_config_PBMC.tsv
-    celltype_config: "/path/to/celltype_config.tsv"
+    celltype_config: "testdata/scAmpi/celltype_config_PBMC.tsv"
     # colour_config for a fixed assignment of colours to the cell types in celltype_config
     # An example file that works with the test data can be found here:
     # https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/required_files/PBMC/colour_config_PBMC.txt
-    colour_config: "/path/to/colour_config.txt"
+    colour_config: "testdata/scAmpi/colour_config_PBMC.txt"
     # gene expression of priority genes will be plotted and highlighted in per cluster gene expression (gene_exp)
     # An example file that works with the test data can be found here:
     # https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/required_files/PBMC/selected_genes_PBMC.txt
-    priority_genes: "/path/to/selected_genes.txt"
+    priority_genes: "testdata/scAmpi/selected_genes_PBMC.txt"
     # genesets for GSVA analysis
     # An example file that works with the test data can be found here:
     # https://github.com/ETH-NEXUS/scAmpi_single_cell_RNA/blob/master/required_files/hallmark_pathways_example.gmt
-    genesets: "/path/to/hallmark_pathways_example.gmt"
+    genesets: "testdata/scAmpi/hallmark_pathways_example.gmt"
 
   tools:
     filter_genes_and_cells:
