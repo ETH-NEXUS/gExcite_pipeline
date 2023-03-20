@@ -33,13 +33,14 @@ The directories `results` and `fastqs`, containing the raw count matrices, are n
 4) Submit a dry-run to test the configuration
 
 ```
-snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds --dry-run
+snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds --dry-run --rerun-triggers mtime
 ```
+NOTE: the parameter `--rerun-triggers mtime` makes sure only changes to the input data triggers a rerun of the pipeline.  
 
 5) Start the Snakemake workflow
 
 ```
-snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds
+snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds --rerun-triggers mtime
 ```
 
 
@@ -51,7 +52,7 @@ To start a full test run that also includes the resource-intensive cellranger co
 3) Install Snakemake, mamba and snakedeploy on your system.
 4) Deploy the workflow with the automated `snakedeploy` command that requires internet access, or using a local set up with cloning the repository as described in the [Snakemake documentation](https://snakemake.readthedocs.io/en/stable/snakefiles/modularization.html#modules).
 5) Install the [Cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger) software. Follow the instructions on the 10xGenomics installation support page. Download the cellranger references as well.
-6) Insert the paths to the available cellranger software and reference directory into the testdata config `testdata/config_testdata.yaml`
+6) Insert the paths to the available cellranger software and reference directory into the config file `config/config.yaml`
     - In section [`resources`], `reference_transcriptome` needs to point to the location of the genomic reference used for the cellranger mapping
     - In sections [`tools`][`cellranger_count_gex`] and [`tools`][`cellranger_count_adt`], `call` needs to point to the the path to the cellranger installation
 
@@ -60,11 +61,12 @@ Refer to the [config README file](../config/README.md) for more details
 7) Submit a dry-run to test the configuration
 
 ```
-snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds --dry-run
+snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds --dry-run --rerun-triggers mtime
 ```
+NOTE: the parameter `--rerun-triggers mtime` makes sure only changes to the input data triggers a rerun of the pipeline.  
 
 8) Start the Snakemake workflow with
 
 ```
-snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds
+snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds --rerun-triggers mtime
 ```
