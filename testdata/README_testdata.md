@@ -23,14 +23,14 @@ To start a quick test run
 1) Install Snakemake and mamba (and snakedeploy) on your system
 
 ```
-conda create -c bioconda -c conda-forge --name snakemake mamba snakemake snakedeploy 
+conda create -c bioconda -c conda-forge --name snakemake mamba snakemake snakedeploy ;
 conda activate snakemake
 ```
 
 2) Clone the gExcite git repository and go into the new directory `gExcite_pipeline` that will be referred to as "the gExcite working directory" in this documentation.
 
 ```
-git clone git@github.com:ETH-NEXUS/gExcite_pipeline.git
+git clone git@github.com:ETH-NEXUS/gExcite_pipeline.git ;
 cd gExcite_pipeline
 ```
 
@@ -53,7 +53,7 @@ NOTE: the parameter `--rerun-triggers mtime` makes sure only changes to the inpu
 5) Start the Snakemake workflow
 
 ```
-snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds --rerun-triggers mtime -c1
+snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds --rerun-triggers mtime --cores 1
 ```
 
 **NOTE:** if the pipeline should be run on a compute cluster using a job scheduling system (e.g. LSF, Slurm) the command needs to be adjusted accordingly. Please refer to the [Snakemake documentation on cluster execution](https://snakemake.readthedocs.io/en/stable/executing/cluster.html) for platform-specific details.
@@ -67,14 +67,14 @@ To start a full test run that also includes the resource-intensive cellranger co
 3) Install Snakemake and mamba (and snakedeploy) on your system
 
 ```
-conda create -c bioconda -c conda-forge --name snakemake mamba snakemake snakedeploy 
+conda create -c bioconda -c conda-forge --name snakemake mamba snakemake snakedeploy ;
 conda activate snakemake
 ```
 
 4) Clone the gExcite git repository and go into the new directory `gExcite_pipeline` that will be referred to as "the gExcite working directory" in this documentation.
 
 ```
-git clone git@github.com:ETH-NEXUS/gExcite_pipeline.git
+git clone git@github.com:ETH-NEXUS/gExcite_pipeline.git ;
 cd gExcite_pipeline
 ```
 
@@ -95,7 +95,7 @@ NOTE: the parameter `--rerun-triggers mtime` makes sure only changes to the inpu
 8) Start the Snakemake workflow
 
 ```
-snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds --rerun-triggers mtime -c1
+snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds --rerun-triggers mtime --cores 1
 ```
 
 **NOTE:** if the pipeline should be run on a compute cluster using a job scheduling system (e.g. LSF, Slurm) the command needs to be adjusted accordingly. Please refer to the [Snakemake documentation on cluster execution](https://snakemake.readthedocs.io/en/stable/executing/cluster.html) for platform-specific details.
