@@ -101,5 +101,5 @@ Following the configuration of the pipeline a run can be started using:
 # dry run
 snakemake --use-conda --printshellcmds --dry-run
 # analysis run
-snakemake --use-conda --printshellcmds -c1
+snakemake --use-conda --printshellcmds --cores 1
 ```
