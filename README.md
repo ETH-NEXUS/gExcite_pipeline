@@ -33,7 +33,7 @@ Given conda is installed on your system the pipeline can be set up using `snaked
 First, create and activate an environment including Mamba, Snakemake and Snakedeploy:
 
 ```
-conda create -c bioconda -c conda-forge --name snakemake mamba snakemake snakedeploy
+conda create -c bioconda -c conda-forge --name snakemake mamba snakemake snakedeploy ;
 conda activate snakemake
 ```
 
