@@ -30,7 +30,7 @@ conda activate snakemake
 2) Clone the gExcite git repository and go into the new directory `gExcite_pipeline` that will be referred to as "the gExcite working directory" in this documentation.
 
 ```
-git clone git@github.com:ETH-NEXUS/gExcite_pipeline.git ;
+git clone https://github.com/ETH-NEXUS/gExcite_pipeline.git ;
 cd gExcite_pipeline
 ```
 
@@ -74,7 +74,7 @@ conda activate snakemake
 4) Clone the gExcite git repository and go into the new directory `gExcite_pipeline` that will be referred to as "the gExcite working directory" in this documentation.
 
 ```
-git clone git@github.com:ETH-NEXUS/gExcite_pipeline.git ;
+git clone https://github.com/ETH-NEXUS/gExcite_pipeline.git ;
 cd gExcite_pipeline
 ```
 
