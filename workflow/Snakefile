@@ -24,7 +24,7 @@ module scampi:
         github(
             "ETH-NEXUS/scAmpi_single_cell_RNA",
             path="workflow/snakefile_basic.smk",
-            tag="v2.0.4",
+            tag="v2.0.7",
         )
     config:
         config["scampi"]
