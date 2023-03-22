@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.2] - 2023-03-22
+- Update version of scAmpi that is used as a module. scAmpi v2.0.7 contains fixes regarding R package discrepancies that caused various scripts to fail (using `ggsave` function).
+
 ## [1.0.1] - 2023-03-10
 - Update test run settings to have all config files available and ready to use
 - expand test run settings with the possibility to omit the resource-intensive cellranger steps
