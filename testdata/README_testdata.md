@@ -42,7 +42,12 @@ mv testdata/results_and_fastqs.tar.gz  . ; tar -xf results_and_fastqs.tar.gz
 
 The directories `results` and `fastqs`, containing the raw count matrices, are now available in the working directory.
 
-4) Do a dry-run to test the configuration
+4) Touch the following intermediate files for the workflow manager to recognize it does not have to rerun the CITE-Seq step. 
+```
+touch results/pooled_samples/citeseq_count/PBMC_D1.tags.tsv results/pooled_samples/citeseq_count/PBMC_D1.run_report.yaml
+```
+
+5) Do a dry-run to test the configuration
 
 ```
 snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds --dry-run --rerun-triggers mtime
@@ -50,7 +55,7 @@ snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --pr
 
 NOTE: the parameter `--rerun-triggers mtime` makes sure only changes to the input data trigger a rerun of the pipeline.  
 
-5) Start the Snakemake workflow
+6) Start the Snakemake workflow
 
 ```
 snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds --rerun-triggers mtime --cores 1
