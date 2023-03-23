@@ -20,27 +20,27 @@ As an alternative we provide the count data that is generated on the example dat
 
 To start a quick test run
 
-1) Install Snakemake and mamba (and snakedeploy) on your system
-
-```
-conda create -c bioconda -c conda-forge --name snakemake mamba snakemake snakedeploy ;
-conda activate snakemake
-```
-
-2) Clone the gExcite git repository and go into the new directory `gExcite_pipeline` that will be referred to as "the gExcite working directory" in this documentation.
+1) Clone the gExcite git repository and go into the new directory `gExcite_pipeline` that will be referred to as "the gExcite working directory" in this documentation.
 
 ```
 git clone https://github.com/ETH-NEXUS/gExcite_pipeline.git ;
 cd gExcite_pipeline
 ```
 
-3) Unpack the test data matrices by running the small bash script in the gExcite working directory (usually `gExcite_pipeline`)
+2) Unpack the test data matrices by running the small bash script in the gExcite working directory (usually `gExcite_pipeline`)
 
 ```
 sh prepare_quick_testrun.sh
 ```
 
 The directories `results` and `fastqs`, containing the raw count matrices, are now available in the working directory.
+
+3) Install Snakemake and mamba (and snakedeploy) on your system
+
+```
+conda create -c bioconda -c conda-forge --name snakemake mamba snakemake snakedeploy ;
+conda activate snakemake
+```
 
 4) Do a dry-run to test the configuration
 
@@ -62,20 +62,21 @@ snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --pr
 
 To start a full test run that also includes the resource-intensive cellranger count and CITE-Seq steps:
 
-1) Download the FASTQ files archive and extract it with `unzip gexcite_testdata_fastqs.zip`
-2) Move or link the FASTQ files into a subdirectory called `fastqs` in the gExcite working directory (usually `gExcite_pipeline`). Make sure you follow the [expected folder structure](../README.md) with one subdirectory per sample.
-3) Install Snakemake and mamba (and snakedeploy) on your system
-
-```
-conda create -c bioconda -c conda-forge --name snakemake mamba snakemake snakedeploy ;
-conda activate snakemake
-```
-
-4) Clone the gExcite git repository and go into the new directory `gExcite_pipeline` that will be referred to as "the gExcite working directory" in this documentation.
+1) Clone the gExcite git repository and go into the new directory `gExcite_pipeline` that will be referred to as "the gExcite working directory" in this documentation.
 
 ```
 git clone https://github.com/ETH-NEXUS/gExcite_pipeline.git ;
 cd gExcite_pipeline
+```
+
+2) Download the FASTQ files archive and extract it with `unzip gexcite_testdata_fastqs.zip`
+
+3) Move or link the FASTQ files into a subdirectory called `fastqs` in the gExcite working directory (usually `gExcite_pipeline`). Make sure you follow the [expected folder structure](../README.md) with one subdirectory per sample.
+4) Install Snakemake and mamba (and snakedeploy) on your system
+
+```
+conda create -c bioconda -c conda-forge --name snakemake mamba snakemake snakedeploy ;
+conda activate snakemake
 ```
 
 5) Install the [Cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger) software. Follow the instructions on the 10xGenomics installation support page to install cellranger and to include the cellranger binary to your path. Download the cellranger references.
