@@ -16,7 +16,7 @@ All config files are ready to use in the `testdata` subdirectory.
 
 ### Quick test run
 
-As an alternative we provide the count data that is generated on the example data described above, to allow skipping the resource-intensive cellranger count and CITE-Seq steps. Still, the test run requires around 12 GB of memory to be available.
+As an alternative we provide the count data that is generated on the example data described above, to allow skipping the resource-intensive cellranger count and CITE-Seq steps. Note that the test run requires approximately 12 GB of memory to complete successfully.
 
 To start a quick test run
 
@@ -27,7 +27,7 @@ git clone https://github.com/ETH-NEXUS/gExcite_pipeline.git ;
 cd gExcite_pipeline
 ```
 
-2) Unpack the test data matrices by running the small bash script in the gExcite working directory (usually `gExcite_pipeline`)
+2) Unpack the test data matrices by running the test data preparation bash script in the gExcite working directory.
 
 ```
 sh prepare_quick_testrun.sh
@@ -88,15 +88,13 @@ conda activate snakemake
 7) Do a dry-run to test the configuration
 
 ```
-snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds --dry-run --rerun-triggers mtime
+snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds --dry-run
 ```
-
-NOTE: the parameter `--rerun-triggers mtime` makes sure only changes to the input data triggers a rerun of the pipeline.  
 
 8) Start the Snakemake workflow
 
 ```
-snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds --rerun-triggers mtime --cores 1
+snakemake -s workflow/Snakefile --configfile config/config.yaml --use-conda --printshellcmds --cores 1
 ```
 
 **NOTE:** if the pipeline should be run on a compute cluster using a job scheduling system (e.g. LSF, Slurm) the command needs to be adjusted accordingly. Please refer to the [Snakemake documentation on cluster execution](https://snakemake.readthedocs.io/en/stable/executing/cluster.html) for platform-specific details.
