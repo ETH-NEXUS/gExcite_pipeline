@@ -71,7 +71,8 @@ cd gExcite_pipeline
 
 2) Download the FASTQ files archive and extract it with `unzip gexcite_testdata_fastqs.zip`
 
-3) Move or link the FASTQ files into a subdirectory called `fastqs` in the gExcite working directory (usually `gExcite_pipeline`). Make sure you follow the [expected folder structure](../README.md) with one subdirectory per sample.
+3) Move the extracted directory (named "fastqs") into the gExcite working directory. 
+
 4) Install Snakemake and mamba on your system
 
 ```
