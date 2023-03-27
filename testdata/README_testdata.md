@@ -16,7 +16,7 @@ All config files are ready to use in the `testdata` subdirectory.
 
 ### Quick test run
 
-As an alternative we provide the count data that is generated on the example data described above, to allow skipping the resource-intensive cellranger count and CITE-Seq steps.
+As an alternative we provide the count data that is generated on the example data described above, to allow skipping the resource-intensive cellranger count and CITE-Seq steps. Still, the test run requires around 12 GB of memory to be available.
 
 To start a quick test run
 
@@ -35,10 +35,10 @@ sh prepare_quick_testrun.sh
 
 The directories `results` and `fastqs`, containing the raw count matrices, are now available in the working directory.
 
-3) Install Snakemake and mamba (and snakedeploy) on your system
+3) Install Snakemake and mamba on your system
 
 ```
-conda create -c bioconda -c conda-forge --name snakemake mamba snakemake snakedeploy ;
+conda create -c bioconda -c conda-forge --name snakemake mamba snakemake ;
 conda activate snakemake
 ```
 
@@ -72,10 +72,10 @@ cd gExcite_pipeline
 2) Download the FASTQ files archive and extract it with `unzip gexcite_testdata_fastqs.zip`
 
 3) Move or link the FASTQ files into a subdirectory called `fastqs` in the gExcite working directory (usually `gExcite_pipeline`). Make sure you follow the [expected folder structure](../README.md) with one subdirectory per sample.
-4) Install Snakemake and mamba (and snakedeploy) on your system
+4) Install Snakemake and mamba on your system
 
 ```
-conda create -c bioconda -c conda-forge --name snakemake mamba snakemake snakedeploy ;
+conda create -c bioconda -c conda-forge --name snakemake mamba snakemake ;
 conda activate snakemake
 ```
 
