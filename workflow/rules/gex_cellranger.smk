@@ -44,6 +44,7 @@ rule cellranger_count_gex:
         "--transcriptome={input.reference} "
         "--fastqs={input.fastqs_dir} "
         "--nosecondary "
+        "--localcores={threads} "
         "{params.variousParams}) "
         "&> {log} ; "
         "gunzip {params.cr_out}{params.mySample}/outs/filtered_feature_bc_matrix/features.tsv.gz ; "
