@@ -38,6 +38,7 @@ rule Rscript_analyse_citeseq:
         colorConfig=config["scampi"]["resources"]["colour_config"],
         lookup=config["resources"]["adt_lookup"],
         numberVariableGenes=config["tools"]["analyse_citeseq"]["numberVariableGenes"],
+        number_pca_adt=config["tools"]["analyse_citeseq"]["number_pca_adt"],
         outdir="results/citeseq_analysis/{sample}/",
         custom_script=workflow.source_path("../scripts/analyse_citeseq.R"),
     log:
@@ -59,4 +60,5 @@ rule Rscript_analyse_citeseq:
         "--threads {threads} "
         "--sampleName {wildcards.sample} "
         "--number_variable_genes {params.numberVariableGenes} "
+        "--number_pca_adt {params.number_pca_adt} "
         "--output {params.outdir} &> {log} "

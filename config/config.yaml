@@ -58,6 +58,7 @@ tools:
 
   analyse_citeseq:
     numberVariableGenes: 500
+    number_pca_adt: 20
 
 scampi:
   # scampi is a snakemake workflow that runs general scRNA processing steps
