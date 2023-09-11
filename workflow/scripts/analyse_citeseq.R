@@ -37,6 +37,7 @@ option_list <- list(
   make_option("--threads", type = "integer", help = "Number of threads that are available for the script. Recomended: 3-5"),
   make_option("--sampleName", type = "character", help = "SampleName. Needs to be exactly as used in the thresholds table."),
   make_option("--number_variable_genes", type = "integer", default = 500, help = "Number of variable genes that are included when calculating the UMAP embedding with RNA and ADT data."),
+  make_option("--number_pca_adt", type = "integer", default = 20, help = "Number of PCA dimensions used when calculating the ADT UMAP. Cannot be larger than number of ADTs in experiment."),
   make_option("--output", type = "character", help = "Output directory.")
 )
 opt_parser <- OptionParser(option_list = option_list)
@@ -549,7 +550,7 @@ for (type in c("adt", "gex", "adt_gex")) {
     cell_attributes <- plyr::join(df_colData_cells, CellRangerADTextended, by = "barcodes")
     print("Working on Adt based UMAP embedding.")
     combout <- paste(outfolder, "/ExpressionPlots/adt_based_embedding/", opt$sampleName, ".ADT_only", sep = "")
-    umap.adt <- umap(t(as.matrix(CellRangerADT)), n_neighbors = 30, pca = 50, spread = 1, min_dist = 0.3, ret_nn = T)
+    umap.adt <- umap(t(as.matrix(CellRangerADT)), n_neighbors = 30, pca = opt$number_pca_adt, spread = 1, min_dist = 0.3, ret_nn = T)
     reducedDim(my_sce, "umap_adt") <- umap.adt$embedding
     metadata(my_sce) <- c(metadata(my_sce), list(umap_adt = umap.adt$nn$euclidean))
     umap_coord <- as.data.frame(reducedDims(my_sce)$umap_adt)
