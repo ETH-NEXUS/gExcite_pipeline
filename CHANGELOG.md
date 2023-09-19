@@ -1,6 +1,14 @@
 # Changelog
 
-## [1.0.3] - 2022-08-21
+## [1.0.4] - 2023-09-19
+
+### Changed
+- with `Snakefile_no_hashing.smk` have the option to run gExcite without hashing deconvolution
+
+### Fixed
+- catch special case in script `analyse_citeseq.R` where cell barcodes have suffix "-1"
+
+## [1.0.3] - 2023-08-21
 
 ### Changed
 - Give cellranger ADT and cellranger GEX rule the number of threads specified in the config file (`--localcores`).
