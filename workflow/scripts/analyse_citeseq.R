@@ -109,7 +109,17 @@ print("Number of cells in GEX analysis before filtering:")
 print(length(colnames(my_sce)))
 print("Number of cells in ADT analysis before filtering:")
 print(length(colnames(CellRangerADT)))
+
+# first, make sure the cell barcodes do not contain "-1" as suffix
+colnames(my_sce) <- gsub(pattern = "-1", replacement = "", colnames(my_sce))
+colnames(CellRangerADT) <- gsub(pattern = "-1", replacement = "", colnames(CellRangerADT))
+
 joint.bcs <- intersect(colnames(my_sce), colnames(CellRangerADT))
+cat("\n\n\n")
+print(head(colnames(my_sce)))
+cat("\n\n\n")
+print(head(colnames(CellRangerADT)))
+cat("\n\n\n")
 my_sce <- my_sce[, joint.bcs]
 CellRangerADT <- CellRangerADT[, joint.bcs]
 print("Number of cells in GEX analysis after filtering:")
