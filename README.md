@@ -88,7 +88,10 @@ Starting processing after the resource-intensive cellranger count and CITE-Seq s
 
 The pipeline must be appropriately configured to your data. A detailed [README](config/README.md) can be found in the `config` directory.
 
-### Optional preprocessing
+### Optional deviations from default settings
+
+**Running gExcite without hashing deconvolution**  
+To run the pipeline without hashing deconvolution use `Snakefile_no_hashing.smk` instead of `Snakefile`.
 
 **IndexHopping removal**  
 In case of combined GEX and ADT NovaSeq sequencing data, scripts are provided to clean up the data before a run. Please consult the [README](workflow/scripts/index_hopping_removal/README.md) here.
