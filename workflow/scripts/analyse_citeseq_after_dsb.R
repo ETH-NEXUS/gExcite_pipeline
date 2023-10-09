@@ -160,7 +160,7 @@ df_colData_cells <- as.data.frame(colData(my_sce), stringsAsFactors = FALSE)
 table1 <- select(df_colData_cells, phenograph_clusters, celltype_final)
 table1$antibody <- ""
 for (i in seq_len(length(barcodes))) {
-  table1$antibody[i] <- paste(antibodies[CellRangerADT[, i]>0], collapse = ",")
+  table1$antibody[i] <- paste(antibodies[CellRangerADT[, i] > 0], collapse = ",")
 }
 write.table(data.frame("barcodes" = rownames(table1), table1), file = paste(outprefix, "antibodies_and_celltypes_per_cell.rawcounts.tsv", sep = "."), sep = "\t", quote = FALSE)
 print(paste("Saving it to ", outprefix, ".antibodies_and_celltypes_per_cell.rawcounts.tsv", sep = ""))
@@ -214,18 +214,17 @@ thresholds[is.na(thresholds)] <- 0
 for (ab in seq(length(lookup$Antibody))) {
   count_expressed <- 0
   count_not_expressed <- 0
-  count_ab <- sum(cell_attributes_extended[, lookup[ab, ]$Antibody]>thresholds[lookup[ab, ]$Antibody, ])
+  count_ab <- sum(cell_attributes_extended[, lookup[ab, ]$Antibody] > thresholds[lookup[ab, ]$Antibody, ])
   for (index in seq(length(cell_attributes_extended$barcodes))) {
     barcode <- cell_attributes_extended$barcodes[index]
     gene <- lookup[ab, ]$Gene
     if (is.na(match(gene, rownames(count_matrix)))) {
       next
     }
-    if (cell_attributes_extended[index, lookup[ab, ]$Antibody] > thresholds[lookup[ab, ]$Antibody, ]){
+    if (cell_attributes_extended[index, lookup[ab, ]$Antibody] > thresholds[lookup[ab, ]$Antibody, ]) {
       if (count_matrix[gene, barcode] != 0) {
         count_expressed <- count_expressed + 1
-      }
-      else if (count_matrix[gene, barcode] == 0 ) {
+      } else if (count_matrix[gene, barcode] == 0) {
         count_not_expressed <- count_not_expressed + 1
       }
     }
@@ -306,7 +305,7 @@ dir.create(ridgeout)
 plot_list <- list()
 for (ab in antibodies) {
   print(paste("Working on ", ab, " using threshold ", thresholds[ab, ], ".", sep =
-                ""))
+    ""))
   abcounts <- as.matrix(CellRangerADT[ab, ])
   colnames(abcounts) <- ab
   abcounts <- melt(abcounts)
@@ -323,12 +322,12 @@ for (ab in antibodies) {
   } else {
     abPlot <-
       ggplot(abcounts,
-             aes(
-               x = ln_umi,
-               y = antibody,
-               fill = antibody,
-               height = ..ndensity..
-             )) +
+        aes(
+          x = ln_umi,
+          y = antibody,
+          fill = antibody,
+          height = ..ndensity..
+      )) +
       geom_density_ridges() +
       scale_x_continuous(limits = c(0, max(abcounts$ln_umi) + 1)) +
       theme_ridges() +
@@ -353,8 +352,8 @@ for (i in seq(1, numberOfPlots, 12)) {
   plot_sub <- plot_list[i:min(i + 11, numberOfPlots)]
   plot_group <-
     plot_grid(plotlist = plot_sub,
-              ncol = 4,
-              align = "v")
+      ncol = 4,
+      align = "v")
   if (i + 11 > numberOfPlots) {
     ggplot2::ggsave(
       filename = paste(
@@ -401,7 +400,7 @@ cell_attributes <- plyr::join(df_colData_cells, CellRangerADTextended, by = "bar
 print("Saving cell data table, containing the following columns:")
 print(colnames(cell_attributes))
 write.table(cell_attributes, paste(outprefix, ".cell_attributes.tsv", sep = ""),
-            quote = FALSE, row.names = FALSE, sep = "\t")
+  quote = FALSE, row.names = FALSE, sep = "\t")
 
 
 # Save SCE object with GEX results AND cellranger ADT results in colData table
@@ -447,12 +446,12 @@ for (type in c("celltype_final", "celltype_major")) {
     plot_data$ln_umi <- log(plot_data$antibody)
     plot_data <- plot_data[complete.cases(plot_data), ]
     s <- ggplot(plot_data,
-             aes_string(
-               x = "ln_umi",
-               y = type,
-               fill = type,
-               height = "..ndensity.."
-             )) +
+      aes_string(
+        x = "ln_umi",
+        y = type,
+        fill = type,
+        height = "..ndensity.."
+    )) +
       geom_density_ridges(
         alpha = 0.82,
         jittered_points = TRUE,
@@ -464,10 +463,10 @@ for (type in c("celltype_final", "celltype_major")) {
       ggtitle(ab) +
       guides(fill = FALSE) +
       scale_fill_manual(name = "Cell type",
-                        values = ct.color[unlist(celltype_list[type])],
-                        drop = F) +
+        values = ct.color[unlist(celltype_list[type])],
+        drop = F) +
       theme(axis.title.y = element_blank(),
-            plot.margin = unit(c(0.5, 0.5, 0.5, 1), "cm"))
+        plot.margin = unit(c(0.5, 0.5, 0.5, 1), "cm"))
     # Add line indicating threshold if threshold is larger than 0
     if (as.numeric(thresholds[ab, ]) > 0) {
       s <- s + geom_vline(xintercept = as.numeric(thresholds[ab, ]))
@@ -480,8 +479,8 @@ for (type in c("celltype_final", "celltype_major")) {
     plot_sub <- plot_list[i:min(i + 5, numberOfPlots)]
     plot_group <-
       plot_grid(plotlist = plot_sub,
-                ncol = 3,
-                align = "v")
+        ncol = 3,
+        align = "v")
     if (i + 5 > numberOfPlots) {
       ggplot2::ggsave(
         filename = paste(
@@ -521,11 +520,11 @@ print("###################")
 set.seed(184)
 # Coulours used later on for clustering
 cols33 <- c("red2", "green4", "blue2", "cyan2", "yellow1", "purple", "brown",
-            "chocolate1", "chartreuse2", "darkgoldenrod3", "steelblue1", "slateblue3", "olivedrab4", "gold2",
-            "violetred3", "darkcyan", "orchid3", "darksalmon", "darkslategrey", "khaki", "indianred2" ,"magenta", "slategray2",
-            "olivedrab1", "mediumaquamarine", "hotpink", "yellow3",
-            "bisque4", "darkseagreen1", "dodgerblue3",
-            "deeppink4", "sienna4", "mediumorchid4")
+  "chocolate1", "chartreuse2", "darkgoldenrod3", "steelblue1", "slateblue3", "olivedrab4", "gold2",
+  "violetred3", "darkcyan", "orchid3", "darksalmon", "darkslategrey", "khaki", "indianred2", "magenta", "slategray2",
+  "olivedrab1", "mediumaquamarine", "hotpink", "yellow3",
+  "bisque4", "darkseagreen1", "dodgerblue3",
+  "deeppink4", "sienna4", "mediumorchid4")
 print("Defined colours for clustering; only 33 available, if more clusters are found, this might crash.")
 ### Cluster
 print("Start clustering on ADT and GEX data.")
@@ -595,7 +594,7 @@ for (type in c("adt", "gex", "adt_gex")) {
     # get UMAP coordinates into data frame
     reducedDim(my_sce, "umap_adt") <- umap.adt$embedding
     metadata(my_sce) <- c(metadata(my_sce), list(umap_adt = umap.adt$nn$euclidean))
-    #umap_coord <- as.data.frame(reducedDims(my_sce)$umap_hvg)
+    # umap_coord <- as.data.frame(reducedDims(my_sce)$umap_hvg)
     umap_coord <- as.data.frame(reducedDims(my_sce)$umap_adt)
     names(umap_coord) <- c("umap1", "umap2")
     umap_coord$barcodes <- rownames(umap_coord)
@@ -613,7 +612,7 @@ for (type in c("adt", "gex", "adt_gex")) {
     xlab("UMAP 1") +
     ylab("UMAP 2") +
     guides(colour = guide_legend(override.aes = list(size = 5, shape = 15), nrow = 15)) +
-    scale_color_manual(name = "BREMSC", values = cols33)+
+    scale_color_manual(name = "BREMSC", values = cols33) +
     theme(aspect.ratio = 1) +
     theme(legend.position = "none")
 
@@ -622,7 +621,7 @@ for (type in c("adt", "gex", "adt_gex")) {
     xlab("UMAP 1") +
     ylab("UMAP 2") +
     guides(colour = guide_legend(override.aes = list(size = 5, shape = 15), nrow = 15)) +
-    scale_color_manual(name = "BREMSC", values = cols33)+
+    scale_color_manual(name = "BREMSC", values = cols33) +
     theme(aspect.ratio = 1) +
     theme(
       legend.title = element_text(size = 16),
@@ -631,7 +630,7 @@ for (type in c("adt", "gex", "adt_gex")) {
       legend.key.height = unit(0.01, "line"),
       legend.spacing.y = unit(0.1, "line"),
       legend.spacing.x = unit(0.1, "line")
-  )
+    )
 
   legend_cluster <- cowplot::get_legend(cluster_umap_final)
 
@@ -647,7 +646,7 @@ for (type in c("adt", "gex", "adt_gex")) {
   normcounts_all.zero.removed <- normcounts(my_sce)
   mask_all_zero <- apply(normcounts_all.zero.removed, 1, sum) > 0
   normcounts_all.zero.removed <-
-  normcounts_all.zero.removed[mask_all_zero, ]
+    normcounts_all.zero.removed[mask_all_zero, ]
   stopifnot(length(normcounts_all.zero.removed[, 1]) == sum(apply(normcounts_all.zero.removed, 1, sum) > 0))
 
   # keep only genes that are in matrix
@@ -666,15 +665,15 @@ for (type in c("adt", "gex", "adt_gex")) {
 
   # Define some general used graphical parameters
   fontsize <- theme(axis.text = element_text(size = 10),
-        axis.title = element_text(size = 10))
+    axis.title = element_text(size = 10))
   theme_set(theme_bw(4) + fontsize)
 
   # plot UMAP (based on highly variable genes), colours = final cell type, as reference for expression plots
   p_final_ref <-
     ggplot(cell_attributes, aes(x = umap1, y = umap2, color = celltype_final)) +
     scale_color_manual(name = "Cell type",
-                     values = ct.color[id.final.ct],
-                     drop = F) +
+      values = ct.color[id.final.ct],
+      drop = F) +
     geom_point(size = 1) +
     theme(aspect.ratio = 1) +
     xlab("UMAP 1") +
@@ -684,19 +683,19 @@ for (type in c("adt", "gex", "adt_gex")) {
   p_legend_ref <-
     ggplot(cell_attributes, aes(x = umap1, y = umap2, color = celltype_final)) +
     scale_color_manual(name = "Cell type",
-                     values = ct.color[id.final.ct],
-                     drop = F) +
+      values = ct.color[id.final.ct],
+      drop = F) +
     geom_point(size = 1) +
     xlab("UMAP 1") +
     ylab("UMAP 2") +
     guides(colour = guide_legend(override.aes = list(size = 5, shape = 15), nrow = 15)) +
     theme(
-    legend.title = element_text(size = 16),
-    legend.text = element_text(size = 10),
-    legend.key.width = unit(0.2, "line"),
-    legend.key.height = unit(0.01, "line"),
-    legend.spacing.y = unit(0.1, "line"),
-    legend.spacing.x = unit(0.1, "line")
+      legend.title = element_text(size = 16),
+      legend.text = element_text(size = 10),
+      legend.key.width = unit(0.2, "line"),
+      legend.key.height = unit(0.01, "line"),
+      legend.spacing.y = unit(0.1, "line"),
+      legend.spacing.x = unit(0.1, "line")
     )
 
   legend_ref <- cowplot::get_legend(p_legend_ref)
@@ -709,7 +708,7 @@ for (type in c("adt", "gex", "adt_gex")) {
 
   # get matrix with all cells and all genes of the respective group
   matrix_group <-
-  normcounts_all.zero.removed[unlist(list_groups), ,  drop = F]
+    normcounts_all.zero.removed[unlist(list_groups), ,  drop = F]
 
   # check first if any of the group's genes are expressed in this sample
   lookup <- lookup[str_order(lookup$Antibody, numeric = TRUE), ]
@@ -746,25 +745,25 @@ for (type in c("adt", "gex", "adt_gex")) {
         ggplot(cell_attributes_gene, aes(x = umap1, y = umap2)) +
         geom_point(colour = "gray", size = rel(0.001)) +
         geom_point(data = cell_attributes_gene[which(cell_attributes_gene$normcounts == 0), ],
-                 size = rel(0.001),
-                 colour = "slateblue4") +
+          size = rel(0.001),
+          colour = "slateblue4") +
         geom_point(data = cell_attributes_gene[which(cell_attributes_gene$normcounts > 0), ],
-                 aes(color = normcounts),
-                 size = rel(0.001)) +
+          aes(color = normcounts),
+          size = rel(0.001)) +
         scale_color_gradientn(
           name = "counts",
           na.value = "gray",
           colours = c(
-          "slateblue3",
-          "royalblue1",
-          "aquamarine3",
-          "khaki",
-          383,
-          "sienna1",
-          "orangered4"
-        ),
-        limits = c(1, max(3, upper_limit)),
-        breaks = c(floor(upper_limit / 3), round(2 * (upper_limit / 3)), upper_limit)
+            "slateblue3",
+            "royalblue1",
+            "aquamarine3",
+            "khaki",
+            383,
+            "sienna1",
+            "orangered4"
+          ),
+          limits = c(1, max(3, upper_limit)),
+          breaks = c(floor(upper_limit / 3), round(2 * (upper_limit / 3)), upper_limit)
         ) +
         coord_fixed(ratio = 1) +
         ggtitle(legend) +
@@ -775,19 +774,19 @@ for (type in c("adt", "gex", "adt_gex")) {
           axis.ticks = element_blank(),
           axis.text.x = element_blank(),
           plot.title = element_text(
-          face = "bold",
-          hjust = 0.5,
-          vjust = 0.1,
-          size = 14
-        ),
-        plot.margin = margin(1, 1, 1, 1, "pt"),
-        legend.key.size = unit(0.8, "line"),
-        legend.text = element_text(size = rel(3)),
-        legend.title = element_text(size = rel(3)),
-        legend.margin = margin(0.2, 0.2, 0.2, 0.2),
-        axis.text = element_text(size = rel(3)),
-        aspect.ratio = 1
-      )
+            face = "bold",
+            hjust = 0.5,
+            vjust = 0.1,
+            size = 14
+          ),
+          plot.margin = margin(1, 1, 1, 1, "pt"),
+          legend.key.size = unit(0.8, "line"),
+          legend.text = element_text(size = rel(3)),
+          legend.title = element_text(size = rel(3)),
+          legend.margin = margin(0.2, 0.2, 0.2, 0.2),
+          axis.text = element_text(size = rel(3)),
+          aspect.ratio = 1
+        )
     } else {
       cell_attributes_gene$normcounts <- matrix_group[1, ]
       cell_attributes_gene$normcounts <- 0
@@ -805,8 +804,8 @@ for (type in c("adt", "gex", "adt_gex")) {
         ggplot(cell_attributes_gene, aes(x = umap1, y = umap2)) +
         geom_point(colour = "gray", size = rel(0.001)) +
         geom_point(data = cell_attributes_gene[which(cell_attributes_gene$normcounts == 0), ],
-                   size = rel(0.001),
-                   colour = "gray") +
+          size = rel(0.001),
+          colour = "gray") +
         scale_color_gradientn(
           name = "counts",
           na.value = "gray",
@@ -851,7 +850,7 @@ for (type in c("adt", "gex", "adt_gex")) {
     cell_attributes_antibody$expressed <- round(log(cell_attributes_antibody$expressed))
     ab <- lookup[gene, ]$Antibody
 
-        # plot antibody plot
+    # plot antibody plot
     upper_limit <- max(thresholds[ab, ] * 3, max(cell_attributes_antibody$expressed), 3)
     medium_break <- (thresholds[ab, ] + upper_limit) / 2
     upper_break <- (medium_break + upper_limit) / 2
@@ -860,8 +859,8 @@ for (type in c("adt", "gex", "adt_gex")) {
       antibody_plot <- ggplot(cell_attributes_antibody,
         aes(x = umap1, y = umap2, color = expressed)) +
         geom_point(data = cell_attributes_antibody[which(cell_attributes_antibody$expressed == 0), ],
-                 size = rel(0.001),
-                 colour = "gray") +
+          size = rel(0.001),
+          colour = "gray") +
         scale_color_gradientn(
           name = "ln counts",
           na.value = "slateblue4",
@@ -906,16 +905,16 @@ for (type in c("adt", "gex", "adt_gex")) {
         guides(fill = guide_legend(title = "counts"))
     } else {
       antibody_plot <- ggplot(cell_attributes_antibody,
-                            aes(x = umap1, y = umap2, color = expressed)) +
+        aes(x = umap1, y = umap2, color = expressed)) +
         geom_point(data = cell_attributes_antibody[which(cell_attributes_antibody$expressed <= thresholds[ab, ]), ],
-                 size = rel(0.001),
-                 colour = "gray") +
+          size = rel(0.001),
+          colour = "gray") +
         geom_point(data = cell_attributes_antibody[which(cell_attributes_antibody$expressed > thresholds[ab, ]), ],
-                 na.rm = TRUE,
-                 size = rel(0.001)) +
+          na.rm = TRUE,
+          size = rel(0.001)) +
         geom_point(data = cell_attributes_antibody[which(cell_attributes_antibody$expressed > max(thresholds[ab, ], upper_limit)), ],
-                 size = rel(0.001),
-                 colour = "orangered4") +
+          size = rel(0.001),
+          colour = "orangered4") +
         scale_color_gradientn(
           name = "ln counts",
           na.value = "slateblue4",
@@ -999,7 +998,7 @@ for (type in c("adt", "gex", "adt_gex")) {
       plot_collection <- plot_collection + plot_gene[p + i]
     }
     plot_collection <- plot_collection + plot_layout(design = layout)
-    final <- plot_collection + plot_annotation(caption = paste('Page ', (i + 12 - 1) / 12), " of ", numberOfPages) & theme(plot.caption = element_text(size = 10))
+    final <- plot_collection + plot_annotation(caption = paste("Page ", (i + 12 - 1) / 12), " of ", numberOfPages) & theme(plot.caption = element_text(size = 10))
     if (i + 12 > numberOfPlots) {
       ggplot2::ggsave(
         filename = paste(combout, lookup$Antibody[i + 1], "to", lookup$Antibody[numberOfPlots], "plot.png", sep = "_"),
