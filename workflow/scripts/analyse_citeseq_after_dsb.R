@@ -1,13 +1,13 @@
 # Script to Analyse ADT Data in combination with GEXdata.
 # Input: ADT Analysis on pooled Sample, GEX Analysis on individual Samples, lookup table matching gene and protein names, threshold table showing log thresholds per antibody
 # Linda Grob
-
+# adapted October 2023
+# Anne Bertolini
 
 library(cowplot)
 library(Seurat)
 library(uwot)
 library(SingleCellExperiment)
-library(rjson)
 library(stringr)
 library(pheatmap)
 library(patchwork)
@@ -16,16 +16,11 @@ library(reshape)
 library(ggridges)
 library(dplyr)
 library(tibble)
-library(limma)
 library(grid)
 library(optparse)
 library(rhdf5)
 library(BREMSC)
 
-# give out session Info
-cat("\n\n\nPrint sessionInfo:\n\n")
-print(sessionInfo())
-cat("\n\n\n\n")
 
 option_list <- list(
   make_option("--RDS", type = "character", help = "Path to the atypical removed RDS file from the GEX pipline."),
@@ -33,7 +28,6 @@ option_list <- list(
   make_option("--h5", type = "character", help = "Path to the hdf5 file of the most variable genes from the GEX pipline."),
   make_option("--colorConfig", type = "character", help = "Path to the colorConfig file used in the GEX pipeline."),
   make_option("--lookup", type = "character", help = "Path to a lookup table for gene & protein names."),
-  make_option("--threshold", type = "character", help = "File containing individual log thresholds for each antibody."),
   make_option("--threads", type = "integer", help = "Number of threads that are available for the script. Recomended: 3-5"),
   make_option("--sampleName", type = "character", help = "SampleName. Needs to be exactly as used in the thresholds table."),
   make_option("--number_variable_genes", type = "integer", default = 500, help = "Number of variable genes that are included when calculating the UMAP embedding with RNA and ADT data."),
@@ -43,6 +37,18 @@ option_list <- list(
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
+
+# give out date, time and session info
+cat("\n\n")
+print(Sys.time())
+cat("\n\n\nPrint sessionInfo:\n\n")
+print(sessionInfo())
+cat("\n\n\n")
+cat("\nInput files:\n\n")
+print(opt)
+cat("\n\n")
+
+
 # set general options/parameters
 options(stringsAsFactors = FALSE)
 
@@ -50,38 +56,25 @@ outfolder <- opt$output
 dir.create(outfolder, showWarnings = FALSE)
 
 outprefix <- paste(opt$output, opt$sampleName, sep = "/")
-print("Files get the following prefix: ")
+cat("\n\nFiles get the following prefix:\n")
 print(outprefix)
 
-####
 # Read in files
-print("###################")
-print("Reading in Input Files.")
-print("###################")
-print("Reading in RDS File.")
+cat("\n\nReading in Input Files.\n")
+cat("\n\nReading in RDS file with GEX results from scAmpi.\n")
 my_sce <- readRDS(opt$RDS)
 
-print("Reading in cellranger ADT File.")
-CellRangerADTfolder <- opt$cellrangerADT
-print(CellRangerADTfolder)
-CellRangerADT <- Read10X(data.dir = CellRangerADTfolder)
+cat("\n\nReading in ADT results.\n")
+ADT_normalized <- readRDS(opt$adt)
+CellRangerADT <- ADT_normalized$dsb_normalized_matrix
+rm(ADT_normalized)
+# if present, remove "_TotalSeqC" suffix
+rownames(CellRangerADT) <- gsub(pattern = "(.+)_TotalSeqC", "\\1", rownames(CellRangerADT))
 
-print("Read in h5 file containing variable genes used for umap clustering.")
+cat("\n\nRead in h5 file containing variable genes used for umap clustering.\n")
 vari <- h5read(opt$h5, "gene_attrs/gene_names")
 
-print("Read in threshold file.")
-ThresholdFile <- read.table(opt$threshold, header = TRUE, sep = "\t", row.names = 1)
-thresholds <- ThresholdFile[opt$sampleName]
-print("The following thresholds have been read for this sample:")
-print(thresholds)
-
-print(
-  "Script assumes input thresholds to be logged. Raw Thresholds are then calculated to be the following:"
-)
-thresholds_exp <- round(exp(thresholds))
-print(thresholds_exp)
-
-print("Read in Color-Config")
+cat("\n\nRead in Color-Config.\n")
 config <- read.csv(opt$colorConfig, sep = "\t", stringsAsFactors = FALSE)
 config$cell_type <- gsub(pattern = "([^_]+)_.*", "\\1", config$cell_type)
 stopifnot(length(config$colour) == length(config$cell_type))
@@ -89,25 +82,19 @@ stopifnot(config$colour == unique(config$colour))
 ct.color <- c(config$colour, "grey50", "black")
 names(ct.color) <- c(config$cell_type, "uncertain", "unknown")
 print(ct.color)
-print("Read in Lookup Table")
+cat("\n\nRead in Lookup Table.\n")
 lookup <- read.csv(opt$lookup, header = TRUE, sep = "\t")
-print("The following lookup table is used to map gene names to antibodies and the other way round.")
+cat("\n\nThe following lookup table is used to map gene names to antibodies and the other way round.\n")
 print(lookup)
 
-print("###################")
-print("Start preprocessing:")
-print("###################")
-## This part is Sample Specific for the Levesque Pilot Samples. Should not be necessary later on!
-print("Beautify rownames:")
-rownames(x = CellRangerADT) <- gsub(
-  pattern = "_TotalSeqC", replacement = "",
-  x = rownames(x = CellRangerADT)
-)
+
+cat("\n\n\n###   Start preprocessing\n\n")
+
 # Filter for identical cell barcodes in ADT & GEX analysis
-print("Start filtering:")
-print("Number of cells in GEX analysis before filtering:")
+cat("\n\nStart filtering:\n")
+cat("\n\nNumber of cells in GEX analysis before filtering:\n")
 print(length(colnames(my_sce)))
-print("Number of cells in ADT analysis before filtering:")
+cat("\n\nNumber of cells in ADT analysis before filtering:\n")
 print(length(colnames(CellRangerADT)))
 
 # first, make sure the cell barcodes do not contain "-1" as suffix
@@ -122,22 +109,16 @@ print(head(colnames(CellRangerADT)))
 cat("\n\n\n")
 my_sce <- my_sce[, joint.bcs]
 CellRangerADT <- CellRangerADT[, joint.bcs]
-print("Number of cells in GEX analysis after filtering:")
+cat("\n\nNumber of cells in GEX analysis after filtering:\n")
 print(length(colnames(my_sce)))
-print("Number of cells in ADT analysis after filtering:")
+cat("\n\nNumber of cells in ADT analysis after filtering:\n")
 print(length(colnames(CellRangerADT)))
-# Check if a threshold can be assigned to every antibody.
-print("Checking if a the antibodies are correctly named in the cellranger feature, the threshold and the lookup file.")
-print(unique(rownames(CellRangerADT)))
-print(unique(rownames(thresholds)))
-stopifnot(setequal(unique(lookup$Antibody), unique(rownames(thresholds))))
-print(unique(rownames(CellRangerADT)))
-stopifnot(setequal(unique(lookup$Antibody), unique(rownames(CellRangerADT))))
+
 # Defining list of antibodies and barcodes for future use in the script
-print("Defining useful lists for future use:")
+cat("\n\nDefining useful vectors for future use:\n")
 antibodies <- rownames(CellRangerADT)
 antibodies <- antibodies[str_order(antibodies, numeric = TRUE)]
-print("Alpha-numerical ordered list of antibodies used in ADT analysis.")
+cat("\n\nAlpha-numerical ordered list of antibodies used in ADT analysis.\n")
 print(antibodies)
 numberOfAntibodies <- length(antibodies)
 print(paste("Found ", numberOfAntibodies, " Antibodies.", sep = ""))
@@ -148,12 +129,10 @@ print(rownames(CellRangerADT))
 residuals_matrix <- assay(my_sce, "pearson_resid")
 residuals_matrix_variable <- residuals_matrix[rownames(residuals_matrix) %in% vari, ]
 
-print("###################")
-print("Creating summary tables:")
-print("###################")
-###
-# Create a table containing phenograph_clusters, antibodies and celltypes per cellbarcode.
-print("Create a table containing phenograph_clusters, antibodies and celltypes per cellbarcode.")
+
+cat("\n\n\n###   Creating summary tables:\n\n")
+# Create a table containing phenograph_clusters, antibodies and cell types per cell barcode.
+cat("\n\nCreate a table containing phenograph_clusters, antibodies and celltypes per cellbarcode.\n")
 antibodies <- rownames(CellRangerADT)
 barcodes <- colnames(CellRangerADT)
 df_colData_cells <- as.data.frame(colData(my_sce), stringsAsFactors = FALSE)
@@ -162,20 +141,24 @@ table1$antibody <- ""
 for (i in seq_len(length(barcodes))) {
   table1$antibody[i] <- paste(antibodies[CellRangerADT[, i] > 0], collapse = ",")
 }
-write.table(data.frame("barcodes" = rownames(table1), table1), file = paste(outprefix, "antibodies_and_celltypes_per_cell.rawcounts.tsv", sep = "."), sep = "\t", quote = FALSE)
-print(paste("Saving it to ", outprefix, ".antibodies_and_celltypes_per_cell.rawcounts.tsv", sep = ""))
+write.table(data.frame("barcodes" = rownames(table1), table1),
+            file = paste(outprefix, "antibodies_and_celltypes_per_cell.rawcounts.tsv", sep = "."),
+            sep = "\t",
+            quote = FALSE,
+            row.names = FALSE)
+print(paste("Saving table to ", outprefix, ".antibodies_and_celltypes_per_cell.rawcounts.tsv", sep = ""))
 
 # Create a table containing fraction of cells associated with a Celltype expressing an antibody.
-print("Create a table containing fraction of cells associated with a Celltype expressing an antibody.")
+cat("\n\nCreate a table containing fraction of cells associated with a Celltype expressing an antibody.\n")
 
 table2 <- as.data.frame(table(table1$celltype_final))
 colnames(table2) <- c("Celltype", "NumberOfCells")
-# Don't report celltypes with 0 cells.
+# Do not report cell types with 0 cells.
 table2 <- table2[which(table2$NumberOfCells > 0), ]
 # Initiate empty antibody columns:
 table2[, antibodies] <- 0
 
-# Loop through celltypes & Antibodies
+# Loop through cell types & Antibodies
 for (ab in antibodies) {
   for (ct in table2$Celltype) {
     occurence <- 0
@@ -189,19 +172,23 @@ for (ab in antibodies) {
     table2[which(table2$Celltype == ct), ab] <- round(fraction, 3)
   }
 }
-write.table(table2, file = paste(outprefix, "antibody_fraction_per_celltype.tsv", sep = "."), sep = "\t", quote = FALSE, row.names = FALSE)
+write.table(table2,
+            file = paste(outprefix, "antibody_fraction_per_celltype.tsv", sep = "."),
+            sep = "\t",
+            quote = FALSE,
+            row.names = FALSE)
+print(paste("Saving table to ", outprefix, ".antibody_fraction_per_celltype.tsv", sep = ""))
 
-print(paste("Saving it to ", outprefix, ".antibody_fraction_per_celltype.tsv", sep = ""))
 
 # Prepare data for the fraction table
-
 adtinfo <- as.data.frame(t(CellRangerADT))
+names(adtinfo) <- gsub(pattern = "(.+)_TotalSeqC", "\\1", names(adtinfo))
 adtinfo$barcodes <- colnames(CellRangerADT)
 cell_attributes_extended <- plyr::join(as.data.frame(colData(my_sce)), adtinfo)
 cell_attributes_extended <- cell_attributes_extended[complete.cases(cell_attributes_extended), ]
 
 # Create a table containing fraction of cells expressing the corresponding gene to an antibody.
-print("Create a table containing fraction of cells expressing the corresponding gene to an antibody.")
+cat("\n\nCreate a table containing fraction of cells expressing the corresponding gene to an antibody.\n")
 count_matrix <- assay(my_sce, "normcounts")
 table3 <- lookup
 table3$number_cells_per_AB <- 0
@@ -209,19 +196,25 @@ table3$fraction_total_cells_with_ab <- 0
 table3$genes_expressed <- 0
 table3$genes_not_expressed <- 0
 table3$fraction_ab_labeled_cells_expressing_gene <- 0
-colnames(table3) <- c("Gene", "Antibody", "number_cells_per_AB", "fraction_total_cells_with_ab", "genes_expressed", "genes_not_expressed", "fraction_ab_labeled_cells_expressing_gene")
-thresholds[is.na(thresholds)] <- 0
-for (ab in seq(length(lookup$Antibody))) {
+colnames(table3) <- c("Gene",
+                      "Antibody",
+                      "number_cells_per_AB",
+                      "fraction_total_cells_with_ab",
+                      "genes_expressed",
+                      "genes_not_expressed",
+                      "fraction_ab_labeled_cells_expressing_gene")
+
+for (ab in seq_along(lookup$Antibody)) {
   count_expressed <- 0
   count_not_expressed <- 0
-  count_ab <- sum(cell_attributes_extended[, lookup[ab, ]$Antibody] > thresholds[lookup[ab, ]$Antibody, ])
+  count_ab <- sum(cell_attributes_extended[, lookup[ab, ]$Antibody] > 0)
   for (index in seq(length(cell_attributes_extended$barcodes))) {
     barcode <- cell_attributes_extended$barcodes[index]
     gene <- lookup[ab, ]$Gene
     if (is.na(match(gene, rownames(count_matrix)))) {
       next
     }
-    if (cell_attributes_extended[index, lookup[ab, ]$Antibody] > thresholds[lookup[ab, ]$Antibody, ]) {
+    if (cell_attributes_extended[index, lookup[ab, ]$Antibody] > 0) {
       if (count_matrix[gene, barcode] != 0) {
         count_expressed <- count_expressed + 1
       } else if (count_matrix[gene, barcode] == 0) {
@@ -235,12 +228,15 @@ for (ab in seq(length(lookup$Antibody))) {
   table3[ab, ]$number_cells_per_AB <- count_ab
   table3[ab, ]$fraction_total_cells_with_ab <- round(count_ab / length(cell_attributes_extended$barcodes), 2)
 }
-print(paste("Saving it to ", outprefix, ".fraction_of_genes_expressed_per_antibody.tsv", sep = ""))
-write.table(table3, file = paste(outprefix, "fraction_of_genes_expressed_per_antibody.tsv", sep = "."), sep = "\t", row.names = FALSE, quote = FALSE)
+cat(paste("\n\nSaving table to ", outprefix, ".fraction_of_genes_expressed_per_antibody.tsv\n", sep = ""))
+write.table(table3,
+            file = paste(outprefix, "fraction_of_genes_expressed_per_antibody.tsv", sep = "."),
+            sep = "\t",
+            row.names = FALSE,
+            quote = FALSE)
 
-print("###################")
-print("Start plotting:")
-print("###################")
+
+cat("\n\n\n###   Start plotting:\n\n")
 ###   Plot antibody heatmap   ###
 matrix_CellRangerADT <- as.matrix(CellRangerADT)
 log_matrix_CellRangerADT <- log(as.matrix(CellRangerADT) + 1)
@@ -286,8 +282,8 @@ for (hm_version in c("log", "raw")) {
   )
   # save heatmap
   ggsave(
-    filename_hm_phmp,
-    hm_phmp,
+    filename = filename_hm_phmp,
+    plot = hm_phmp,
     width = 40,
     height = max(20, round(length(antibodies) * 0.4)),
     units = "cm",
@@ -298,14 +294,13 @@ for (hm_version in c("log", "raw")) {
 ###
 # Ridgeplot ABs
 ###
-print("Plotting Ridgeplot Antibodies:")
+cat("\n\nPlotting Ridgeplot Antibodies:\n")
 ridgeout <- paste(outfolder, "/RidgeplotsSingleSample/", sep = "")
 dir.create(ridgeout)
 
 plot_list <- list()
 for (ab in antibodies) {
-  print(paste("Working on ", ab, " using threshold ", thresholds[ab, ], ".", sep =
-    ""))
+  print(paste("Working on ", ab, sep = ""))
   abcounts <- as.matrix(CellRangerADT[ab, ])
   colnames(abcounts) <- ab
   abcounts <- melt(abcounts)
@@ -338,15 +333,12 @@ for (ab in antibodies) {
         axis.title.y = element_blank(),
         plot.margin = unit(c(0.5, 0.5, 0.5, 1), "cm")
       )
-    # Draw a line showing threshold if threshold is > 0
-    if (as.numeric(thresholds[ab, ]) > 0) {
-      abPlot <-
-        abPlot + geom_vline(xintercept = as.numeric(thresholds[ab, ]))
-    }
   }
   plot_list[[ab]] <- abPlot
 }
-print("Saving ridgeplots.")
+
+
+cat("\n\nSaving ridgeplots.\n")
 numberOfPlots <- length(plot_list)
 for (i in seq(1, numberOfPlots, 12)) {
   plot_sub <- plot_list[i:min(i + 11, numberOfPlots)]
@@ -384,26 +376,30 @@ for (i in seq(1, numberOfPlots, 12)) {
     )
   }
 }
-###
-# Plot Antibodies per Celltype
+
+
+# Plot Antibodies per cell type
 # Since this are potentially many plots, create an extra subfolder for the output.
-print("Plotting Antibodies per Celltype and Calculating table:")
+cat("\n\nPlotting Antibodies per Celltype and Calculating table:\n")
 abcelltypeout <-
   paste(outfolder, "/antibodies_per_celltype_plots/", sep = "")
 dir.create(paste(abcelltypeout), showWarnings = FALSE)
 
-# Create a dataframe containing adt and gex information per barcode
+# Create a data frame containing adt and gex information per barcode
 df_colData_cells <- as.data.frame(colData(my_sce), stringsAsFactors = FALSE)
 CellRangerADTextended <- rownames_to_column(as.data.frame(t(CellRangerADT)))
 colnames(CellRangerADTextended)[1] <- "barcodes"
 cell_attributes <- plyr::join(df_colData_cells, CellRangerADTextended, by = "barcodes")
-print("Saving cell data table, containing the following columns:")
+cat("\n\nSaving cell data table, containing the following columns:\n")
 print(colnames(cell_attributes))
-write.table(cell_attributes, paste(outprefix, ".cell_attributes.tsv", sep = ""),
-  quote = FALSE, row.names = FALSE, sep = "\t")
+write.table(cell_attributes,
+            paste(outprefix, ".cell_attributes.tsv", sep = ""),
+            quote = FALSE,
+            row.names = FALSE,
+            sep = "\t")
 
 
-# Save SCE object with GEX results AND cellranger ADT results in colData table
+# Extend SCE object with GEX results AND Cellranger ADT results in colData table
 cat("\n\nSaving RDS file containing the whole GEX SCE object and the cellranger ADT columns.\n")
 stopifnot(CellRangerADTextended$barcodes == colData(my_sce)$barcodes)
 for (column in 1:length(CellRangerADTextended)) {
@@ -412,7 +408,7 @@ for (column in 1:length(CellRangerADTextended)) {
   cat("Add column", columnName, "to SCE object\n")
   colData(my_sce)[columnName] <- CellRangerADTextended[[column]]
 }
-saveRDS(my_sce, paste(outprefix, ".GEX_cellrangerADT_SCE.RDS", sep = ""))
+names(colData(my_sce)) <- gsub(pattern = "(.+)_TotalSeqC", "\\1", names(colData(my_sce)))
 
 
 id.final.ct <- match(levels(as.factor(cell_attributes$celltype_final)), names(ct.color))
@@ -420,8 +416,8 @@ id.major.ct <- match(levels(as.factor(cell_attributes$celltype_major)), names(ct
 celltype_list <- list(id.final.ct, id.major.ct)
 names(celltype_list) <- c("celltype_final", "celltype_major")
 
-# Save tables showing proportions of celltypes.
-print("Saving tables containing proportions of celltype (major)")
+# Save tables showing proportions of cell types.
+cat("\n\nSaving tables containing proportions of celltype (major)\n")
 write.table(
   round(prop.table(table(
     cell_attributes$celltype_major
@@ -433,7 +429,7 @@ write.table(
   col.names = FALSE
 )
 
-# plot ridgeplots for each ADT, per major/minor cell types
+# plot ridge plots for each ADT, per major/minor cell types
 plot_list <- list()
 for (type in c("celltype_final", "celltype_major")) {
   print(paste("Working on plotting ridgeplots using ", type, ".", sep = ""))
@@ -467,10 +463,6 @@ for (type in c("celltype_final", "celltype_major")) {
         drop = F) +
       theme(axis.title.y = element_blank(),
         plot.margin = unit(c(0.5, 0.5, 0.5, 1), "cm"))
-    # Add line indicating threshold if threshold is larger than 0
-    if (as.numeric(thresholds[ab, ]) > 0) {
-      s <- s + geom_vline(xintercept = as.numeric(thresholds[ab, ]))
-    }
     plot_list[[ab]] <- s
   }
   numberOfPlots <- length(plot_list)
@@ -514,45 +506,63 @@ for (type in c("celltype_final", "celltype_major")) {
 }
 
 
-print("###################")
-print("Start clustering:")
-print("###################")
+cat("\n\n\n###   Start clustering:\n\n")
 set.seed(184)
-# Coulours used later on for clustering
+
+# Colours used later on for clustering
 cols33 <- c("red2", "green4", "blue2", "cyan2", "yellow1", "purple", "brown",
   "chocolate1", "chartreuse2", "darkgoldenrod3", "steelblue1", "slateblue3", "olivedrab4", "gold2",
   "violetred3", "darkcyan", "orchid3", "darksalmon", "darkslategrey", "khaki", "indianred2", "magenta", "slategray2",
   "olivedrab1", "mediumaquamarine", "hotpink", "yellow3",
   "bisque4", "darkseagreen1", "dodgerblue3",
   "deeppink4", "sienna4", "mediumorchid4")
-print("Defined colours for clustering; only 33 available, if more clusters are found, this might crash.")
+cat("\n\n Warning: Defined colours for clustering; only 33 available, if more clusters are found, this might crash.")
+# colours used for the gradient
+colours_for_gradient <- c(
+  "slateblue3",
+  "royalblue1",
+  "aquamarine3",
+  "khaki",
+  "khaki1",
+  "sienna1",
+  "orangered4"
+)
+
 ### Cluster
-print("Start clustering on ADT and GEX data.")
+cat("\n\n\nStart clustering on ADT and GEX data.\n\n")
 RNA_count_data <- assay(my_sce, "counts")
 # reduce RNA count data to number of most variable genes specified as command line argument
 subset_vari_rowData <- rowData(my_sce)[rownames(rowData(my_sce)) %in% vari, ]
 subset_vari_ordered <- subset_vari_rowData[order(subset_vari_rowData$residual_variance, decreasing = TRUE), ]
 vari_ordered <- subset_vari_ordered$gene_names
 RNA_count_data <- RNA_count_data[rownames(RNA_count_data) %in% vari_ordered[1:opt$number_variable_genes], ]
+# make sure the antibody counts are not < 0
+CellRangerADT_pos <- CellRangerADT
+CellRangerADT_pos[CellRangerADT_pos < 0] <- 0
 # Clustering taking the number of clusters from the phenograph)
-cluster <- BREMSC(CellRangerADT, RNA_count_data, K = max(cell_attributes$phenograph_clusters), nChains = opt$threads, nMCMC = 1000)
+cluster <- BREMSC(CellRangerADT_pos, RNA_count_data, K = max(cell_attributes$phenograph_clusters), nChains = opt$threads, nMCMC = 1000)
 cluster.df <- as.data.frame(cluster$clusterID)
 cluster.df$barcodes <- colnames(CellRangerADT)
+# the numbers for cluster IDs are used randomly. Other clustering algorithms have the clusters named and ordered after size,
+# with one being the largest.
+# rename the cluster IDs so that 1 is the largest and N is the smallest cluster
 resort_clusterIDs <- as.data.frame(sort(table(cluster$clusterID), decreasing = TRUE))
 colnames(resort_clusterIDs) <- c("oldID", "freq")
 resort_clusterIDs$newIDs <- rownames(resort_clusterIDs)
 cluster.df$newIDs <- resort_clusterIDs$newIDs[match(unlist(cluster$clusterID), resort_clusterIDs$oldID)]
 
-###
+# add new BREMSC clusters IDs to the SCE object colData
+stopifnot(colnames(CellRangerADT) == colnames(my_sce))
+colData(my_sce)$BREMSC_cluster_id <- cluster.df$newIDs
+
 # Prepare data for the main plot showing gex vs. ab expression and the third table
 # get UMAP coordinates into data frame
 dir.create(paste(outfolder, "/ExpressionPlots/", sep = ""))
 dir.create(paste(outfolder, "/ExpressionPlots/gex_based_embedding/", sep = ""))
 dir.create(paste(outfolder, "/ExpressionPlots/adt_based_embedding/", sep = ""))
 
-print("###################")
-print("Start creating Expression Plots:")
-print("###################")
+
+cat("\n\n\n###   Start creating Expression Plots:\n\n")
 
 for (type in c("adt", "gex", "adt_gex")) {
   if (type == "adt") {
@@ -570,6 +580,9 @@ for (type in c("adt", "gex", "adt_gex")) {
     stopifnot(my_sce$barcodes == umap_coord$barcodes)
     # add umap coordinates to the meta data table of cells
     cell_attributes <- plyr::join(cell_attributes, umap_coord)
+    # add umap coordinates to SCE object
+    colData(my_sce)$umap1_adt <- umap_coord$umap1
+    colData(my_sce)$umap2_adt <- umap_coord$umap2
   } else if (type == "gex") {
     cell_attributes <- plyr::join(df_colData_cells, CellRangerADTextended, by = "barcodes")
     print("Working on Gex based UMAP embedding.")
@@ -583,25 +596,31 @@ for (type in c("adt", "gex", "adt_gex")) {
     stopifnot(my_sce$barcodes == umap_coord$barcodes)
     # add umap coordinates to the meta data table of cells
     cell_attributes <- plyr::join(cell_attributes, umap_coord)
-  } else {
+    # add umap coordinates to SCE object
+    colData(my_sce)$umap1_gex <- umap_coord$umap1
+    colData(my_sce)$umap2_gex <- umap_coord$umap2
+  } else if (type == "adt_gex") {
     cell_attributes <- plyr::join(df_colData_cells, CellRangerADTextended, by = "barcodes")
     combout <- paste(outfolder, "/ExpressionPlots/", opt$sampleName, ".Combined_ADT_GEX", sep = "")
     print("Working on joined Adt and Gex based UMAP embedding.")
-    CellRangerreduced  <-  CellRangerADT[, colnames(residuals_matrix_variable)] + 1
+    CellRangerreduced  <- CellRangerADT[, colnames(residuals_matrix_variable)] + 1
     residuals_matrix_variable_reduced <- residuals_matrix_variable[, colnames(CellRangerADT)]
     CombinedADTGEX <- rbind(residuals_matrix_variable_reduced, CellRangerreduced)
-    umap.adt <- umap(t(CombinedADTGEX), scale = TRUE, n_neighbors = 30, pca = 50, spread = 1, min_dist = 0.4, ret_nn = T)
+    umap.adt.gex <- umap(t(CombinedADTGEX), scale = TRUE, n_neighbors = 30, pca = 50, spread = 1, min_dist = 0.4, ret_nn = T)
+    rm(CombinedADTGEX)
     # get UMAP coordinates into data frame
-    reducedDim(my_sce, "umap_adt") <- umap.adt$embedding
-    metadata(my_sce) <- c(metadata(my_sce), list(umap_adt = umap.adt$nn$euclidean))
+    reducedDim(my_sce, "umap_adt_gex") <- umap.adt.gex$embedding
+    metadata(my_sce) <- c(metadata(my_sce), list(umap_adt_gex = umap.adt.gex$nn$euclidean))
     # umap_coord <- as.data.frame(reducedDims(my_sce)$umap_hvg)
-    umap_coord <- as.data.frame(reducedDims(my_sce)$umap_adt)
+    umap_coord <- as.data.frame(reducedDims(my_sce)$umap_adt_gex)
     names(umap_coord) <- c("umap1", "umap2")
     umap_coord$barcodes <- rownames(umap_coord)
     # add umap coordinates to the meta data table of cells
     cell_attributes <- plyr::join(cell_attributes, umap_coord)
+    # add umap coordinates to SCE object
+    colData(my_sce)$umap1_adt_gex <- umap_coord$umap1
+    colData(my_sce)$umap2_adt_gex <- umap_coord$umap2
   }
-
   # Plot Clustering
   cluster_attributes <- plyr::join(cell_attributes, cluster.df)
   cluster_attributes$cluster <- as.integer(cluster$clusterID)
@@ -656,7 +675,6 @@ for (type in c("adt", "gex", "adt_gex")) {
   gene.list <- sort(gene.list)
   gene.list.all <- sort(gene.list.all$Gene)
 
-
   # get indices of genes in matrix
   list_groups <- lapply(seq_along(gene.list), function(x) {
     indices <- match(gene.list[[x]], rownames(normcounts_all.zero.removed))
@@ -700,7 +718,7 @@ for (type in c("adt", "gex", "adt_gex")) {
 
   legend_ref <- cowplot::get_legend(p_legend_ref)
 
-  # plot UMAP (based on highly variable genes), colours = final cell type, as reference for expression plot
+  # plot UMAP, colours = final cell type, as reference for expression plot
   # get all genes that have zero counts in all cells
   mask.not.expressed <-
     !(gene.list.all %in% rownames(normcounts_all.zero.removed[unlist(list_groups), , drop = F]))
@@ -722,7 +740,7 @@ for (type in c("adt", "gex", "adt_gex")) {
 
   expout <- paste(outfolder, "/ExpressionPlots/", opt$sampleName, sep = "")
   # loop over the expressed genes of the current group
-  for (gene in seq(length(lookup$Gene))) {
+  for (gene in seq_along(lookup$Gene)) {
     merged_plots <- list()
     gene_name <- lookup$Gene[gene]
     print(paste("Working on ", gene_name, ".", sep = ""))
@@ -753,15 +771,7 @@ for (type in c("adt", "gex", "adt_gex")) {
         scale_color_gradientn(
           name = "counts",
           na.value = "gray",
-          colours = c(
-            "slateblue3",
-            "royalblue1",
-            "aquamarine3",
-            "khaki",
-            383,
-            "sienna1",
-            "orangered4"
-          ),
+          colours = colours_for_gradient,
           limits = c(1, max(3, upper_limit)),
           breaks = c(floor(upper_limit / 3), round(2 * (upper_limit / 3)), upper_limit)
         ) +
@@ -788,7 +798,6 @@ for (type in c("adt", "gex", "adt_gex")) {
           aspect.ratio = 1
         )
     } else {
-      cell_attributes_gene$normcounts <- matrix_group[1, ]
       cell_attributes_gene$normcounts <- 0
       # maximum count found for current gene
       max_count <- max(cell_attributes_gene$normcounts)
@@ -809,15 +818,7 @@ for (type in c("adt", "gex", "adt_gex")) {
         scale_color_gradientn(
           name = "counts",
           na.value = "gray",
-          colours = c(
-            "slateblue3",
-            "royalblue1",
-            "aquamarine3",
-            "khaki",
-            383,
-            "sienna1",
-            "orangered4"
-          ),
+          colours = colours_for_gradient,
           limits = c(1, max(3, upper_limit)),
           breaks = c(floor(upper_limit / 3), round(2 * (upper_limit / 3)), upper_limit)
         ) +
@@ -851,10 +852,10 @@ for (type in c("adt", "gex", "adt_gex")) {
     ab <- lookup[gene, ]$Antibody
 
     # plot antibody plot
-    upper_limit <- max(thresholds[ab, ] * 3, max(cell_attributes_antibody$expressed), 3)
-    medium_break <- (thresholds[ab, ] + upper_limit) / 2
+    upper_limit <- max(max(cell_attributes_antibody$expressed), 3)
+    medium_break <- (upper_limit) / 2
     upper_break <- (medium_break + upper_limit) / 2
-    lower_break <- (medium_break + thresholds[ab, ]) / 2
+    lower_break <- (medium_break) / 2
     if (all(cell_attributes_antibody$expressed == 0)) {
       antibody_plot <- ggplot(cell_attributes_antibody,
         aes(x = umap1, y = umap2, color = expressed)) +
@@ -864,21 +865,10 @@ for (type in c("adt", "gex", "adt_gex")) {
         scale_color_gradientn(
           name = "ln counts",
           na.value = "slateblue4",
-          colours = c(
-            "slateblue4",
-            "royalblue1",
-            "aquamarine3",
-            "khaki",
-            383,
-            "sienna1",
-            "orangered4"
-          ),
-          limits = c(thresholds[ab, ], upper_limit),
-          breaks = c(thresholds[ab, ], medium_break, upper_limit),
-          labels = c(
-            paste("<", thresholds[ab, ], sep = ""),
-            medium_break,
-            upper_limit
+          colours = colours_for_gradient,
+          limits = c(0, upper_limit),
+          breaks = c(0, medium_break, upper_limit),
+          labels = c(0, medium_break, upper_limit
           )
         ) +
         coord_fixed(ratio = 1) +
@@ -906,13 +896,13 @@ for (type in c("adt", "gex", "adt_gex")) {
     } else {
       antibody_plot <- ggplot(cell_attributes_antibody,
         aes(x = umap1, y = umap2, color = expressed)) +
-        geom_point(data = cell_attributes_antibody[which(cell_attributes_antibody$expressed <= thresholds[ab, ]), ],
+        geom_point(data = cell_attributes_antibody[which(cell_attributes_antibody$expressed <= 0), ],
           size = rel(0.001),
           colour = "gray") +
-        geom_point(data = cell_attributes_antibody[which(cell_attributes_antibody$expressed > thresholds[ab, ]), ],
+        geom_point(data = cell_attributes_antibody[which(cell_attributes_antibody$expressed > 0), ],
           na.rm = TRUE,
           size = rel(0.001)) +
-        geom_point(data = cell_attributes_antibody[which(cell_attributes_antibody$expressed > max(thresholds[ab, ], upper_limit)), ],
+        geom_point(data = cell_attributes_antibody[which(cell_attributes_antibody$expressed > upper_limit), ],
           size = rel(0.001),
           colour = "orangered4") +
         scale_color_gradientn(
@@ -928,12 +918,9 @@ for (type in c("adt", "gex", "adt_gex")) {
             "sienna1",
             "orangered4"
           ),
-          limits = c(thresholds[ab, ], upper_limit),
-          breaks = c(thresholds[ab, ], medium_break, upper_limit),
-          labels = c(
-            paste("<", thresholds[ab, ], sep = ""),
-            medium_break,
-            upper_limit
+          limits = c(0, upper_limit),
+          breaks = c(0, medium_break, upper_limit),
+          labels = c(0, medium_break, upper_limit
           )
         ) +
         coord_fixed(ratio = 1) +
@@ -963,9 +950,6 @@ for (type in c("adt", "gex", "adt_gex")) {
     plot_gene[[gene]] <- expr / antibody_plot
   }
 
-
-
-
   layout <- c(
     area(1, 2, 5, 6),
     area(1, 7, 5, 11),
@@ -985,7 +969,6 @@ for (type in c("adt", "gex", "adt_gex")) {
     area(9, 16, 11, 19)
   )
 
-
   print("Saving Expression Plots:")
   numberOfPlots <- length(plot_gene)
   numberOfPages <- numberOfPlots %/% 12
@@ -997,8 +980,8 @@ for (type in c("adt", "gex", "adt_gex")) {
     for (p in seq(1, 12)) {
       plot_collection <- plot_collection + plot_gene[p + i]
     }
-    plot_collection <- plot_collection + plot_layout(design = layout)
-    final <- plot_collection + plot_annotation(caption = paste("Page ", (i + 12 - 1) / 12), " of ", numberOfPages) & theme(plot.caption = element_text(size = 10))
+    plot_collection <- plot_collection + patchwork::plot_layout(design = layout)
+    final <- plot_collection + patchwork::plot_annotation(caption = paste("Page ", (i + 12 - 1) / 12), " of ", numberOfPages) & theme(plot.caption = element_text(size = 10))
     if (i + 12 > numberOfPlots) {
       ggplot2::ggsave(
         filename = paste(combout, lookup$Antibody[i + 1], "to", lookup$Antibody[numberOfPlots], "plot.png", sep = "_"),
@@ -1015,5 +998,15 @@ for (type in c("adt", "gex", "adt_gex")) {
       )
     }
   }
-
 }
+rm(plot_gene)
+rm(normcounts_all.zero.removed)
+# save SCE object as RDS file will all aditional information
+saveRDS(my_sce, paste(outprefix, ".GEX_cellrangerADT_SCE.RDS", sep = ""))
+
+# save colData with cell meta data into tsv file
+write.table(data.frame(colData(my_sce)),
+            file = paste0(outprefix, ".GEX_cellrangerADT_SCE.colData.tsv"),
+            sep = "\t",
+            quote = FALSE,
+            row.names = FALSE)
