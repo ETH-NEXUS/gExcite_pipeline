@@ -1002,11 +1002,11 @@ for (type in c("adt", "gex", "adt_gex")) {
 rm(plot_gene)
 rm(normcounts_all.zero.removed)
 # save SCE object as RDS file will all aditional information
-saveRDS(my_sce, paste(outprefix, ".GEX_cellrangerADT_SCE.RDS", sep = ""))
+saveRDS(my_sce, paste(outprefix, ".GEX_cellrangerADT_SCE.dsb.RDS", sep = ""))
 
 # save colData with cell meta data into tsv file
 write.table(data.frame(colData(my_sce)),
-            file = paste0(outprefix, ".GEX_cellrangerADT_SCE.colData.tsv"),
+            file = paste0(outprefix, ".GEX_cellrangerADT_SCE.dsb.colData.tsv"),
             sep = "\t",
             quote = FALSE,
             row.names = FALSE)
