@@ -1010,3 +1010,25 @@ write.table(data.frame(colData(my_sce)),
             sep = "\t",
             quote = FALSE,
             row.names = FALSE)
+
+# save my_sce in h5 format
+# write the output hdf5 file
+h5_file <- paste(outprefix, ".GEX_cellrangerADT_SCE.dsb.h5", sep = "")
+h5createFile(h5_file)
+h5write(as.data.frame(colData(my_sce)), h5_file, "cell_attrs")
+h5write(as.data.frame(rowData(my_sce)), h5_file, "gene_attrs")
+# set chunk size for writing h5 to c(1000,1000) or if the matrix is smaller to its dimensions (default)
+if (dim(my_sce)[1] > 1000 & dim(my_sce)[2] > 1000) {
+  chunks <- c(1000,1000)
+} else {
+  chunks <- dim(magic_counts)
+}
+cat("\n\n### hdf5 chunk size:", chunks, "\n\n")
+h5createDataset(file = h5_file, dataset = "counts", dims = dim(my_sce), chunk = chunks)
+h5write(assay(my_sce, "counts"), h5_file, "counts")
+
+h5createDataset(file = h5_file, dataset = "normcounts", dims = dim(my_sce), chunk = chunks)
+h5write(assay(my_sce, "normcounts"), h5_file, "normcounts")
+
+h5createDataset(file = h5_file, dataset = "pearson_resid", dims = dim(my_sce), chunk = chunks)
+h5write(assay(my_sce, "pearson_resid"), h5_file, "pearson_resid")
