@@ -8,6 +8,7 @@
 library(dsb)
 library(Seurat)
 library(ggplot2)
+library(optparse)
 
 # command line arguments are parsed
 option_list <- list(
