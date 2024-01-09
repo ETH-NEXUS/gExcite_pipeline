@@ -24,7 +24,7 @@ library(BREMSC)
 
 option_list <- list(
   make_option("--RDS", type = "character", help = "Path to the atypical removed RDS file from the GEX pipline."),
-  make_option("--cellrangerADT", type = "character", help = "Path to the cellranger ADT analysis folder (folder that contains feature, barcode and matrix file)."),
+  make_option("--cellrangerADT", type = "character", help = "Path to the RDS with dsb-normalized ADT counts."),
   make_option("--h5", type = "character", help = "Path to the hdf5 file of the most variable genes from the GEX pipline."),
   make_option("--colorConfig", type = "character", help = "Path to the colorConfig file used in the GEX pipeline."),
   make_option("--lookup", type = "character", help = "Path to a lookup table for gene & protein names."),
@@ -65,7 +65,7 @@ cat("\n\nReading in RDS file with GEX results from scAmpi.\n")
 my_sce <- readRDS(opt$RDS)
 
 cat("\n\nReading in ADT results.\n")
-ADT_normalized <- readRDS(opt$adt)
+ADT_normalized <- readRDS(opt$cellrangerADT)
 CellRangerADT <- ADT_normalized$dsb_normalized_matrix
 rm(ADT_normalized)
 # if present, remove "_TotalSeqC" suffix
