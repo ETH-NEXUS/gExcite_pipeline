@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.5] - 2024-01-XX
+
+### Added
+- `dsb` normalization of ADT counts (experiments without hashing)
+
 ## [1.0.4] - 2023-09-19
 
 ### Changed
