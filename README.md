@@ -53,6 +53,9 @@ In case you would like to start from the raw sequencing data using cellranger pr
 - [Cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger): Follow the instructions on the 10xGenomics installation support page to install cellranger and to include the cellranger binary to your path.
 Webpage: [https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation)
 
+The `dsb` CRAN package is not available on Conda. Therefore, a singularity image `dsb_r-base_4.2.3.sif` containg `dsb` and all other R packages necessary for this step is available for download at XX. Please download the image and then provide the path in the config section dsb_normalize_adt -> singularity.
+
+
 ## Before running the pipeline
 
 Before the pipeline can be run make sure that

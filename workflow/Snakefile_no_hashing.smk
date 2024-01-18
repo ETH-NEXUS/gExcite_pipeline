@@ -23,6 +23,9 @@ module scampi:
     snakefile:
         github(
             "ETH-NEXUS/scAmpi_single_cell_RNA",
+# Working offline: Have the scAmpi pipeline `scAmpi_single_cell_RNA` checked out next to `gExcite_pipeline`
+#        gitfile(
+#            "file:///../../scAmpi_single_cell_RNA/",
             path="workflow/snakefile_basic.smk",
             tag="v2.0.7",
         )

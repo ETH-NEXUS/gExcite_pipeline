@@ -3,7 +3,7 @@
 ## [1.0.5] - 2024-01-XX
 
 ### Added
-- `dsb` normalization of ADT counts (experiments without hashing)
+- include as default `dsb` ambient protein background correction for ADT counts, for experiments without hashing deconvolution
 
 ## [1.0.4] - 2023-09-19
 
