@@ -62,6 +62,8 @@ tools:
     # The number of PCA dimensions cannot be larger than the number of ADTs in the experiment, otherwise the function (and the script) fails.
     number_pca_adt: 20
 
+  dsb_normalize_adt:
+    singularity: "/path/to/dsb_r-base_4.2.3.sif"
 scampi:
   # scampi is a snakemake workflow that runs general scRNA processing steps
   # scampi is used as a snakemake module inside of gExcite & therefore does not need to be installed separately

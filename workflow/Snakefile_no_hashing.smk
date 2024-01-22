@@ -23,6 +23,9 @@ module scampi:
     snakefile:
         github(
             "ETH-NEXUS/scAmpi_single_cell_RNA",
+# Working offline: Have the scAmpi pipeline `scAmpi_single_cell_RNA` checked out next to `gExcite_pipeline`
+#        gitfile(
+#            "file:///../../scAmpi_single_cell_RNA/",
             path="workflow/snakefile_basic.smk",
             tag="v2.0.7",
         )
@@ -33,6 +36,8 @@ module scampi:
 ## Include the preprocessing rules
 include: "rules/gex_cellranger_no_hashing.smk"
 include: "rules/adt_cellranger_no_hashing.smk"
+## Include rule for dsb normalization of ADT counts
+include: "rules/adt_dsb_normalization.smk"
 ## Include scampi
 include: "rules/scampi_module.smk"
 ## Include citseq rules
@@ -61,6 +66,10 @@ rule gExcite:
         ),
         expand(
             "results/cellranger_adt/{sample}.matrix.mtx",
+            sample=getSimpleSampleNames(),
+        ),
+        expand(
+            "results/dsb_normalize_adt/{sample}.dsb_normalize_adt.RDS",
             sample=getSimpleSampleNames(),
         ),
         # List of final files from scampi
@@ -98,7 +107,7 @@ rule gExcite:
         ),
         # List of final files from citeseq analysis
         expand(
-            "results/citeseq_analysis/{sample}/{sample}.GEX_cellrangerADT_SCE.RDS",
+            "results/citeseq_analysis/{sample}/{sample}.GEX_cellrangerADT_SCE.dsb.RDS",
             sample=getSimpleSampleNames(),
         ),
     output:
