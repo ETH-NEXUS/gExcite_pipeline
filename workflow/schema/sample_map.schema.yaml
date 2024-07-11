@@ -7,9 +7,6 @@ properties:
   HashingFile:
     type: string
     description: Path to the Tag File
-  SeqRunName:
-    type: string
-    description: Sequencing sample name of ADT Fastq Files
   nTargetCells:
     type: integer
     description: The number of cells that were targeted in the lab
@@ -20,7 +17,6 @@ properties:
 required:
   - sample
   - HashingFile
-  - SeqRunName
   - nTargetCells
   - featureReferenceFile
 

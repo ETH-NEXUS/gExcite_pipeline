@@ -120,17 +120,6 @@ def getTargetCellsCellranger_simple(wildcards):
     return out
 
 
-# Retrieve the ADT sequencing run name corresponding to a given sample set
-def getSeqRunName(wildcards):
-    # Create dictionary with samples and SeqRunName
-    sampleMap = dict(zip(samples["sample"], samples["SeqRunName"]))
-    if wildcards.sample_set not in sampleMap.keys():
-        raise ValueError(
-            "Sample '%s' not found in the sample map!" % (wildcards.sample_set)
-        )
-    return sampleMap[wildcards.sample_set]
-
-
 # Retrieve the ADT feature reference file corresponding to a given sample set
 def getFeatRefFile(wildcards):
     # Create dictionary with samples and FeatureRefFile
