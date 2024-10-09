@@ -29,22 +29,15 @@ A pre-configured samplemap ready to run on the test data that can be adapted is 
 Example samplemap:
 
 ```
-sample    HashingFile     SeqRunName      nTargetCells    featureReferenceFile
-sampleA   HashingFileA    SeqRunNameA     10000           featureReferenceFileA
-sampleB   HashingFileB    SeqRunNameB     15000           featureReferenceFileB
+sample    HashingFile     nTargetCells    featureReferenceFile
+sampleA   HashingFileA    10000           featureReferenceFileA
+sampleB   HashingFileB    15000           featureReferenceFileB
 ```
 
 With one line per set of samples
 
 - `sample` contains the sample identifier that is used throughout the pipeline
 - `HashingFile` contains the full path to the comma separated text file containing the hashtag barcodes and their assignment to individual sample names (see [HashingFile](#hashingfile)).
-- `SeqRunName` corresponds to the sequencing sample name of the ADT sample; this parameter is only required for the Cellranger run of ADT data. It can be retrieved from the FASTQ file names as follows:
-
-```
-[SeqRunName]_S[Number]_L00[Lane Number]_[Read Type]_001.fastq.gz
-```
-
-Where Read Type is one of: I1, R1, R2.
 
 - `nTargetCells` corresponds to the number of targeted cells for the sample.
 - `featureReferenceFile` corresponds to the ADT feature reference file for the sample set. For further information please consult the Cellranger tool documentation.  
