@@ -1,8 +1,8 @@
 # Changelog
 
 
-## [Unreleased] 
-- removed SeqRunName variable, as it is not needed by cellranger anymore
+## [1.0.5] - 2024-10-09 
+- removed `SeqRunName` variable, as it is not needed by cellranger anymore
 
 ## [1.0.4] - 2023-09-19
 
