@@ -47,11 +47,14 @@ Note: Snakemake needs to access the internet for this set up. With Snakemake 7.1
 
 ### Dependencies
 
-Most of the software used in the default workflow can be installed in an automated fashion using Snakemake's [--use-conda](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management) functionality when running the pipeline.
-In case you would like to start from the raw sequencing data using cellranger processing, the following software needs to be installed manually.
+Most of the software used in the default workflow can be installed in an automated fashion using Snakemake's [--use-conda](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#integrated-package-management) functionality when running the pipeline. Exceptions that must be downloaded or installed manually are listed below.
+
 
 - [Cellranger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger): Follow the instructions on the 10xGenomics installation support page to install cellranger and to include the cellranger binary to your path.
 Webpage: [https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/installation)
+
+- `dsb` CRAN package: is not available on Conda. Therefore, a singularity image `dsb_r-base_4.2.3.sif` containg `dsb` and all other R packages necessary for this step is available for download [here](https://depot.nexus.ethz.ch/software/multi_tool_container_stack/dsb_r-base_4.2.3.sif). Please download the image and then provide the path in the config section "dsb_normalize_adt" -> "singularity".
+
 
 ## Before running the pipeline
 
