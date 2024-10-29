@@ -1,9 +1,12 @@
 # Changelog
 
-## [1.0.5] - 2024-01-XX
+## [1.0.6] - 2024-11-XX
 
 ### Added
 - include as default `dsb` ambient protein background correction for ADT counts, for experiments without hashing deconvolution
+
+## [1.0.5] - 2024-10-09 
+- removed `SeqRunName` variable, as it is not needed by cellranger anymore
 
 ## [1.0.4] - 2023-09-19
 

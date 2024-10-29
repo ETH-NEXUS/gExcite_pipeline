@@ -17,7 +17,6 @@ rule create_library_file_adt:
         library_file=WORKDIR
         + "/results/pooled_samples/cellranger_adt/{sample_set}.adt_library.txt",
     params:
-        seqRunName=getSeqRunName,
     threads: config["computingResources"]["threads"]["low"]
     resources:
         mem_mb=config["computingResources"]["mem_mb"]["low"],
